@@ -39,7 +39,7 @@ const ai = {
     y: fieldHeight / 2,
     width: 30,
     height: 30,
-    speed: 4,
+    speed: 4.5,
     velocityX: 0,
     velocityY: 0,
     color: '#F44336'
@@ -65,7 +65,7 @@ function getAudioContext() {
     return audioContext;
 }
 
-function playSound(frequency, duration, type = 'sine') {
+function playSound(frequency, duration, type = 'sine', volume = 0.1) {
     try {
         const ctx = getAudioContext();
         const oscillator = ctx.createOscillator();
@@ -77,7 +77,7 @@ function playSound(frequency, duration, type = 'sine') {
         oscillator.frequency.value = frequency;
         oscillator.type = type;
 
-        gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+        gainNode.gain.setValueAtTime(volume, ctx.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
 
         oscillator.start(ctx.currentTime);
@@ -88,17 +88,59 @@ function playSound(frequency, duration, type = 'sine') {
 }
 
 function playKickSound() {
-    playSound(400, 0.1);
-    setTimeout(() => playSound(600, 0.15), 50);
+    // Powerful kick sound with multiple frequencies
+    playSound(200, 0.05, 'sine', 0.15);
+    setTimeout(() => playSound(450, 0.12, 'sine', 0.12), 30);
+    setTimeout(() => playSound(650, 0.1, 'sine', 0.1), 60);
+}
+
+function playHardKickSound() {
+    // Extra powerful kick for stronger shots
+    playSound(180, 0.08, 'sine', 0.18);
+    setTimeout(() => playSound(500, 0.15, 'sine', 0.15), 40);
+    setTimeout(() => playSound(750, 0.12, 'sine', 0.12), 80);
+}
+
+function playTouchSound() {
+    // Light touch/pass sound
+    playSound(600, 0.05, 'sine', 0.08);
+    setTimeout(() => playSound(800, 0.04, 'sine', 0.06), 25);
 }
 
 function playGoalSound() {
-    const ctx = getAudioContext();
-    let freq = 400;
-    for (let i = 0; i < 4; i++) {
-        setTimeout(() => playSound(freq, 0.15), i * 150);
-        freq += 200;
-    }
+    // Celebratory goal sound - ascending then descending
+    playSound(400, 0.15, 'sine', 0.12);
+    setTimeout(() => playSound(550, 0.15, 'sine', 0.12), 150);
+    setTimeout(() => playSound(700, 0.15, 'sine', 0.12), 300);
+    setTimeout(() => playSound(900, 0.2, 'sine', 0.15), 450);
+    setTimeout(() => playSound(700, 0.15, 'sine', 0.12), 650);
+    setTimeout(() => playSound(500, 0.15, 'sine', 0.1), 800);
+}
+
+function playStartSound() {
+    // Game start sound
+    playSound(500, 0.1, 'sine', 0.12);
+    setTimeout(() => playSound(700, 0.15, 'sine', 0.12), 120);
+}
+
+function playWhistleSound() {
+    // Whistle for end of game
+    playSound(800, 0.08, 'sine', 0.1);
+    setTimeout(() => playSound(1000, 0.08, 'sine', 0.1), 100);
+    setTimeout(() => playSound(1200, 0.1, 'sine', 0.1), 200);
+}
+
+function playBounceSound() {
+    // Ball bounce off wall
+    playSound(350, 0.04, 'sine', 0.07);
+    setTimeout(() => playSound(500, 0.03, 'sine', 0.05), 30);
+}
+
+function playSaveSound() {
+    // Save/block sound
+    playSound(300, 0.06, 'sine', 0.1);
+    setTimeout(() => playSound(550, 0.08, 'sine', 0.12), 50);
+    setTimeout(() => playSound(400, 0.05, 'sine', 0.08), 120);
 }
 
 function startGame() {
@@ -124,6 +166,7 @@ function startGame() {
         updateDisplay();
         gameStatusDisplay.textContent = '';
         startBtn.textContent = 'Restart';
+        playStartSound();
         gameLoopId = setInterval(gameLoop, 30);
         
         let timerInterval = setInterval(() => {
@@ -159,7 +202,7 @@ function endGame() {
     }
     
     gameStatusDisplay.textContent = status;
-    playGoalSound();
+    playWhistleSound();
 }
 
 document.addEventListener('keydown', handleKeyDown);
@@ -204,18 +247,25 @@ function aiMove() {
         const angle = Math.atan2(dy, dx);
         ai.velocityX = Math.cos(angle) * ai.speed;
         ai.velocityY = Math.sin(angle) * ai.speed;
+    } else {
+        ai.velocityX *= 0.9;
+        ai.velocityY *= 0.9;
     }
     
-    // AI kicks if close to ball
-    if (distance < 50 && Math.random() > 0.85) {
+    // AI is more aggressive with kicking
+    if (distance < 60 && Math.random() > 0.75) {
         kickBall(ai);
     }
+    
+    // Update AI position
+    ai.x += ai.velocityX;
+    ai.y += ai.velocityY;
     
     // Keep AI in bounds
     if (ai.y < ai.height / 2) ai.y = ai.height / 2;
     if (ai.y > fieldHeight - ai.height / 2) ai.y = fieldHeight - ai.height / 2;
-    if (ai.x < fieldWidth / 2) ai.x = fieldWidth / 2;
-    if (ai.x > fieldWidth - 50) ai.x = fieldWidth - 50;
+    if (ai.x < ai.width / 2) ai.x = ai.width / 2;
+    if (ai.x > fieldWidth - ai.width / 2) ai.x = fieldWidth - ai.width / 2;
 }
 
 function gameLoop() {
@@ -241,7 +291,7 @@ function update() {
     
     // Keep player in bounds
     if (player.x < player.width / 2) player.x = player.width / 2;
-    if (player.x > fieldWidth / 2 - 20) player.x = fieldWidth / 2 - 20;
+    if (player.x > fieldWidth - player.width / 2) player.x = fieldWidth - player.width / 2;
     if (player.y < player.height / 2) player.y = player.height / 2;
     if (player.y > fieldHeight - player.height / 2) player.y = fieldHeight - player.height / 2;
     
@@ -259,6 +309,7 @@ function update() {
         ball.velocityY *= -0.9;
         if (ball.y - ball.radius < 0) ball.y = ball.radius;
         if (ball.y + ball.radius > fieldHeight) ball.y = fieldHeight - ball.radius;
+        playBounceSound();
     }
     
     // Check goals
@@ -271,6 +322,7 @@ function update() {
         } else {
             ball.velocityX *= -0.8;
             ball.x = ball.radius;
+            playSaveSound();
         }
     }
     
@@ -283,6 +335,7 @@ function update() {
         } else {
             ball.velocityX *= -0.8;
             ball.x = fieldWidth - ball.radius;
+            playSaveSound();
         }
     }
     
@@ -308,6 +361,13 @@ function checkBallCollision(player) {
         const overlap = player.width / 2 + ball.radius - distance;
         ball.x += Math.cos(angle) * overlap;
         ball.y += Math.sin(angle) * overlap;
+        
+        // Play touch sound for light collisions or kick sound for harder hits
+        if (Math.abs(ball.velocityX) > 5 || Math.abs(ball.velocityY) > 5) {
+            playKickSound();
+        } else {
+            playTouchSound();
+        }
     }
 }
 
@@ -362,30 +422,11 @@ function draw() {
     ctx.lineTo(fieldWidth, fieldHeight);
     ctx.stroke();
     
-    // Draw player
-    ctx.fillStyle = player.color;
-    ctx.fillRect(player.x - player.width / 2, player.y - player.height / 2, player.width, player.height);
-    ctx.strokeStyle = '#1976D2';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(player.x - player.width / 2, player.y - player.height / 2, player.width, player.height);
+    // Draw player as a person
+    drawPlayer(player.x, player.y, player.color);
     
-    // Player number
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 16px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('1', player.x, player.y);
-    
-    // Draw AI
-    ctx.fillStyle = ai.color;
-    ctx.fillRect(ai.x - ai.width / 2, ai.y - ai.height / 2, ai.width, ai.height);
-    ctx.strokeStyle = '#D32F2F';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(ai.x - ai.width / 2, ai.y - ai.height / 2, ai.width, ai.height);
-    
-    // AI number
-    ctx.fillStyle = '#fff';
-    ctx.fillText('2', ai.x, ai.y);
+    // Draw AI as a person
+    drawPlayer(ai.x, ai.y, ai.color);
     
     // Draw ball
     ctx.fillStyle = ball.color;
@@ -409,6 +450,49 @@ function draw() {
     ctx.textBaseline = 'middle';
     ctx.fillText(playerScore, centerLine - 100, 80);
     ctx.fillText(aiScore, centerLine + 100, 80);
+}
+
+function drawPlayer(x, y, color) {
+    // Head
+    ctx.fillStyle = '#DBAC78';
+    ctx.beginPath();
+    ctx.arc(x, y - 10, 7, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Body
+    ctx.fillStyle = color;
+    ctx.fillRect(x - 5, y - 2, 10, 12);
+    
+    // Arms
+    ctx.strokeStyle = '#DBAC78';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x - 5, y + 2);
+    ctx.lineTo(x - 12, y + 1);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 5, y + 2);
+    ctx.lineTo(x + 12, y + 1);
+    ctx.stroke();
+    
+    // Legs
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x - 3, y + 10);
+    ctx.lineTo(x - 3, y + 20);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 3, y + 10);
+    ctx.lineTo(x + 3, y + 20);
+    ctx.stroke();
+    
+    // Jersey number
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const number = (color === '#2196F3') ? '1' : '2';
+    ctx.fillText(number, x, y);
 }
 
 startBtn.addEventListener('click', startGame);
