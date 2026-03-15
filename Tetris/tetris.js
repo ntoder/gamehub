@@ -133,6 +133,19 @@ function rotate(piece) {
     return newPiece;
 }
 
+function rotateReverse(piece) {
+    // Rotate counter-clockwise (opposite direction)
+    const newPiece = JSON.parse(JSON.stringify(piece));
+    const shape = newPiece.shape;
+    
+    // Rotate 3 times clockwise to get counter-clockwise effect
+    let rotated = rotate(newPiece);
+    rotated = rotate(rotated);
+    rotated = rotate(rotated);
+    
+    return rotated;
+}
+
 function isValidMove(piece) {
     for (let y = 0; y < piece.shape.length; y++) {
         for (let x = 0; x < piece.shape[y].length; x++) {
@@ -269,6 +282,30 @@ function handleKeyDown(event) {
                         rotated.x -= 2;
                         if (isValidMove(rotated)) {
                             currentPiece = rotated;
+                            playRotateSound();
+                        }
+                    }
+                }
+            }
+            event.preventDefault();
+            break;
+        case 'z':
+        case 'Z':
+            if (currentPiece) {
+                const rotatedReverse = rotateReverse(currentPiece);
+                if (isValidMove(rotatedReverse)) {
+                    currentPiece = rotatedReverse;
+                    playRotateSound();
+                } else {
+                    // Try wall kick
+                    rotatedReverse.x++;
+                    if (isValidMove(rotatedReverse)) {
+                        currentPiece = rotatedReverse;
+                        playRotateSound();
+                    } else {
+                        rotatedReverse.x -= 2;
+                        if (isValidMove(rotatedReverse)) {
+                            currentPiece = rotatedReverse;
                             playRotateSound();
                         }
                     }
