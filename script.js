@@ -1,0 +1,12 @@
+let mywebsite=document.getElementById("my-website")
+let password = prompt("Please enter your password:")
+if (password === "1234") {
+   mywebsite.style.display="block"
+    let firstTime = confirm("Is this your first time here?")
+    if (firstTime) {
+        alert("Welcome! Enjoy your stay.")
+   }    
+    alert("Welcome back! You have successfully logged in. Enjoy your stay.")
+} else {
+    alert("Wrong password")
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird</title>
+    <link rel="stylesheet" href="flappybird.css">
+      <link rel="icon" type="image/png" href="FlappyBird.jpeg">
+</head>
+<body>
+    <div class="container">
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        <audio id="jumpSound" preload="auto"></audio>
+        <audio id="scoreSound" preload="auto"></audio>
+        <audio id="gameOverSound" preload="auto"></audio>
+        <div class="info-panel">
+            <div class="score-display">
+                <p>Score: <span id="score">0</span></p>
+                <p>High Score: <span id="highScore">0</span></p>
+            </div>
+            <div id="gameOver" class="game-over hidden">
+                <h1>Game Over!</h1>
+                <p>Final Score: <span id="finalScore">0</span></p>
+                <button id="restartBtn">Play Again</button>
+            </div>
+            <div id="startScreen" class="start-screen">
+                <h1>Flappy Bird</h1>
+                <p>Click or Press Space to start</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="flappybird.js"></script>
+</body>
+</html>
