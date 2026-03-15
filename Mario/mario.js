@@ -95,55 +95,225 @@ function initLevel() {
     enemies = [];
     coins = [];
 
-    // Create platforms based on level
-    const platformGap = Math.max(80, 150 - level * 10);
+    if (level === 1) {
+        // Level 1: Simple introductory level
+        platforms.push({ x: 0, y: groundLevel, width: canvas.width, height: 80, solid: true });
 
-    // Ground
-    platforms.push({ x: 0, y: groundLevel, width: canvas.width, height: 80, solid: true });
+        platforms.push({
+            x: 250,
+            y: groundLevel - 15,
+            width: 150,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
 
-    // Level platforms - only 2 small platforms on the ground level
-    platforms.push({
-        x: 250,
-        y: groundLevel - 15,
-        width: 150,
-        height: 20,
-        solid: true
-    });
+        platforms.push({
+            x: 550,
+            y: groundLevel - 15,
+            width: 150,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
 
-    platforms.push({
-        x: 550,
-        y: groundLevel - 15,
-        width: 150,
-        height: 20,
-        solid: true
-    });
-
-    // Goal/Castle on the ground
-    goal = {
-        x: 730,
-        y: groundLevel - 20,
-        width: 40,
-        height: 80
-    };
-
-    // Fewer enemies with slower speed
-    const numEnemies = Math.max(1, Math.min(1 + Math.floor(level / 2), 2));
-    for (let i = 0; i < numEnemies; i++) {
+        // 1 enemy
         enemies.push({
-            x: 200 + i * 350,
+            x: 200,
             y: groundLevel - 40,
             width: 30,
             height: 25,
-            speed: 1 + level * 0.2,
+            speed: 1.5,
             direction: 1,
             minX: 50,
-            maxX: canvas.width - 50
+            maxX: 400
         });
+
+        goal = {
+            x: 730,
+            y: groundLevel - 20,
+            width: 40,
+            height: 80,
+            type: 'castle'
+        };
+
+    } else if (level === 2) {
+        // Level 2: More platforms and obstacles
+        platforms.push({ x: 0, y: groundLevel, width: canvas.width, height: 80, solid: true });
+
+        // Multiple platforms creating a path
+        platforms.push({
+            x: 80,
+            y: groundLevel - 15,
+            width: 100,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 220,
+            y: groundLevel - 15,
+            width: 100,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 360,
+            y: groundLevel - 15,
+            width: 100,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 500,
+            y: groundLevel - 15,
+            width: 100,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 640,
+            y: groundLevel - 15,
+            width: 80,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        // 2 enemies in level 2
+        enemies.push({
+            x: 150,
+            y: groundLevel - 40,
+            width: 30,
+            height: 25,
+            speed: 1.8,
+            direction: 1,
+            minX: 50,
+            maxX: 700
+        });
+
+        enemies.push({
+            x: 450,
+            y: groundLevel - 40,
+            width: 30,
+            height: 25,
+            speed: 1.8,
+            direction: -1,
+            minX: 50,
+            maxX: 700
+        });
+
+        goal = {
+            x: 720,
+            y: groundLevel - 20,
+            width: 40,
+            height: 80,
+            type: 'princess'
+        };
+
+    } else {
+        // Level 3+: Challenging with pipes and varied enemies
+        platforms.push({ x: 0, y: groundLevel, width: canvas.width, height: 80, solid: true });
+
+        // Platforms with gaps
+        platforms.push({
+            x: 50,
+            y: groundLevel - 15,
+            width: 80,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 200,
+            y: groundLevel - 15,
+            width: 60,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 330,
+            y: groundLevel - 15,
+            width: 90,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 500,
+            y: groundLevel - 15,
+            width: 70,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 640,
+            y: groundLevel - 15,
+            width: 80,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        // Add a pipe obstacle
+        platforms.push({
+            x: 150,
+            y: groundLevel - 50,
+            width: 40,
+            height: 50,
+            solid: true,
+            themed: 'pipe'
+        });
+
+        platforms.push({
+            x: 450,
+            y: groundLevel - 40,
+            width: 40,
+            height: 40,
+            solid: true,
+            themed: 'pipe'
+        });
+
+        // 2-3 enemies in level 3
+        const numEnemies = 2 + Math.floor(level / 3);
+        for (let i = 0; i < numEnemies; i++) {
+            enemies.push({
+                x: 100 + i * 200,
+                y: groundLevel - 40,
+                width: 30,
+                height: 25,
+                speed: 2 + level * 0.2,
+                direction: i % 2 === 0 ? 1 : -1,
+                minX: 50,
+                maxX: 750
+            });
+        }
+
+        goal = {
+            x: 720,
+            y: groundLevel - 20,
+            width: 40,
+            height: 80,
+            type: 'castle'
+        };
     }
 
-    // Coins
+    // Add coins to platforms
     for (let platform of platforms) {
-        if (platform.solid && platform !== platforms[0]) {
+        if (platform.solid && platform !== platforms[0] && !platform.themed) {
             for (let i = 0; i < 3; i++) {
                 coins.push({
                     x: platform.x + 20 + i * 40,
@@ -353,14 +523,48 @@ function draw() {
 
     // Draw platforms
     platforms.forEach(platform => {
-        ctx.fillStyle = '#8B7355';
-        ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
-        
-        // Platform pattern
-        ctx.strokeStyle = '#654321';
-        ctx.lineWidth = 2;
-        for (let i = 0; i < platform.width; i += 30) {
-            ctx.strokeRect(platform.x + i, platform.y, 20, platform.height);
+        if (platform.themed === 'brick') {
+            // Draw brick platform
+            ctx.fillStyle = '#CD5C5C';
+            ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+            
+            // Brick pattern
+            ctx.strokeStyle = '#8B3A3A';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < platform.width; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(platform.x + i, platform.y);
+                ctx.lineTo(platform.x + i, platform.y + platform.height);
+                ctx.stroke();
+            }
+            for (let i = 0; i < platform.height; i += 10) {
+                ctx.beginPath();
+                ctx.moveTo(platform.x, platform.y + i);
+                ctx.lineTo(platform.x + platform.width, platform.y + i);
+                ctx.stroke();
+            }
+        } else if (platform.themed === 'pipe') {
+            // Draw green pipe
+            ctx.fillStyle = '#228B22';
+            ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+            ctx.strokeStyle = '#1a6b1a';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
+            
+            // Pipe shine/band
+            ctx.fillStyle = '#32CD32';
+            ctx.fillRect(platform.x, platform.y + platform.height - 8, platform.width, 8);
+        } else {
+            // Draw ground/default platform
+            ctx.fillStyle = '#8B7355';
+            ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+            
+            // Platform pattern
+            ctx.strokeStyle = '#654321';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < platform.width; i += 30) {
+                ctx.strokeRect(platform.x + i, platform.y, 20, platform.height);
+            }
         }
     });
 
@@ -377,14 +581,36 @@ function draw() {
         }
     });
 
-    // Draw goal (castle)
-    ctx.fillStyle = '#DC143C';
-    ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
-    ctx.fillStyle = '#FFD700';
-    ctx.fillRect(goal.x + 5, goal.y + 10, 10, 15);
-    ctx.fillRect(goal.x + 20, goal.y + 10, 10, 15);
-    ctx.fillStyle = '#DC143C';
-    ctx.fillRect(goal.x + 10, goal.y, 20, 15);
+    // Draw goal (castle or princess)
+    if (goal.type === 'princess') {
+        // Draw princess tower
+        ctx.fillStyle = '#FF69B4';
+        ctx.fillRect(goal.x - 5, goal.y + 20, goal.width + 10, goal.height - 20);
+        
+        // Tower roof
+        ctx.fillStyle = '#FFD700';
+        ctx.beginPath();
+        ctx.moveTo(goal.x - 10, goal.y + 20);
+        ctx.lineTo(goal.x + goal.width / 2, goal.y);
+        ctx.lineTo(goal.x + goal.width + 10, goal.y + 20);
+        ctx.fill();
+        
+        // Window
+        ctx.fillStyle = '#FFD700';
+        ctx.fillRect(goal.x + 5, goal.y + 30, 20, 20);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(goal.x + 10, goal.y + 35, 5, 5);
+        ctx.fillRect(goal.x + 20, goal.y + 35, 5, 5);
+    } else {
+        // Draw castle
+        ctx.fillStyle = '#DC143C';
+        ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
+        ctx.fillStyle = '#FFD700';
+        ctx.fillRect(goal.x + 5, goal.y + 10, 10, 15);
+        ctx.fillRect(goal.x + 20, goal.y + 10, 10, 15);
+        ctx.fillStyle = '#DC143C';
+        ctx.fillRect(goal.x + 10, goal.y, 20, 15);
+    }
 
     // Draw Mario
     drawMario();
