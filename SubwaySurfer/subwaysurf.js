@@ -5,6 +5,9 @@ const uiCoins = document.getElementById('coins');
 const startScreen = document.getElementById('startScreen');
 const gameOverScreen = document.getElementById('gameOverScreen');
 
+// Debug logs
+console.log('Game elements loaded:', { gameContainer, player, uiScore, uiCoins, startScreen, gameOverScreen });
+
 let gameRunning = false;
 let score = 0;
 let coins = 0;
