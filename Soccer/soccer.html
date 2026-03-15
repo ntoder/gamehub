@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soccer Game</title>
+    <link rel="stylesheet" href="soccer.css">
+</head>
+<body>
+    <div class="container">
+        <h1>⚽ Soccer Game</h1>
+        <div class="info">
+            <div class="score-board">
+                <p id="playerScore" class="player-score">You: 0</p>
+                <p id="aiScore" class="ai-score">AI: 0</p>
+                <p id="time" class="time">Time: 90s</p>
+            </div>
+            <button id="startBtn" class="start-btn">Start Game</button>
+        </div>
+        <canvas id="gameCanvas" width="1000" height="600"></canvas>
+        <div class="controls">
+            <p>Arrow Keys to Move | Space to Kick</p>
+            <p id="gameStatus"></p>
+        </div>
+    </div>
+    <script src="soccer.js"></script>
+</body>
+</html>
