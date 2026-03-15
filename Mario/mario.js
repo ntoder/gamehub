@@ -101,45 +101,40 @@ function initLevel() {
     // Ground
     platforms.push({ x: 0, y: groundLevel, width: canvas.width, height: 80, solid: true });
 
-    // Level platforms
-    for (let i = 0; i < 5; i++) {
-        platforms.push({
-            x: 100 + i * 140,
-            y: groundLevel - 100 - i * platformGap,
-            width: 120,
-            height: 20,
-            solid: true
-        });
-    }
-
-    // Additional moving platform
+    // Level platforms - only 2 small platforms on the ground level
     platforms.push({
-        x: 600,
-        y: groundLevel - 200,
-        width: 100,
+        x: 250,
+        y: groundLevel - 15,
+        width: 150,
         height: 20,
-        solid: true,
-        moving: true,
-        moveSpeed: 2,
-        moveRange: 150
+        solid: true
     });
 
-    // Goal/Castle
+    platforms.push({
+        x: 550,
+        y: groundLevel - 15,
+        width: 150,
+        height: 20,
+        solid: true
+    });
+
+    // Goal/Castle on the ground
     goal = {
-        x: 750,
-        y: groundLevel - 300,
+        x: 730,
+        y: groundLevel - 20,
         width: 40,
         height: 80
     };
 
-    // Enemies
-    for (let i = 0; i < Math.min(1 + level, 4); i++) {
+    // Fewer enemies with slower speed
+    const numEnemies = Math.max(1, Math.min(1 + Math.floor(level / 2), 2));
+    for (let i = 0; i < numEnemies; i++) {
         enemies.push({
-            x: 200 + i * 200,
+            x: 200 + i * 350,
             y: groundLevel - 40,
             width: 30,
             height: 25,
-            speed: 2 + level * 0.5,
+            speed: 1 + level * 0.2,
             direction: 1,
             minX: 50,
             maxX: canvas.width - 50
@@ -200,7 +195,7 @@ function startGame() {
 }
 
 function jump() {
-    mario.velocityY = -12;
+    mario.velocityY = -14;
     playJumpSound();
 }
 
