@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subway Surfers</title>
+    <link rel="stylesheet" href="subwaysurf.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="ui">
+            <div class="score-display">Score: <span id="score">0</span></div>
+            <div class="coin-display"><span id="coins">0</span></div>
+        </div>
+
+        <div class="start-screen" id="startScreen">
+            <div class="game-title">SUBWAY SURFERS</div>
+            <div class="instructions">
+                <div>← → Move Left/Right</div>
+                <div>↑ Jump / ↓ Slide</div>
+                <div>Avoid the obstacles!</div>
+                <div>Collect coins for bonus points!</div>
+            </div>
+            <button class="start-btn" onclick="startGame()">START GAME</button>
+        </div>
+
+        <div class="game-over-screen hidden" id="gameOverScreen">
+            <div class="game-over-title">GAME OVER!</div>
+            <div class="final-score">Score: <span id="finalScore">0</span></div>
+            <div class="final-coins">Coins: <span id="finalCoins">0</span></div>
+            <button class="restart-btn" onclick="restartGame()">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script src="subwaysurf.js"></script>
+</body>
+</html>
