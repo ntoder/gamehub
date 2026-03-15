@@ -168,7 +168,7 @@ document.addEventListener('keyup', handleKeyUp);
 function handleKeyDown(event) {
     keysPressed[event.key] = true;
 
-    if (event.key === ' ' && gameRunning && mario.velocityY === 0) {
+    if (event.key === 'ArrowUp' && gameRunning && mario.velocityY === 0) {
         jump();
         event.preventDefault();
     }
