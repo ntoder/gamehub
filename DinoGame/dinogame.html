@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dino Chrome Game</title>
+    <link rel="stylesheet" href="dinogame.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Dino Runner</h1>
+        <div class="info">
+            <div class="score-board">
+                <p>Score: <span id="score">0</span></p>
+                <p>High Score: <span id="highScore">0</span></p>
+            </div>
+            <button id="startBtn" class="start-btn">Start Game</button>
+        </div>
+        <canvas id="gameCanvas" width="800" height="300"></canvas>
+        <div class="controls">
+            <p>Press SPACE or Click to Jump</p>
+            <p id="gameStatus"></p>
+        </div>
+    </div>
+    <script src="dinogame.js"></script>
+</body>
+</html>
