@@ -144,7 +144,7 @@ document.addEventListener('keyup', handleKeyUp);
 function handleKeyDown(event) {
     keysPressed[event.key] = true;
     
-    if (event.key === ' ') {
+    if (event.key === 'ArrowUp') {
         if (gameRunning && !player.jumping) {
             player.velocityY = -10;
             player.jumping = true;
@@ -196,9 +196,9 @@ function update() {
     
     player.x += player.velocityX;
     
-    // Keep player in bounds
-    if (player.x < player.width / 2) player.x = player.width / 2;
-    if (player.x > canvas.width - player.width / 2) player.x = canvas.width - player.width / 2;
+    // Wrap player around walls (pass through)
+    if (player.x < 0) player.x = canvas.width;
+    if (player.x > canvas.width) player.x = 0;
     
     // Apply gravity
     player.velocityY += player.gravity;
