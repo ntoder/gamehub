@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorcycle Racing Game</title>
+    <link rel="stylesheet" href="motorracing.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Motorcycle Racing</h1>
+        <div class="info">
+            <div class="score-board">
+                <p>Score: <span id="score">0</span></p>
+                <p>Speed: <span id="speed">0</span> km/h</p>
+                <p>High Score: <span id="highScore">0</span></p>
+            </div>
+            <button id="startBtn" class="start-btn">Start Game</button>
+        </div>
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        <div class="controls">
+            <p>Arrow Keys to Steer</p>
+            <p>Space to Accelerate</p>
+            <p id="gameStatus"></p>
+        </div>
+    </div>
+    <script src="motorracing.js"></script>
+</body>
+</html>
