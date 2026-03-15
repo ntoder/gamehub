@@ -123,7 +123,7 @@ function initLevel() {
             y: groundLevel - 40,
             width: 30,
             height: 25,
-            speed: 1.5,
+            speed: 1.2,
             direction: 1,
             minX: 50,
             maxX: 400
@@ -193,7 +193,7 @@ function initLevel() {
             y: groundLevel - 40,
             width: 30,
             height: 25,
-            speed: 1.8,
+            speed: 1.5,
             direction: 1,
             minX: 50,
             maxX: 700
@@ -204,7 +204,7 @@ function initLevel() {
             y: groundLevel - 40,
             width: 30,
             height: 25,
-            speed: 1.8,
+            speed: 1.5,
             direction: -1,
             minX: 50,
             maxX: 700
@@ -218,40 +218,13 @@ function initLevel() {
             type: 'princess'
         };
 
-    } else {
-        // Level 3+: Challenging with pipes and varied enemies
+    } else if (level === 3) {
+        // Level 3: Smaller platforms with gaps and pipes
         platforms.push({ x: 0, y: groundLevel, width: canvas.width, height: 80, solid: true });
 
         // Platforms with gaps
         platforms.push({
             x: 50,
-            y: groundLevel - 15,
-            width: 80,
-            height: 20,
-            solid: true,
-            themed: 'brick'
-        });
-
-        platforms.push({
-            x: 200,
-            y: groundLevel - 15,
-            width: 60,
-            height: 20,
-            solid: true,
-            themed: 'brick'
-        });
-
-        platforms.push({
-            x: 330,
-            y: groundLevel - 15,
-            width: 90,
-            height: 20,
-            solid: true,
-            themed: 'brick'
-        });
-
-        platforms.push({
-            x: 500,
             y: groundLevel - 15,
             width: 70,
             height: 20,
@@ -260,15 +233,51 @@ function initLevel() {
         });
 
         platforms.push({
-            x: 640,
+            x: 170,
             y: groundLevel - 15,
-            width: 80,
+            width: 70,
             height: 20,
             solid: true,
             themed: 'brick'
         });
 
-        // Add a pipe obstacle
+        platforms.push({
+            x: 290,
+            y: groundLevel - 15,
+            width: 70,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 410,
+            y: groundLevel - 15,
+            width: 70,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 530,
+            y: groundLevel - 15,
+            width: 70,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 650,
+            y: groundLevel - 15,
+            width: 70,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        // Add pipe obstacles
         platforms.push({
             x: 150,
             y: groundLevel - 50,
@@ -287,18 +296,219 @@ function initLevel() {
             themed: 'pipe'
         });
 
-        // 2-3 enemies in level 3
-        const numEnemies = 2 + Math.floor(level / 3);
+        // 2 enemies
+        enemies.push({
+            x: 100,
+            y: groundLevel - 40,
+            width: 30,
+            height: 25,
+            speed: 1.8,
+            direction: 1,
+            minX: 50,
+            maxX: 750
+        });
+
+        enemies.push({
+            x: 400,
+            y: groundLevel - 40,
+            width: 30,
+            height: 25,
+            speed: 1.8,
+            direction: -1,
+            minX: 50,
+            maxX: 750
+        });
+
+        goal = {
+            x: 720,
+            y: groundLevel - 20,
+            width: 40,
+            height: 80,
+            type: 'castle'
+        };
+
+    } else if (level === 4) {
+        // Level 4: Even smaller platforms with multiple pipes
+        platforms.push({ x: 0, y: groundLevel, width: canvas.width, height: 80, solid: true });
+
+        // Small platforms with bigger gaps
+        platforms.push({
+            x: 40,
+            y: groundLevel - 15,
+            width: 60,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 150,
+            y: groundLevel - 15,
+            width: 60,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 260,
+            y: groundLevel - 15,
+            width: 60,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 370,
+            y: groundLevel - 15,
+            width: 60,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 480,
+            y: groundLevel - 15,
+            width: 60,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 590,
+            y: groundLevel - 15,
+            width: 60,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        platforms.push({
+            x: 700,
+            y: groundLevel - 15,
+            width: 60,
+            height: 20,
+            solid: true,
+            themed: 'brick'
+        });
+
+        // Multiple pipes
+        platforms.push({
+            x: 120,
+            y: groundLevel - 50,
+            width: 40,
+            height: 50,
+            solid: true,
+            themed: 'pipe'
+        });
+
+        platforms.push({
+            x: 330,
+            y: groundLevel - 40,
+            width: 40,
+            height: 40,
+            solid: true,
+            themed: 'pipe'
+        });
+
+        platforms.push({
+            x: 560,
+            y: groundLevel - 50,
+            width: 40,
+            height: 50,
+            solid: true,
+            themed: 'pipe'
+        });
+
+        // 3 enemies
+        enemies.push({
+            x: 80,
+            y: groundLevel - 40,
+            width: 30,
+            height: 25,
+            speed: 2.0,
+            direction: 1,
+            minX: 40,
+            maxX: 760
+        });
+
+        enemies.push({
+            x: 300,
+            y: groundLevel - 40,
+            width: 30,
+            height: 25,
+            speed: 2.0,
+            direction: -1,
+            minX: 40,
+            maxX: 760
+        });
+
+        enemies.push({
+            x: 550,
+            y: groundLevel - 40,
+            width: 30,
+            height: 25,
+            speed: 2.0,
+            direction: 1,
+            minX: 40,
+            maxX: 760
+        });
+
+        goal = {
+            x: 720,
+            y: groundLevel - 20,
+            width: 40,
+            height: 80,
+            type: 'castle'
+        };
+
+    } else {
+        // Level 5+: Expert mode - minimal platforms, many enemies, multiple pipes
+        platforms.push({ x: 0, y: groundLevel, width: canvas.width, height: 80, solid: true });
+
+        // Very small platforms with large gaps
+        const platformSpacing = 110;
+        for (let i = 0; i < 7; i++) {
+            platforms.push({
+                x: 40 + i * platformSpacing,
+                y: groundLevel - 15,
+                width: 50,
+                height: 20,
+                solid: true,
+                themed: 'brick'
+            });
+        }
+
+        // Many pipes as obstacles
+        const pipePositions = [100, 250, 400, 550, 680];
+        pipePositions.forEach((pipeX, idx) => {
+            platforms.push({
+                x: pipeX,
+                y: groundLevel - (idx % 2 === 0 ? 50 : 40),
+                width: 40,
+                height: idx % 2 === 0 ? 50 : 40,
+                solid: true,
+                themed: 'pipe'
+            });
+        });
+
+        // 3-4 fast enemies
+        const numEnemies = Math.min(3 + Math.floor((level - 5) / 2), 5);
+        const enemySpeeds = [2.2, 2.2, 2.3, 2.4];
+        
         for (let i = 0; i < numEnemies; i++) {
             enemies.push({
-                x: 100 + i * 200,
+                x: 100 + i * 150,
                 y: groundLevel - 40,
                 width: 30,
                 height: 25,
-                speed: 2 + level * 0.2,
+                speed: 2.0 + (level - 5) * 0.2,
                 direction: i % 2 === 0 ? 1 : -1,
-                minX: 50,
-                maxX: 750
+                minX: 40,
+                maxX: 760
             });
         }
 
@@ -307,7 +517,7 @@ function initLevel() {
             y: groundLevel - 20,
             width: 40,
             height: 80,
-            type: 'castle'
+            type: i % 2 === 0 ? 'castle' : 'princess'
         };
     }
 
