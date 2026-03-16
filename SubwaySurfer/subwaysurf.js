@@ -1,426 +1,410 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+// ────────────────────────────────────────────────
+//  TEXTURES
+// ────────────────────────────────────────────────
+function createTexture(drawFn) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    drawFn(ctx);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.magFilter = THREE.NearestFilter;
+    tex.minFilter = THREE.NearestFilter;
+    return tex;
+}
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let gameRunning = false;
-let score = 0;
-let coins = 0;
-let playerLane = 1;
-let isJumping = false;
-let jumpVelocity = 0;
-let isSliding = false;
-let slideDuration = 0;
-let gameTime = 0;
-let gameSpeed = 6;
-let obstacles = [];
-let collectibles = [];
-
-const GRAVITY = 0.6;
-const LANES = 3;
-const GROUND_Y = canvas.height * 0.65;
-const LANE_WIDTH = canvas.width / LANES;
-
-class Player {
-    constructor() {
-        this.lane = 1;
-        this.y = GROUND_Y;
-        this.width = 35;
-        this.height = 50;
-    }
-
-    draw() {
-        const x = this.lane * LANE_WIDTH + LANE_WIDTH / 2;
-        const y = this.y - (isJumping ? Math.abs(jumpVelocity) * 3 : 0);
-
-        ctx.save();
-        ctx.translate(x, y);
-
-        // Body
-        ctx.fillStyle = '#FF4757';
-        if (isSliding) {
-            ctx.fillRect(-25, -15, 50, 25);
-        } else {
-            ctx.fillRect(-18, -25, 36, 50);
-        }
-
-        // Head
-        ctx.fillStyle = '#FFB366';
-        ctx.beginPath();
-        ctx.arc(0, -28, 12, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Eyes
+const textures = {
+    brick: createTexture(ctx => {
+        ctx.fillStyle = '#9c4a00';
+        ctx.fillRect(0,0,128,128);
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(2, 2, 124, 60);
+        ctx.strokeRect(2, 64, 60, 60);
+        ctx.strokeRect(66, 64, 60, 60);
+        ctx.fillStyle = '#ff8a3d';
+        ctx.fillRect(4,4,120,4);
+    }),
+    question: createTexture(ctx => {
+        ctx.fillStyle = '#f7941d';
+        ctx.fillRect(0,0,128,128);
         ctx.fillStyle = '#000';
-        ctx.beginPath();
-        ctx.arc(-5, -30, 3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(5, -30, 3, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.font = 'bold 100px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('?', 64, 100);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(10,10,108,108);
+    }),
+    grass: createTexture(ctx => {
+        ctx.fillStyle = '#8b4513';
+        ctx.fillRect(0,0,128,128);
+        ctx.fillStyle = '#458b00';
+        ctx.fillRect(0,0,128,40);
+        ctx.fillStyle = '#66cd00';
+        ctx.fillRect(0,0,128,10);
+    }),
+    pipe: createTexture(ctx => {
+        ctx.fillStyle = '#00a800';
+        ctx.fillRect(0,0,128,128);
+        ctx.fillStyle = '#007000';
+        ctx.fillRect(0,0,20,128);
+        ctx.fillRect(100,0,28,128);
+    })
+};
 
-        // Arms
-        ctx.strokeStyle = '#FFB366';
-        ctx.lineWidth = 5;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(-18, -10);
-        ctx.lineTo(-28, 5);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(18, -10);
-        ctx.lineTo(28, 5);
-        ctx.stroke();
+// ────────────────────────────────────────────────
+//  GAME VARIABLES
+// ────────────────────────────────────────────────
+let scene, camera, renderer, player, clock;
+let score = 0, coinsCount = 0, lives = 3, gameActive = true;
+let velocity = new THREE.Vector3();
+let moveDir = { horizontal: 0 };
+const GRAVITY = -0.015;
+const JUMP_FORCE = 0.35;
+let onGround = false;
 
-        ctx.restore();
-    }
+const objects = [];
+const enemies = [];
+const coins = [];
 
-    moveLane(direction) {
-        if (direction === 'left' && this.lane > 0) this.lane--;
-        if (direction === 'right' && this.lane < LANES - 1) this.lane++;
-    }
+// ────────────────────────────────────────────────
+//  INIT
+// ────────────────────────────────────────────────
+function init() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x5c94fc);
+    
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    clock = new THREE.Clock();
 
-    jump() {
-        if (!isJumping && !isSliding) {
-            isJumping = true;
-            jumpVelocity = -15;
-        }
-    }
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement);
 
-    slide() {
-        if (!isSliding && !isJumping) {
-            isSliding = true;
-            slideDuration = 40;
-        }
-    }
+    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambient);
+    const sun = new THREE.DirectionalLight(0xffffff, 1);
+    sun.position.set(20, 30, 10);
+    sun.castShadow = true;
+    scene.add(sun);
 
-    update() {
-        if (isJumping) {
-            jumpVelocity += GRAVITY;
-            if (this.y + jumpVelocity * 3 >= GROUND_Y) {
-                this.y = GROUND_Y;
-                isJumping = false;
-                jumpVelocity = 0;
-            }
-        }
-
-        if (isSliding) {
-            slideDuration--;
-            if (slideDuration <= 0) {
-                isSliding = false;
-            }
-        }
-    }
+    createPlayer();
+    buildLevel();
+    setupControls();
+    
+    lives = 3;
+    score = 0;
+    coinsCount = 0;
+    updateUI();
+    
+    animate();
 }
 
-class Obstacle {
-    constructor(lane, distance) {
-        this.lane = lane;
-        this.distance = distance;
-        this.width = LANE_WIDTH * 0.8;
-        this.height = 60;
-        this.passed = false;
+// ────────────────────────────────────────────────
+//  PLAYER
+// ────────────────────────────────────────────────
+function createPlayer() {
+    const group = new THREE.Group();
+    const body = new THREE.Mesh(
+        new THREE.BoxGeometry(0.7, 0.9, 0.7),
+        new THREE.MeshPhongMaterial({ color: 0xff0000 })
+    );
+    body.position.y = 0.45;
+    body.castShadow = true;
+    group.add(body);
+
+    const head = new THREE.Mesh(
+        new THREE.BoxGeometry(0.5, 0.5, 0.5),
+        new THREE.MeshPhongMaterial({ color: 0xffdbac })
+    );
+    head.position.y = 1.15;
+    group.add(head);
+
+    const hat = new THREE.Mesh(
+        new THREE.BoxGeometry(0.6, 0.15, 0.6),
+        new THREE.MeshPhongMaterial({ color: 0xff0000 })
+    );
+    hat.position.y = 1.45;
+    group.add(hat);
+
+    player = group;
+    player.position.set(0, 2, 5);
+    scene.add(player);
+}
+
+// ────────────────────────────────────────────────
+//  LEVEL
+// ────────────────────────────────────────────────
+function buildLevel() {
+    // Ground
+    const groundGeo = new THREE.BoxGeometry(10, 2, 250);
+    const groundMat = new THREE.MeshPhongMaterial({ map: textures.grass });
+    textures.grass.wrapS = textures.grass.wrapT = THREE.RepeatWrapping;
+    textures.grass.repeat.set(2, 50);
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.position.y = -1;
+    ground.receiveShadow = true;
+    scene.add(ground);
+    objects.push(ground);
+
+    // Blocks
+    addBlock(0, 4, -10, 'question');
+    addBlock(0, 4, -11.2, 'brick');
+    addBlock(0, 4, -8.8, 'brick');
+
+    // Pipes
+    addPipe(0, 0, -20, 2);
+    addPipe(0, 0, -35, 3.5);
+    addPipe(0, 0, -50, 2.5);
+
+    // Stairs
+    for(let i = 0; i < 4; i++) {
+        addBlock(0, 0.6 + i*1.2, -65 - i*1.2, 'brick');
     }
 
-    draw() {
-        const scale = Math.max(0.2, Math.min(1.2, this.distance / 800));
-        const x = this.lane * LANE_WIDTH + LANE_WIDTH / 2;
-        const y = GROUND_Y - 50 + (800 - this.distance) * 0.3;
+    // Coins
+    for(let i = 0; i < 10; i++) addCoin(0, 1.5, -5 - i*8);
+    
+    // Enemies
+    addEnemy(0, 0, -15);
+    addEnemy(0, 0, -28);
+    addEnemy(0, 0, -42);
+    addEnemy(0, 0, -75);
 
-        if (y < 0 || y > canvas.height) return;
+    // Goal
+    const poleGeo = new THREE.CylinderGeometry(0.1, 0.1, 8);
+    const poleMat = new THREE.MeshPhongMaterial({ color: 0xcccccc });
+    const pole = new THREE.Mesh(poleGeo, poleMat);
+    pole.position.set(0, 4, -110);
+    scene.add(pole);
+    objects.push({ mesh: pole, isGoal: true });
+}
 
-        ctx.save();
-        ctx.globalAlpha = Math.min(1, scale);
-        
-        // Obstacle (barrier)
-        ctx.fillStyle = '#FF6B9D';
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-        ctx.shadowBlur = 15;
-        ctx.fillRect(x - this.width * scale / 2, y - this.height * scale / 2, this.width * scale, this.height * scale);
+function addBlock(x, y, z, type) {
+    const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(1.2, 1.2, 1.2),
+        new THREE.MeshPhongMaterial({ map: textures[type] })
+    );
+    mesh.position.set(x, y, z);
+    mesh.castShadow = mesh.receiveShadow = true;
+    scene.add(mesh);
+    objects.push(mesh);
+}
 
-        // Stripes
-        ctx.fillStyle = '#FF4757';
-        for (let i = 0; i < 3; i++) {
-            ctx.fillRect(x - this.width * scale / 2 + i * (this.width * scale / 3), y - this.height * scale / 2, this.width * scale / 10, this.height * scale);
+function addPipe(x, y, z, height) {
+    const group = new THREE.Group();
+    const body = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.1, 1.1, height, 20),
+        new THREE.MeshPhongMaterial({ map: textures.pipe })
+    );
+    body.position.y = height / 2;
+    
+    const top = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.3, 1.3, 0.8, 20),
+        new THREE.MeshPhongMaterial({ map: textures.pipe })
+    );
+    top.position.y = height;
+    
+    group.add(body, top);
+    group.position.set(x, y, z);
+    scene.add(group);
+    objects.push(body, top);
+}
+
+function addCoin(x, y, z) {
+    const mesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.4, 0.4, 0.1, 16),
+        new THREE.MeshPhongMaterial({ color: 0xffd700, emissive: 0xaa8800 })
+    );
+    mesh.rotation.x = Math.PI / 2;
+    mesh.position.set(x, y, z);
+    scene.add(mesh);
+    coins.push(mesh);
+}
+
+function addEnemy(x, y, z) {
+    const group = new THREE.Group();
+    const head = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.6, 0.8, 0.6, 8),
+        new THREE.MeshPhongMaterial({ color: 0x8b4513 })
+    );
+    const body = new THREE.Mesh(
+        new THREE.BoxGeometry(0.4, 0.4, 0.4),
+        new THREE.MeshPhongMaterial({ color: 0xffdbac })
+    );
+    body.position.y = -0.4;
+    group.add(head, body);
+    group.position.set(x, 0.7, z);
+    scene.add(group);
+    enemies.push({ mesh: group, dir: 1, startZ: z });
+}
+
+// ────────────────────────────────────────────────
+//  CONTROLS
+// ────────────────────────────────────────────────
+function setupControls() {
+    window.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === 'd') moveDir.horizontal = -1;
+        if (e.key === 'ArrowLeft'  || e.key === 'a') moveDir.horizontal = 1;
+        if ((e.key === 'ArrowUp' || e.key === 'w' || e.key === ' ') && onGround) {
+            velocity.y = JUMP_FORCE;
         }
+    });
 
-        ctx.restore();
-    }
+    window.addEventListener('keyup', e => {
+        if (['ArrowLeft','ArrowRight','a','d'].includes(e.key)) {
+            moveDir.horizontal = 0;
+        }
+    });
 
-    update() {
-        this.distance -= gameSpeed;
-        return this.distance < 0;
-    }
+    // ── Mobile joystick ───────────────────────────
+    const joy = document.getElementById('joy-container');
+    const knob = document.getElementById('joy-knob');
+
+    joy.addEventListener('touchmove', e => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = joy.getBoundingClientRect();
+        const dx = touch.clientX - (rect.left + rect.width / 2);
+        const dist = Math.min(Math.abs(dx), 50);
+        knob.style.transform = `translateX(${dx > 0 ? dist : -dist}px)`;
+        moveDir.horizontal = dx > 0 ? -1 : 1;
+    });
+
+    joy.addEventListener('touchend', () => {
+        knob.style.transform = `translate(0,0)`;
+        moveDir.horizontal = 0;
+    });
+
+    document.getElementById('mobile-jump').addEventListener('touchstart', e => {
+        e.preventDefault();
+        if (onGround) velocity.y = JUMP_FORCE;
+    });
 }
 
-class Coin {
-    constructor(lane, distance) {
-        this.lane = lane;
-        this.distance = distance;
-        this.rotation = 0;
-        this.collected = false;
-        this.size = 15;
-    }
-
-    draw() {
-        const scale = Math.max(0.2, Math.min(1.2, this.distance / 800));
-        const x = this.lane * LANE_WIDTH + LANE_WIDTH / 2;
-        const y = GROUND_Y - 80 + (800 - this.distance) * 0.3;
-
-        if (y < 0 || y > canvas.height || this.collected) return;
-
-        this.rotation += 0.15;
-
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(this.rotation);
-        ctx.globalAlpha = Math.min(1, scale);
-
-        // Coin circle
-        ctx.fillStyle = '#FFD700';
-        ctx.shadowColor = 'rgba(255, 215, 0, 0.8)';
-        ctx.shadowBlur = 15;
-        ctx.beginPath();
-        ctx.arc(0, 0, this.size * scale, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Coin shine
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-        ctx.beginPath();
-        ctx.arc(-this.size * scale * 0.3, -this.size * scale * 0.3, this.size * scale * 0.4, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
-    }
-
-    update() {
-        this.distance -= gameSpeed;
-    }
-}
-
-const player = new Player();
-
-function drawBackground() {
-    // Sky
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, '#1a1a2e');
-    gradient.addColorStop(0.5, '#16213e');
-    gradient.addColorStop(1, '#0f3460');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Ground (tracks)
-    ctx.fillStyle = '#222';
-    ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height - GROUND_Y);
-
-    // Track lines (perspective)
-    ctx.strokeStyle = '#444';
-    ctx.lineWidth = 2;
-    for (let i = 0; i < 20; i++) {
-        const offset = (gameTime * gameSpeed + i * 80) % 80;
-        const y = GROUND_Y + offset;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(canvas.width, y);
-        ctx.stroke();
-    }
-
-    // Lane dividers
-    ctx.strokeStyle = '#FFD700';
-    ctx.lineWidth = 3;
-    ctx.setLineDash([15, 15]);
-    for (let i = 1; i < LANES; i++) {
-        const x = i * LANE_WIDTH;
-        ctx.beginPath();
-        ctx.moveTo(x, GROUND_Y - 200);
-        ctx.lineTo(x, canvas.height);
-        ctx.stroke();
-    }
-    ctx.setLineDash([]);
-}
-
+// ────────────────────────────────────────────────
+//  COLLISIONS & LOGIC
+// ────────────────────────────────────────────────
 function checkCollisions() {
-    const playerX = player.lane * LANE_WIDTH + LANE_WIDTH / 2;
+    onGround = false;
+    const playerBox = new THREE.Box3().setFromObject(player);
 
-    for (let obs of obstacles) {
-        const scale = Math.max(0.2, Math.min(1.2, obs.distance / 800));
-        const obsX = obs.lane * LANE_WIDTH + LANE_WIDTH / 2;
-        const obsY = GROUND_Y - 50 + (800 - obs.distance) * 0.3;
+    objects.forEach(obj => {
+        const mesh = obj.isMesh ? obj : obj.mesh || obj;
+        const objBox = new THREE.Box3().setFromObject(mesh);
 
-        if (obs.distance > -100 && obs.distance < 100) {
-            const collisionWidth = obs.width * scale * 0.7;
-            const collisionHeight = obs.height * scale;
+        if (playerBox.intersectsBox(objBox)) {
+            if (obj.isGoal) {
+                endGame(true);
+                return;
+            }
+            if (player.position.y > mesh.position.y && velocity.y <= 0) {
+                player.position.y = objBox.max.y;
+                velocity.y = 0;
+                onGround = true;
+            } else if (player.position.y < mesh.position.y && velocity.y > 0) {
+                velocity.y = -0.05;
+            }
+        }
+    });
 
-            if (Math.abs(playerX - obsX) < collisionWidth && Math.abs(player.y - obsY) < collisionHeight + 30) {
-                if (!isJumping && !isSliding) {
-                    endGame();
-                }
+    // Coins
+    for (let i = coins.length - 1; i >= 0; i--) {
+        const coin = coins[i];
+        coin.rotation.y += 0.1;
+        if (player.position.distanceTo(coin.position) < 1.2) {
+            scene.remove(coin);
+            coins.splice(i, 1);
+            coinsCount++;
+            score += 100;
+            updateUI();
+        }
+    }
+
+    // Enemies
+    for (let i = enemies.length - 1; i >= 0; i--) {
+        const en = enemies[i];
+        en.mesh.position.z += 0.05 * en.dir;
+        if (Math.abs(en.mesh.position.z - en.startZ) > 4) en.dir *= -1;
+
+        if (player.position.distanceTo(en.mesh.position) < 1.1) {
+            if (player.position.y > en.mesh.position.y + 0.4 && velocity.y < 0) {
+                scene.remove(en.mesh);
+                enemies.splice(i, 1);
+                velocity.y = 0.25;
+                score += 500;
+                updateUI();
+            } else {
+                playerHit();
             }
         }
     }
 
-    for (let coin of collectibles) {
-        const scale = Math.max(0.2, Math.min(1.2, coin.distance / 800));
-        const coinX = coin.lane * LANE_WIDTH + LANE_WIDTH / 2;
-        const coinY = GROUND_Y - 80 + (800 - coin.distance) * 0.3;
+    if (player.position.y < -5) playerHit();
+}
 
-        if (coin.distance > -50 && coin.distance < 100 && !coin.collected) {
-            const distance = Math.abs(playerX - coinX) + Math.abs(player.y - coinY);
-            if (distance < 50 * scale) {
-                coin.collected = true;
-                coins++;
-                score += 50;
-            }
-        }
+function playerHit() {
+    lives--;
+    updateUI();
+    if (lives > 0) {
+        player.position.set(0, 2, 5);
+        velocity.set(0, 0, 0);
+        moveDir.horizontal = 0;
+    } else {
+        endGame(false);
     }
 }
 
-function update() {
-    gameTime++;
+function updateUI() {
+    document.getElementById('score').innerText = score.toString().padStart(6, '0');
+    document.getElementById('coins').innerText = coinsCount;
+    document.getElementById('lives').innerText = lives;
+}
 
-    player.update();
+function endGame(win) {
+    gameActive = false;
+    const modal = document.getElementById('modal');
+    modal.style.display = 'flex';
+    
+    document.getElementById('modal-title').innerText = win ? "COURSE CLEAR!" : "GAME OVER";
+    document.getElementById('modal-title').style.color = win ? "#22c55e" : "#ef4444";
+    document.getElementById('modal-text').innerText = `ניקוד סופי: ${score}`;
+}
 
-    // Spawn obstacles
-    if (gameTime % 50 === 0) {
-        const lanes = [0, 1, 2].sort(() => Math.random() - 0.5);
-        const count = Math.random() > 0.5 ? 1 : 2;
-        for (let i = 0; i < count; i++) {
-            obstacles.push(new Obstacle(lanes[i], 800));
-        }
-    }
+// ────────────────────────────────────────────────
+//  ANIMATION LOOP
+// ────────────────────────────────────────────────
+function animate() {
+    if (!gameActive) return;
+    requestAnimationFrame(animate);
 
-    // Spawn coins
-    if (gameTime % 70 === 0) {
-        const lane = Math.floor(Math.random() * LANES);
-        collectibles.push(new Coin(lane, 700));
-    }
+    player.position.z += moveDir.horizontal * 0.18;
+    player.position.x = 0; // lock to center line
 
-    // Update obstacles
-    for (let i = obstacles.length - 1; i >= 0; i--) {
-        if (obstacles[i].update()) {
-            if (!obstacles[i].passed) {
-                obstacles[i].passed = true;
-                score += 10;
-            }
-            obstacles.splice(i, 1);
-        }
-    }
-
-    // Update coins
-    for (let i = collectibles.length - 1; i >= 0; i--) {
-        collectibles[i].update();
-        if (collectibles[i].distance < -50) {
-            collectibles.splice(i, 1);
-        }
-    }
-
-    // Increase difficulty
-    if (gameTime % 200 === 0 && gameSpeed < 12) {
-        gameSpeed += 0.5;
-    }
+    velocity.y += GRAVITY;
+    player.position.y += velocity.y;
 
     checkCollisions();
 
-    document.getElementById('score').textContent = score;
-    document.getElementById('coins').textContent = coins;
+    // Camera (side view)
+    const camDistance = 18;
+    const camHeight = 4;
+    camera.position.set(camDistance, player.position.y * 0.5 + camHeight, player.position.z);
+    camera.lookAt(0, player.position.y + 1, player.position.z);
+
+    renderer.render(scene, camera);
 }
 
-function draw() {
-    drawBackground();
-
-    // Draw game objects
-    for (let obs of obstacles.sort((a, b) => a.distance - b.distance)) {
-        obs.draw();
-    }
-
-    for (let coin of collectibles.sort((a, b) => a.distance - b.distance)) {
-        coin.draw();
-    }
-
-    player.draw();
-}
-
-function gameLoop() {
-    if (!gameRunning) return;
-
-    update();
-    draw();
-    requestAnimationFrame(gameLoop);
-}
-
-function startGame() {
-    document.getElementById('startScreen').classList.add('hidden');
-    document.getElementById('gameOverScreen').style.display = 'none';
-
-    gameRunning = true;
-    score = 0;
-    coins = 0;
-    gameTime = 0;
-    gameSpeed = 6;
-    playerLane = 1;
-    isJumping = false;
-    isSliding = false;
-    obstacles = [];
-    collectibles = [];
-    player.lane = 1;
-    player.y = GROUND_Y;
-
-    gameLoop();
-}
-
-function endGame() {
-    gameRunning = false;
-    document.getElementById('finalScore').textContent = score;
-    document.getElementById('finalCoins').textContent = coins;
-    document.getElementById('gameOverScreen').style.display = 'flex';
-}
-
-document.addEventListener('keydown', (e) => {
-    if (!gameRunning) return;
-
-    switch (e.key.toLowerCase()) {
-        case 'arrowleft':
-        case 'a':
-            player.moveLane('left');
-            break;
-        case 'arrowright':
-        case 'd':
-            player.moveLane('right');
-            break;
-        case 'arrowup':
-        case 'w':
-        case ' ':
-            player.jump();
-            e.preventDefault();
-            break;
-        case 'arrowdown':
-        case 's':
-            player.slide();
-            break;
-    }
-});
-
-// Touch controls
-let touchStartX = 0;
-canvas.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-});
-
-canvas.addEventListener('touchmove', (e) => {
-    if (!gameRunning) return;
-    const diff = e.touches[0].clientX - touchStartX;
-    if (Math.abs(diff) > 50) {
-        if (diff > 0) player.moveLane('right');
-        else player.moveLane('left');
-        touchStartX = e.touches[0].clientX;
-    }
-});
-
-// Handle window resize
+// ────────────────────────────────────────────────
+//  RESIZE
+// ────────────────────────────────────────────────
 window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-draw();
+// Start the game
+init();
