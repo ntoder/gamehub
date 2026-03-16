@@ -1,397 +1,410 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const scoreDisplay = document.getElementById('score');
-const highScoreDisplay = document.getElementById('highScore');
-const gameStatusDisplay = document.getElementById('gameStatus');
-const startBtn = document.getElementById('startBtn');
+// ────────────────────────────────────────────────
+//  TEXTURES
+// ────────────────────────────────────────────────
+function createTexture(drawFn) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    drawFn(ctx);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.magFilter = THREE.NearestFilter;
+    tex.minFilter = THREE.NearestFilter;
+    return tex;
+}
 
-let gameRunning = false;
-let score = 0;
-let highScore = localStorage.getItem('dinoHighScore') || 0;
-let gameSpeed = 6;
-let gameSpeedIncrement = 0.002;
-
-// Dino properties
-let dino = {
-    x: 50,
-    y: 0,
-    width: 40,
-    height: 50,
-    jumping: false,
-    jumpPower: 0,
-    velocityY: 0,
-    gravity: 0.6
+const textures = {
+    brick: createTexture(ctx => {
+        ctx.fillStyle = '#9c4a00';
+        ctx.fillRect(0,0,128,128);
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(2, 2, 124, 60);
+        ctx.strokeRect(2, 64, 60, 60);
+        ctx.strokeRect(66, 64, 60, 60);
+        ctx.fillStyle = '#ff8a3d';
+        ctx.fillRect(4,4,120,4);
+    }),
+    question: createTexture(ctx => {
+        ctx.fillStyle = '#f7941d';
+        ctx.fillRect(0,0,128,128);
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 100px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('?', 64, 100);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(10,10,108,108);
+    }),
+    grass: createTexture(ctx => {
+        ctx.fillStyle = '#8b4513';
+        ctx.fillRect(0,0,128,128);
+        ctx.fillStyle = '#458b00';
+        ctx.fillRect(0,0,128,40);
+        ctx.fillStyle = '#66cd00';
+        ctx.fillRect(0,0,128,10);
+    }),
+    pipe: createTexture(ctx => {
+        ctx.fillStyle = '#00a800';
+        ctx.fillRect(0,0,128,128);
+        ctx.fillStyle = '#007000';
+        ctx.fillRect(0,0,20,128);
+        ctx.fillRect(100,0,28,128);
+    })
 };
 
-const groundLevel = canvas.height - 80;
-dino.y = groundLevel;
+// ────────────────────────────────────────────────
+//  GAME VARIABLES
+// ────────────────────────────────────────────────
+let scene, camera, renderer, player, clock;
+let score = 0, coinsCount = 0, lives = 3, gameActive = true;
+let velocity = new THREE.Vector3();
+let moveDir = { horizontal: 0 };
+const GRAVITY = -0.015;
+const JUMP_FORCE = 0.35;
+let onGround = false;
 
-let obstacles = [];
-let clouds = [];
-let particles = [];
+const objects = [];
+const enemies = [];
+const coins = [];
 
-let gameLoopId = null;
-let audioContext = null;
-let lastObstacleTime = 0;
+// ────────────────────────────────────────────────
+//  INIT
+// ────────────────────────────────────────────────
+function init() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x5c94fc);
+    
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    clock = new THREE.Clock();
 
-function getAudioContext() {
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambient);
+    const sun = new THREE.DirectionalLight(0xffffff, 1);
+    sun.position.set(20, 30, 10);
+    sun.castShadow = true;
+    scene.add(sun);
+
+    createPlayer();
+    buildLevel();
+    setupControls();
+    
+    lives = 3;
+    score = 0;
+    coinsCount = 0;
+    updateUI();
+    
+    animate();
+}
+
+// ────────────────────────────────────────────────
+//  PLAYER
+// ────────────────────────────────────────────────
+function createPlayer() {
+    const group = new THREE.Group();
+    const body = new THREE.Mesh(
+        new THREE.BoxGeometry(0.7, 0.9, 0.7),
+        new THREE.MeshPhongMaterial({ color: 0xff0000 })
+    );
+    body.position.y = 0.45;
+    body.castShadow = true;
+    group.add(body);
+
+    const head = new THREE.Mesh(
+        new THREE.BoxGeometry(0.5, 0.5, 0.5),
+        new THREE.MeshPhongMaterial({ color: 0xffdbac })
+    );
+    head.position.y = 1.15;
+    group.add(head);
+
+    const hat = new THREE.Mesh(
+        new THREE.BoxGeometry(0.6, 0.15, 0.6),
+        new THREE.MeshPhongMaterial({ color: 0xff0000 })
+    );
+    hat.position.y = 1.45;
+    group.add(hat);
+
+    player = group;
+    player.position.set(0, 2, 5);
+    scene.add(player);
+}
+
+// ────────────────────────────────────────────────
+//  LEVEL
+// ────────────────────────────────────────────────
+function buildLevel() {
+    // Ground
+    const groundGeo = new THREE.BoxGeometry(10, 2, 250);
+    const groundMat = new THREE.MeshPhongMaterial({ map: textures.grass });
+    textures.grass.wrapS = textures.grass.wrapT = THREE.RepeatWrapping;
+    textures.grass.repeat.set(2, 50);
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.position.y = -1;
+    ground.receiveShadow = true;
+    scene.add(ground);
+    objects.push(ground);
+
+    // Blocks
+    addBlock(0, 4, -10, 'question');
+    addBlock(0, 4, -11.2, 'brick');
+    addBlock(0, 4, -8.8, 'brick');
+
+    // Pipes
+    addPipe(0, 0, -20, 2);
+    addPipe(0, 0, -35, 3.5);
+    addPipe(0, 0, -50, 2.5);
+
+    // Stairs
+    for(let i = 0; i < 4; i++) {
+        addBlock(0, 0.6 + i*1.2, -65 - i*1.2, 'brick');
     }
-    return audioContext;
+
+    // Coins
+    for(let i = 0; i < 10; i++) addCoin(0, 1.5, -5 - i*8);
+    
+    // Enemies
+    addEnemy(0, 0, -15);
+    addEnemy(0, 0, -28);
+    addEnemy(0, 0, -42);
+    addEnemy(0, 0, -75);
+
+    // Goal
+    const poleGeo = new THREE.CylinderGeometry(0.1, 0.1, 8);
+    const poleMat = new THREE.MeshPhongMaterial({ color: 0xcccccc });
+    const pole = new THREE.Mesh(poleGeo, poleMat);
+    pole.position.set(0, 4, -110);
+    scene.add(pole);
+    objects.push({ mesh: pole, isGoal: true });
 }
 
-function playSound(frequency, duration) {
-    try {
-        const ctx = getAudioContext();
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
+function addBlock(x, y, z, type) {
+    const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(1.2, 1.2, 1.2),
+        new THREE.MeshPhongMaterial({ map: textures[type] })
+    );
+    mesh.position.set(x, y, z);
+    mesh.castShadow = mesh.receiveShadow = true;
+    scene.add(mesh);
+    objects.push(mesh);
+}
 
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
+function addPipe(x, y, z, height) {
+    const group = new THREE.Group();
+    const body = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.1, 1.1, height, 20),
+        new THREE.MeshPhongMaterial({ map: textures.pipe })
+    );
+    body.position.y = height / 2;
+    
+    const top = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.3, 1.3, 0.8, 20),
+        new THREE.MeshPhongMaterial({ map: textures.pipe })
+    );
+    top.position.y = height;
+    
+    group.add(body, top);
+    group.position.set(x, y, z);
+    scene.add(group);
+    objects.push(body, top);
+}
 
-        oscillator.frequency.value = frequency;
-        oscillator.type = 'sine';
+function addCoin(x, y, z) {
+    const mesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.4, 0.4, 0.1, 16),
+        new THREE.MeshPhongMaterial({ color: 0xffd700, emissive: 0xaa8800 })
+    );
+    mesh.rotation.x = Math.PI / 2;
+    mesh.position.set(x, y, z);
+    scene.add(mesh);
+    coins.push(mesh);
+}
 
-        gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+function addEnemy(x, y, z) {
+    const group = new THREE.Group();
+    const head = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.6, 0.8, 0.6, 8),
+        new THREE.MeshPhongMaterial({ color: 0x8b4513 })
+    );
+    const body = new THREE.Mesh(
+        new THREE.BoxGeometry(0.4, 0.4, 0.4),
+        new THREE.MeshPhongMaterial({ color: 0xffdbac })
+    );
+    body.position.y = -0.4;
+    group.add(head, body);
+    group.position.set(x, 0.7, z);
+    scene.add(group);
+    enemies.push({ mesh: group, dir: 1, startZ: z });
+}
 
-        oscillator.start(ctx.currentTime);
-        oscillator.stop(ctx.currentTime + duration);
-    } catch (e) {
-        console.log('Audio not available');
+// ────────────────────────────────────────────────
+//  CONTROLS
+// ────────────────────────────────────────────────
+function setupControls() {
+    window.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === 'd') moveDir.horizontal = -1;
+        if (e.key === 'ArrowLeft'  || e.key === 'a') moveDir.horizontal = 1;
+        if ((e.key === 'ArrowUp' || e.key === 'w' || e.key === ' ') && onGround) {
+            velocity.y = JUMP_FORCE;
+        }
+    });
+
+    window.addEventListener('keyup', e => {
+        if (['ArrowLeft','ArrowRight','a','d'].includes(e.key)) {
+            moveDir.horizontal = 0;
+        }
+    });
+
+    // ── Mobile joystick ───────────────────────────
+    const joy = document.getElementById('joy-container');
+    const knob = document.getElementById('joy-knob');
+
+    joy.addEventListener('touchmove', e => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = joy.getBoundingClientRect();
+        const dx = touch.clientX - (rect.left + rect.width / 2);
+        const dist = Math.min(Math.abs(dx), 50);
+        knob.style.transform = `translateX(${dx > 0 ? dist : -dist}px)`;
+        moveDir.horizontal = dx > 0 ? -1 : 1;
+    });
+
+    joy.addEventListener('touchend', () => {
+        knob.style.transform = `translate(0,0)`;
+        moveDir.horizontal = 0;
+    });
+
+    document.getElementById('mobile-jump').addEventListener('touchstart', e => {
+        e.preventDefault();
+        if (onGround) velocity.y = JUMP_FORCE;
+    });
+}
+
+// ────────────────────────────────────────────────
+//  COLLISIONS & LOGIC
+// ────────────────────────────────────────────────
+function checkCollisions() {
+    onGround = false;
+    const playerBox = new THREE.Box3().setFromObject(player);
+
+    objects.forEach(obj => {
+        const mesh = obj.isMesh ? obj : obj.mesh || obj;
+        const objBox = new THREE.Box3().setFromObject(mesh);
+
+        if (playerBox.intersectsBox(objBox)) {
+            if (obj.isGoal) {
+                endGame(true);
+                return;
+            }
+            if (player.position.y > mesh.position.y && velocity.y <= 0) {
+                player.position.y = objBox.max.y;
+                velocity.y = 0;
+                onGround = true;
+            } else if (player.position.y < mesh.position.y && velocity.y > 0) {
+                velocity.y = -0.05;
+            }
+        }
+    });
+
+    // Coins
+    for (let i = coins.length - 1; i >= 0; i--) {
+        const coin = coins[i];
+        coin.rotation.y += 0.1;
+        if (player.position.distanceTo(coin.position) < 1.2) {
+            scene.remove(coin);
+            coins.splice(i, 1);
+            coinsCount++;
+            score += 100;
+            updateUI();
+        }
+    }
+
+    // Enemies
+    for (let i = enemies.length - 1; i >= 0; i--) {
+        const en = enemies[i];
+        en.mesh.position.z += 0.05 * en.dir;
+        if (Math.abs(en.mesh.position.z - en.startZ) > 4) en.dir *= -1;
+
+        if (player.position.distanceTo(en.mesh.position) < 1.1) {
+            if (player.position.y > en.mesh.position.y + 0.4 && velocity.y < 0) {
+                scene.remove(en.mesh);
+                enemies.splice(i, 1);
+                velocity.y = 0.25;
+                score += 500;
+                updateUI();
+            } else {
+                playerHit();
+            }
+        }
+    }
+
+    if (player.position.y < -5) playerHit();
+}
+
+function playerHit() {
+    lives--;
+    updateUI();
+    if (lives > 0) {
+        player.position.set(0, 2, 5);
+        velocity.set(0, 0, 0);
+        moveDir.horizontal = 0;
+    } else {
+        endGame(false);
     }
 }
 
-function playJumpSound() {
-    playSound(523.25, 0.1);
+function updateUI() {
+    document.getElementById('score').innerText = score.toString().padStart(6, '0');
+    document.getElementById('coins').innerText = coinsCount;
+    document.getElementById('lives').innerText = lives;
 }
 
-function playGameOverSound() {
-    playSound(400, 0.2);
-    setTimeout(() => playSound(300, 0.3), 200);
+function endGame(win) {
+    gameActive = false;
+    const modal = document.getElementById('modal');
+    modal.style.display = 'flex';
+    
+    document.getElementById('modal-title').innerText = win ? "COURSE CLEAR!" : "GAME OVER";
+    document.getElementById('modal-title').style.color = win ? "#22c55e" : "#ef4444";
+    document.getElementById('modal-text').innerText = `ניקוד סופי: ${score}`;
 }
 
-function playStartSound() {
-    playSound(659.25, 0.1);
+// ────────────────────────────────────────────────
+//  ANIMATION LOOP
+// ────────────────────────────────────────────────
+function animate() {
+    if (!gameActive) return;
+    requestAnimationFrame(animate);
+
+    player.position.z += moveDir.horizontal * 0.18;
+    player.position.x = 0; // lock to center line
+
+    velocity.y += GRAVITY;
+    player.position.y += velocity.y;
+
+    checkCollisions();
+
+    // Camera (side view)
+    const camDistance = 18;
+    const camHeight = 4;
+    camera.position.set(camDistance, player.position.y * 0.5 + camHeight, player.position.z);
+    camera.lookAt(0, player.position.y + 1, player.position.z);
+
+    renderer.render(scene, camera);
 }
 
-// Initialize high score
-highScoreDisplay.textContent = highScore;
-
-// Event listeners
-startBtn.addEventListener('click', startGame);
-document.addEventListener('keydown', handleKeyPress);
-canvas.addEventListener('click', () => {
-    if (gameRunning && dino.y >= groundLevel - 5) {
-        jump();
-    }
+// ────────────────────────────────────────────────
+//  RESIZE
+// ────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-function startGame() {
-    if (!gameRunning) {
-        gameRunning = true;
-        score = 0;
-        gameSpeed = 6;
-        dino.y = groundLevel;
-        dino.velocityY = 0;
-        dino.jumping = false;
-        obstacles = [];
-        scoreDisplay.textContent = score;
-        gameStatusDisplay.textContent = '';
-        startBtn.textContent = 'Restart';
-        lastObstacleTime = 0;
-        playStartSound();
-        gameLoopId = setInterval(gameLoop, 30);
-    }
-}
-
-function handleKeyPress(event) {
-    if (event.code === 'Space' && gameRunning) {
-        if (dino.y >= groundLevel - 5) {
-            jump();
-        }
-        event.preventDefault();
-    }
-}
-
-function jump() {
-    if (dino.y >= groundLevel - 5) {
-        dino.velocityY = -15;
-        dino.jumping = true;
-        playJumpSound();
-    }
-}
-
-function gameLoop() {
-    update();
-    draw();
-}
-
-function update() {
-    // Update dino
-    dino.velocityY += dino.gravity;
-    dino.y += dino.velocityY;
-
-    if (dino.y >= groundLevel) {
-        dino.y = groundLevel;
-        dino.velocityY = 0;
-        dino.jumping = false;
-    }
-
-    // Increase game speed
-    gameSpeed += gameSpeedIncrement;
-
-    // Generate obstacles
-    lastObstacleTime++;
-    if (lastObstacleTime > Math.max(60, 180 - score / 100)) {
-        createObstacle();
-        lastObstacleTime = 0;
-    }
-
-    // Update obstacles
-    for (let i = obstacles.length - 1; i >= 0; i--) {
-        obstacles[i].x -= gameSpeed;
-
-        // Check collision
-        if (checkCollision(dino, obstacles[i])) {
-            endGame();
-            return;
-        }
-
-        // Remove off-screen obstacles and add score
-        if (obstacles[i].x < -50) {
-            obstacles.splice(i, 1);
-            score += 10;
-            scoreDisplay.textContent = score;
-        }
-    }
-
-    // Update clouds
-    for (let i = clouds.length - 1; i >= 0; i--) {
-        clouds[i].x -= gameSpeed * 0.3;
-        if (clouds[i].x < -100) {
-            clouds.splice(i, 1);
-        }
-    }
-
-    // Create clouds occasionally
-    if (Math.random() < 0.01 && clouds.length < 5) {
-        clouds.push({
-            x: canvas.width,
-            y: Math.random() * 80 + 20,
-            width: 60,
-            height: 30
-        });
-    }
-
-    // Update particles
-    for (let i = particles.length - 1; i >= 0; i--) {
-        particles[i].x -= gameSpeed;
-        particles[i].life--;
-        if (particles[i].life <= 0) {
-            particles.splice(i, 1);
-        }
-    }
-}
-
-function createObstacle() {
-    const type = Math.random() > 0.7 ? 'bird' : 'cactus';
-    const obstacle = {
-        x: canvas.width,
-        width: type === 'bird' ? 40 : 20,
-        height: type === 'bird' ? 30 : 40,
-        type: type
-    };
-
-    if (type === 'bird') {
-        obstacle.y = groundLevel - 60;
-    } else {
-        obstacle.y = groundLevel;
-    }
-
-    obstacles.push(obstacle);
-}
-
-function checkCollision(rect1, rect2) {
-    return rect1.x < rect2.x + rect2.width &&
-           rect1.x + rect1.width > rect2.x &&
-           rect1.y < rect2.y + rect2.height &&
-           rect1.y + rect1.height > rect2.y;
-}
-
-function draw() {
-    // Clear canvas with sky gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, '#87ceeb');
-    gradient.addColorStop(1, '#e0f6ff');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw clouds
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    clouds.forEach(cloud => {
-        ctx.beginPath();
-        ctx.arc(cloud.x, cloud.y, 20, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(cloud.x + 20, cloud.y - 10, 25, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(cloud.x + 40, cloud.y, 20, 0, Math.PI * 2);
-        ctx.fill();
-    });
-
-    // Draw ground
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, groundLevel + 30);
-    ctx.lineTo(canvas.width, groundLevel + 30);
-    ctx.stroke();
-
-    // Draw ground pattern
-    ctx.strokeStyle = '#999';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < canvas.width; i += 20) {
-        ctx.beginPath();
-        ctx.moveTo(i - (gameSpeed * 2) % 20, groundLevel + 30);
-        ctx.lineTo(i - (gameSpeed * 2) % 20 + 10, groundLevel + 30);
-        ctx.stroke();
-    }
-
-    // Draw dino
-    drawDino();
-
-    // Draw obstacles
-    obstacles.forEach(obstacle => {
-        if (obstacle.type === 'cactus') {
-            drawCactus(obstacle.x, obstacle.y);
-        } else {
-            drawBird(obstacle.x, obstacle.y);
-        }
-    });
-
-    // Draw score in top right
-    ctx.fillStyle = '#333';
-    ctx.font = 'bold 20px Arial';
-    ctx.textAlign = 'right';
-    ctx.fillText('Speed: ' + gameSpeed.toFixed(1), canvas.width - 20, 30);
-
-    // Draw speed indicator
-    ctx.fillStyle = '#ddd';
-    ctx.fillRect(canvas.width - 200, 40, 180, 10);
-    ctx.fillStyle = '#667eea';
-    ctx.fillRect(canvas.width - 200, 40, (gameSpeed / 15) * 180, 10);
-}
-
-function drawDino() {
-    const x = dino.x;
-    const y = dino.y;
-
-    // Body
-    ctx.fillStyle = '#8B7355';
-    ctx.fillRect(x, y + 20, 30, 25);
-
-    // Head
-    ctx.beginPath();
-    ctx.arc(x + 30, y + 15, 15, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Eye
-    ctx.fillStyle = '#000';
-    ctx.beginPath();
-    ctx.arc(x + 35, y + 10, 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Back legs
-    ctx.fillStyle = '#8B7355';
-    ctx.fillRect(x + 5, y + 45, 8, 20);
-    ctx.fillRect(x + 18, y + 45, 8, 20);
-
-    // Front legs
-    ctx.fillRect(x + 25, y + 45, 8, 20);
-    ctx.fillRect(x + 33, y + 45, 8, 20);
-
-    // Tail
-    ctx.beginPath();
-    ctx.moveTo(x, y + 30);
-    ctx.quadraticCurveTo(x - 15, y + 20, x - 20, y + 5);
-    ctx.strokeStyle = '#8B7355';
-    ctx.lineWidth = 8;
-    ctx.stroke();
-}
-
-function drawCactus(x, y) {
-    ctx.fillStyle = '#2d5016';
-    
-    // Main stem
-    ctx.fillRect(x + 7, y - 40, 6, 40);
-
-    // Arms
-    ctx.fillRect(x - 5, y - 25, 12, 4);
-    ctx.fillRect(x + 10, y - 20, 12, 4);
-
-    // Spikes
-    ctx.fillStyle = '#1a3009';
-    for (let i = 0; i < 5; i++) {
-        ctx.fillRect(x + 8, y - 35 + i * 8, 4, 2);
-    }
-}
-
-function drawBird(x, y) {
-    ctx.fillStyle = '#333';
-    
-    // Body
-    ctx.beginPath();
-    ctx.arc(x + 20, y + 15, 10, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Head
-    ctx.beginPath();
-    ctx.arc(x + 30, y + 10, 8, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Wings
-    ctx.beginPath();
-    ctx.moveTo(x + 20, y + 15);
-    ctx.quadraticCurveTo(x + 10, y + 5, x + 15, y + 20);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.moveTo(x + 20, y + 15);
-    ctx.quadraticCurveTo(x + 35, y + 5, x + 30, y + 20);
-    ctx.fill();
-
-    // Eye
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(x + 32, y + 8, 2, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Beak
-    ctx.fillStyle = '#333';
-    ctx.beginPath();
-    ctx.moveTo(x + 37, y + 10);
-    ctx.lineTo(x + 42, y + 10);
-    ctx.lineTo(x + 39, y + 12);
-    ctx.fill();
-}
-
-function endGame() {
-    gameRunning = false;
-    clearInterval(gameLoopId);
-    playGameOverSound();
-
-    if (score > highScore) {
-        highScore = score;
-        localStorage.setItem('dinoHighScore', highScore);
-        highScoreDisplay.textContent = highScore;
-        gameStatusDisplay.textContent = `Game Over! New High Score: ${score}`;
-    } else {
-        gameStatusDisplay.textContent = `Game Over! Score: ${score}`;
-    }
-}
-
-// Initial draw
-draw();
+// Start the game
+init();
