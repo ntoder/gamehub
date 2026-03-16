@@ -1,48 +1,37 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>משחק הדינוזאור - קקטוסים מקוריים</title>
-    
-    <link rel="stylesheet" href="https://cdn.tailwindcss.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subway Surfers</title>
     <link rel="stylesheet" href="subwaysurf.css">
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen p-4">
+<body>
+    <canvas id="gameCanvas"></canvas>
 
-    <div class="text-center mb-4">
-        <h1 class="text-3xl font-bold text-blue-600">דינוזאור וקקטוסים 🦖🌵</h1>
-        <p class="text-gray-500 text-sm">הקקטוסים מעוצבים עכשיו בסגנון הפיקסלים המקורי!</p>
+    <div id="ui">
+        <div>Score: <span id="score">0</span></div>
+        <div>🪙 <span id="coins">0</span></div>
     </div>
 
-    <div id="game-container" class="cursor-pointer">
-        <div id="overlay" class="game-overlay">
-            <div id="game-over-text" class="hidden text-center">
-                <h2 class="text-4xl font-bold text-red-600 mb-2">נפסלת!</h2>
-                <p class="text-gray-700 text-xl mb-4" id="final-score-display"></p>
-            </div>
-            <button id="start-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-10 py-4 rounded-full text-2xl font-bold transition-all shadow-xl">
-                שחק עכשיו
-            </button>
-        </div>
-
-        <canvas id="gameCanvas"></canvas>
-
-        <div class="absolute top-4 right-4 flex gap-4 text-gray-700 font-mono text-xl score-panel">
-            <div class="flex items-center gap-1">
-                <span class="text-xs font-bold text-blue-400">HI</span>
-                <span id="high-score">00000</span>
-            </div>
-            <div class="text-blue-800 font-bold">
-                <span id="current-score">00000</span>
+    <div id="startScreen">
+        <div class="game-title">SUBWAY<br>SURFERS</div>
+        <div class="instructions">
+            <div>← → Arrow Keys to Move Left/Right</div>
+            <div>↑ Space to Jump</div>
+            <div>↓ to Slide</div>
+            <div style="margin-top: 30px; color: #FFD700; font-size: 16px;">
+                Avoid obstacles and collect coins!
             </div>
         </div>
+        <button onclick="startGame()">PLAY NOW</button>
     </div>
 
-    <div class="flex gap-8 mt-4 sm:hidden">
-        <div id="mobile-jump" class="mobile-btn">⬆️</div>
-        <div id="mobile-duck" class="mobile-btn">⬇️</div>
+    <div id="gameOverScreen">
+        <div class="game-over-title">GAME OVER!</div>
+        <div class="final-stats">Score: <span id="finalScore">0</span></div>
+        <div class="final-stats">Coins: <span id="finalCoins">0</span></div>
+        <button onclick="startGame()">PLAY AGAIN</button>
     </div>
 
     <script src="subwaysurf.js"></script>
