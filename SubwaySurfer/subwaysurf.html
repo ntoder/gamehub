@@ -3,40 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Super Mario 3D - Side View Edition</title>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css">
-    <link rel="stylesheet" href="subwaysurf.css">
-    
+    <title>סאבווי סרפרס - גרסת הדפדפן</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="subwaysurf.css">
 </head>
 <body>
 
-<div class="ui-overlay">
-    <div>MARIO<br><span id="score">000000</span></div>
-    <div class="text-center">COINS<br>🪙 x <span id="coins">0</span></div>
-    <div class="text-center">LIVES<br>❤️ x <span id="lives">3</span></div>
-    <div class="text-left">WORLD<br>1-1</div>
-</div>
+    <div id="game-container"></div>
 
-<div id="modal">
-    <div class="bg-white p-8 rounded-3xl text-center max-w-sm w-full mx-4">
-        <h2 id="modal-title" class="text-4xl font-black mb-4 text-red-600">GAME OVER</h2>
-        <p id="modal-text" class="text-xl mb-8">הניקוד שלך: 0</p>
-        <button onclick="location.reload()" class="bg-blue-500 hover:bg-blue-600 text-white text-2xl font-bold py-4 px-12 rounded-full transition-transform active:scale-95 shadow-xl">
-            נסה שוב
-        </button>
+    <div id="ui-layer">
+        <div class="score-box" id="score-display">ניקוד: 0</div>
+
+        <div id="start-screen" class="overlay">
+            <h1 class="text-5xl font-black mb-4 tracking-tighter">SUBWAY RUNNER</h1>
+            <p class="text-xl">מוכנים לרוץ?</p>
+            <button class="btn" onclick="startGame()">התחל משחק</button>
+            <div class="mt-8 text-center text-sm opacity-70">
+                <p>השתמש בחצים או החלק את האצבע כדי לזוז, לקפוץ ולהתכופף</p>
+            </div>
+        </div>
+
+        <div id="game-over-screen" class="overlay" style="display: none;">
+            <h2 class="text-6xl font-black mb-2 text-red-500">נפסלת!</h2>
+            <p id="final-score" class="text-2xl mb-4"></p>
+            <button class="btn" onclick="startGame()">נסה שוב</button>
+        </div>
     </div>
-</div>
 
-<div class="controls md:hidden">
-    <div class="joystick-container" id="joy-container">
-        <div class="joystick-knob" id="joy-knob"></div>
-    </div>
-    <div class="jump-btn" id="mobile-jump">A</div>
-</div>
-
-<script src="subwaysurf.js"></script>
-
+    <!-- JS -->
+    <script src="subwaysurf.js"></script>
 </body>
 </html>
