@@ -2,11 +2,16 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>משחק הדינוזאור - קקטוסים מקוריים</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משחק הדינוזאור</title>
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="dinogame.css">
 </head>
+
 <body class="flex flex-col items-center justify-center min-h-screen p-4">
 
     <div class="text-center mb-4">
@@ -18,21 +23,21 @@
         <div id="overlay" class="game-overlay">
             <div id="game-over-text" class="hidden text-center">
                 <h2 class="text-4xl font-bold text-red-600 mb-2">נפסלת!</h2>
-                <p class="text-gray-700 text-xl mb-4" id="final-score-display"></p>
+                <p id="final-score-display" class="text-xl"></p>
             </div>
-            <button id="start-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-10 py-4 rounded-full text-2xl font-bold transition-all shadow-xl">
+
+            <button id="start-btn" class="bg-blue-500 text-white px-10 py-4 rounded-full text-2xl font-bold">
                 שחק עכשיו
             </button>
         </div>
 
         <canvas id="gameCanvas"></canvas>
 
-        <div class="absolute top-4 right-4 flex gap-4 text-gray-700 font-mono text-xl score-panel">
-            <div class="flex items-center gap-1">
-                <span class="text-xs font-bold text-blue-400">HI</span>
-                <span id="high-score">00000</span>
+        <div class="absolute top-4 right-4 flex gap-4 score-panel">
+            <div>
+                HI <span id="high-score">00000</span>
             </div>
-            <div class="text-blue-800 font-bold">
+            <div>
                 <span id="current-score">00000</span>
             </div>
         </div>
@@ -43,6 +48,7 @@
         <div id="mobile-duck" class="mobile-btn">⬇️</div>
     </div>
 
+    <!-- JS -->
     <script src="dinogame.js"></script>
 </body>
 </html>
