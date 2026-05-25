@@ -4,18 +4,45 @@ const ctx = canvas.getContext('2d');
 
 // Game variables
 const gravity = 0.5;
-const gameSpeed = 5;
-const gap = 280;
+const initialGameSpeed = 5;
+const initialGap = 280;
+const minGap = 180;
 const pipeWidth = 52;
+const speedIncrement = 1;
+const gapDecrease = 20;
+
+let currentGameSpeed = initialGameSpeed;
+let currentGap = initialGap;
 
 let bird = {
-    x: 64,
-    y: 265,
+    x: 0,
+    y: 0,
     radius: 12,
     velocity: 0,
     jump: -6,
     color: '#FFD700'
 };
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    bird.x = canvas.width * 0.18;
+    if (!gameRunning) {
+        bird.y = canvas.height / 2;
+    }
+}
+
+function updateDifficulty() {
+    const level = Math.floor(score / 20);
+    currentGameSpeed = initialGameSpeed + (level * speedIncrement);
+    currentGap = Math.max(minGap, initialGap - (level * gapDecrease));
+}
+
+function enterFullscreen() {
+    if (document.fullscreenEnabled && !document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+    }
+}
 
 let pipes = [];
 let score = 0;
@@ -81,8 +108,8 @@ highScoreDisplay.textContent = highScore;
 class Pipe {
     constructor() {
         this.x = canvas.width;
-        this.pipeTop = Math.random() * (canvas.height - gap - 100) + 50;
-        this.pipeBottom = this.pipeTop + gap;
+        this.pipeTop = Math.random() * (canvas.height - currentGap - 100) + 50;
+        this.pipeBottom = this.pipeTop + currentGap;
         this.width = pipeWidth;
         this.passed = false;
         this.color = '#2ecc71';
@@ -104,7 +131,7 @@ class Pipe {
     }
 
     update() {
-        this.x -= gameSpeed;
+        this.x -= currentGameSpeed;
     }
 
     offScreen() {
@@ -179,6 +206,7 @@ function updatePipes() {
         if (!pipes[i].passed && pipes[i].x < bird.x) {
             pipes[i].passed = true;
             score++;
+            updateDifficulty();
             scoreDisplay.textContent = score;
             playScoreSound();
         }
@@ -222,13 +250,16 @@ function gameLoop() {
 
 // Start game
 function startGame() {
+    enterFullscreen();
+    resizeCanvas();
+    score = 0;
+    updateDifficulty();
     gameRunning = true;
     gameOverFlag = false;
     startScreen.classList.add('hidden');
     gameOverScreen.classList.add('hidden');
-    score = 0;
     scoreDisplay.textContent = 0;
-    bird.y = 265;
+    bird.y = canvas.height / 2;
     bird.velocity = 0;
     pipes = [];
 }
@@ -270,6 +301,8 @@ document.addEventListener('keydown', (e) => {
 
 canvas.addEventListener('click', jump);
 restartBtn.addEventListener('click', startGame);
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
 // Start the game loop
 gameLoop();
