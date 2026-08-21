@@ -54,10 +54,11 @@
 
   .tick {
     position: absolute;
+    top: 0;
     left: 50%;
-    top: 50%;
     width: 2px;
     height: 10px;
+    margin-left: -1px;
     background: var(--muted);
     transform-origin: 50% 130px;
   }
@@ -65,6 +66,7 @@
   .tick.major {
     height: 16px;
     width: 3px;
+    margin-left: -1.5px;
     background: var(--accent);
   }
 
@@ -166,7 +168,7 @@
   for (let i = 0; i < 60; i++) {
     const tick = document.createElement('div');
     tick.className = 'tick' + (i % 5 === 0 ? ' major' : '');
-    tick.style.transform = `translate(-50%, -100%) rotate(${i * 6}deg)`;
+    tick.style.transform = `rotate(${i * 6}deg)`;
     analog.appendChild(tick);
   }
 
