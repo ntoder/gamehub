@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Clock</title>
+<style>
+  :root {
+    --bg-1: #0f0c29;
+    --bg-2: #302b63;
+    --bg-3: #24243e;
+    --accent: #7ef9ff;
+    --accent-soft: rgba(126, 249, 255, 0.15);
+    --text: #f2f6ff;
+    --muted: #9aa5c9;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: radial-gradient(circle at 30% 20%, var(--bg-2), var(--bg-1) 60%, var(--bg-3));
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  .stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    padding: 40px;
+  }
+
+  .analog {
+    position: relative;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    box-shadow:
+      0 0 40px var(--accent-soft),
+      inset 0 0 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .tick {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 2px;
+    height: 10px;
+    background: var(--muted);
+    transform-origin: 50% 130px;
+  }
+
+  .tick.major {
+    height: 16px;
+    width: 3px;
+    background: var(--accent);
+  }
+
+  .hand {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: var(--text);
+    border-radius: 4px;
+    transform-origin: 50% 100%;
+  }
+
+  .hour-hand {
+    width: 6px;
+    height: 70px;
+    margin-left: -3px;
+    margin-top: -70px;
+    background: var(--text);
+  }
+
+  .minute-hand {
+    width: 4px;
+    height: 95px;
+    margin-left: -2px;
+    margin-top: -95px;
+    background: var(--accent);
+  }
+
+  .second-hand {
+    width: 2px;
+    height: 105px;
+    margin-left: -1px;
+    margin-top: -105px;
+    background: #ff5f7e;
+  }
+
+  .center-dot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    margin-top: -7px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent);
+    z-index: 10;
+  }
+
+  .digital {
+    text-align: center;
+  }
+
+  #time {
+    font-size: 3.2rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 20px var(--accent-soft);
+  }
+
+  #date {
+    margin-top: 6px;
+    font-size: 1rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  #hebrewDate {
+    margin-top: 4px;
+    font-size: 0.95rem;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="analog" id="analog">
+    <div class="hand hour-hand" id="hourHand"></div>
+    <div class="hand minute-hand" id="minuteHand"></div>
+    <div class="hand second-hand" id="secondHand"></div>
+    <div class="center-dot"></div>
+  </div>
+
+  <div class="digital">
+    <div id="time">00:00:00</div>
+    <div id="date">Loading...</div>
+    <div id="hebrewDate">Loading...</div>
+  </div>
+</div>
+
+<script>
+  const analog = document.getElementById('analog');
+
+  // build tick marks
+  for (let i = 0; i < 60; i++) {
+    const tick = document.createElement('div');
+    tick.className = 'tick' + (i % 5 === 0 ? ' major' : '');
+    tick.style.transform = `translate(-50%, -100%) rotate(${i * 6}deg)`;
+    analog.appendChild(tick);
+  }
+
+  const hourHand = document.getElementById('hourHand');
+  const minuteHand = document.getElementById('minuteHand');
+  const secondHand = document.getElementById('secondHand');
+  const timeEl = document.getElementById('time');
+  const dateEl = document.getElementById('date');
+  const hebrewDateEl = document.getElementById('hebrewDate');
+
+  const hebrewFormatter = new Intl.DateTimeFormat('en-u-ca-hebrew', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  });
+
+  function pad(n) { return n.toString().padStart(2, '0'); }
+
+  function update() {
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const s = now.getSeconds();
+
+    const hourDeg = (h % 12) * 30 + m * 0.5;
+    const minuteDeg = m * 6 + s * 0.1;
+    const secondDeg = s * 6;
+
+    hourHand.style.transform = `rotate(${hourDeg}deg)`;
+    minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+    secondHand.style.transform = `rotate(${secondDeg}deg)`;
+
+    timeEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+    dateEl.textContent = now.toLocaleDateString(undefined, {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    hebrewDateEl.textContent = hebrewFormatter.format(now);
+  }
+
+  update();
+  setInterval(update, 1000);
+</script>
+
+</body>
+</html>
