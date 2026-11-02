@@ -39,8 +39,7 @@ li a {
 }
 li a:hover {
     text-decoration: underline;
-    background-color: aqua;
-  
+    backround-color: aqua;
 }
 .card {
   border: 5px solid #ccc;
