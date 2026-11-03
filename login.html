@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In · Noam's Game Hub</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0d1a; --bg-2: #12152b; --card: #171b36; --line: #2a3060;
+            --text: #eef0ff; --muted: #9aa0c8; --accent: #7c5cff; --accent-2: #2ee6c9;
+            --hot: #ff4d8d; --ok: #2ee6a0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif; color: var(--text);
+            background:
+                radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.25), transparent 60%),
+                radial-gradient(900px 500px at 110% 10%, rgba(46,230,201,.15), transparent 60%),
+                var(--bg);
+            min-height: 100vh; display: flex; flex-direction: column;
+        }
+        .top { padding: 18px clamp(16px, 4vw, 48px); }
+        .logo { font-family: 'Press Start 2P', monospace; font-size: 14px; text-decoration: none; color: var(--text); }
+        .logo span { color: var(--accent-2); }
+
+        main { flex: 1; display: grid; place-items: center; padding: 24px 16px 64px; }
+        .panel {
+            width: 100%; max-width: 420px;
+            background: var(--card); border: 1px solid var(--line); border-radius: 20px;
+            padding: 32px 28px; box-shadow: 0 24px 60px rgba(0,0,0,.45);
+        }
+        h1 { font-family: 'Press Start 2P', monospace; font-size: 18px; line-height: 1.5; text-align: center; margin-bottom: 6px; }
+        .sub { text-align: center; color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+
+        .tabs { display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-2); border-radius: 12px; padding: 4px; margin-bottom: 22px; }
+        .tab {
+            border: 0; background: none; color: var(--muted); font: 700 14px 'Inter', sans-serif;
+            padding: 10px; border-radius: 9px; cursor: pointer; transition: all .2s;
+        }
+        .tab.active { background: var(--accent); color: #fff; }
+
+        form { display: flex; flex-direction: column; gap: 14px; }
+        label { font-size: 13px; font-weight: 600; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+        input {
+            background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px;
+            padding: 12px 14px; color: var(--text); font: 15px 'Inter', sans-serif; outline: none;
+        }
+        input:focus { border-color: var(--accent); }
+        .hidden { display: none !important; }
+
+        .btn {
+            border: 0; border-radius: 10px; padding: 13px; cursor: pointer;
+            font: 700 15px 'Inter', sans-serif; transition: transform .15s, opacity .2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn:hover { transform: translateY(-1px); }
+        .btn:disabled { opacity: .6; cursor: wait; transform: none; }
+        .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 8px 24px rgba(124,92,255,.4); }
+        .btn-google { background: #fff; color: #1f1f1f; }
+        .divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; margin: 18px 0; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+        .link { background: none; border: 0; color: var(--accent-2); font: 600 13px 'Inter', sans-serif; cursor: pointer; align-self: flex-end; }
+        .msg { font-size: 14px; padding: 10px 12px; border-radius: 10px; margin-bottom: 14px; }
+        .msg.err { background: rgba(255,77,141,.12); border: 1px solid rgba(255,77,141,.4); color: #ffb3cd; }
+        .msg.ok { background: rgba(46,230,160,.12); border: 1px solid rgba(46,230,160,.4); color: #b6ffe2; }
+        .back { display: block; text-align: center; margin-top: 20px; color: var(--muted); font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="top"><a class="logo" href="index.html">Noam's <span>Game Hub</span></a></div>
+
+    <main>
+        <div class="panel">
+            <h1 id="title">Welcome back</h1>
+            <p class="sub" id="subtitle">Log in to save your progress</p>
+
+            <div class="tabs" role="tablist">
+                <button class="tab active" data-mode="login" role="tab">Log in</button>
+                <button class="tab" data-mode="signup" role="tab">Sign up</button>
+            </div>
+
+            <div id="msg" class="msg hidden"></div>
+
+            <form id="form" novalidate>
+                <label id="nameField" class="hidden">Display name
+                    <input id="name" type="text" maxlength="30" autocomplete="nickname" placeholder="Player123">
+                </label>
+                <label>Email
+                    <input id="email" type="email" autocomplete="email" required placeholder="you@example.com">
+                </label>
+                <label>Password
+                    <input id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="At least 6 characters">
+                </label>
+                <button type="button" class="link" id="forgot">Forgot password?</button>
+                <button type="submit" class="btn btn-primary" id="submit">Log in</button>
+            </form>
+
+            <div class="divider">or</div>
+            <button class="btn btn-google" id="google">
+                <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+                Continue with Google
+            </button>
+
+            <a class="back" href="index.html">← Back to games</a>
+        </div>
+    </main>
+
+    <script type="module">
+        import { auth, db } from "./firebase-config.js";
+        import {
+            signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile,
+            GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const $ = (id) => document.getElementById(id);
+        let mode = "login";
+
+        function show(text, type = "err") {
+            const m = $("msg");
+            m.textContent = text;
+            m.className = "msg " + type;
+        }
+        function clearMsg() { $("msg").className = "msg hidden"; }
+
+        function setMode(next) {
+            mode = next;
+            document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.mode === mode));
+            const signup = mode === "signup";
+            $("nameField").classList.toggle("hidden", !signup);
+            $("forgot").classList.toggle("hidden", signup);
+            $("title").textContent = signup ? "Create account" : "Welcome back";
+            $("subtitle").textContent = signup ? "Join the Game Hub — it's free" : "Log in to save your progress";
+            $("submit").textContent = signup ? "Sign up" : "Log in";
+            $("password").autocomplete = signup ? "new-password" : "current-password";
+            clearMsg();
+        }
+        document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => setMode(t.dataset.mode)));
+        if (location.hash === "#signup") setMode("signup");
+
+        // Create the Firestore profile on first sign-in, update lastLogin after that
+        async function ensureProfile(user, name) {
+            const ref = doc(db, "users", user.uid);
+            const snap = await getDoc(ref);
+            if (!snap.exists()) {
+                await setDoc(ref, {
+                    name: name || user.displayName || user.email.split("@")[0],
+                    email: user.email,
+                    role: "user",
+                    premium: false,
+                    createdAt: serverTimestamp(),
+                    lastLogin: serverTimestamp()
+                });
+                return { role: "user" };
+            }
+            await updateDoc(ref, { lastLogin: serverTimestamp() });
+            return snap.data();
+        }
+
+        function redirect(profile) {
+            const next = new URLSearchParams(location.search).get("next");
+            if (next && /^[\w\-\/]+\.html$/.test(next)) location.href = next;   // only local pages
+            else location.href = profile.role === "admin" ? "admin.html" : "index.html";
+        }
+
+        const friendly = {
+            "auth/invalid-credential": "Wrong email or password.",
+            "auth/invalid-email": "That email address doesn't look right.",
+            "auth/email-already-in-use": "There's already an account with that email — try logging in.",
+            "auth/weak-password": "Password must be at least 6 characters.",
+            "auth/too-many-requests": "Too many attempts. Wait a minute and try again.",
+            "auth/popup-closed-by-user": "Google sign-in was closed before finishing.",
+            "auth/network-request-failed": "Network error — check your connection."
+        };
+        const errText = (e) => friendly[e.code] || e.message;
+
+        function busy(on) { $("submit").disabled = on; $("google").disabled = on; }
+
+        $("form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            clearMsg();
+            const email = $("email").value.trim();
+            const password = $("password").value;
+            const name = $("name").value.trim();
+            if (!email || !password) return show("Enter your email and password.");
+            busy(true);
+            try {
+                let cred;
+                if (mode === "signup") {
+                    cred = await createUserWithEmailAndPassword(auth, email, password);
+                    if (name) await updateProfile(cred.user, { displayName: name });
+                } else {
+                    cred = await signInWithEmailAndPassword(auth, email, password);
+                }
+                redirect(await ensureProfile(cred.user, name));
+            } catch (err) {
+                show(errText(err));
+                busy(false);
+            }
+        });
+
+        $("google").addEventListener("click", async () => {
+            clearMsg();
+            busy(true);
+            try {
+                const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+                redirect(await ensureProfile(cred.user));
+            } catch (err) {
+                show(errText(err));
+                busy(false);
+            }
+        });
+
+        $("forgot").addEventListener("click", async () => {
+            const email = $("email").value.trim();
+            if (!email) return show("Type your email above first, then click 'Forgot password?'.");
+            try {
+                await sendPasswordResetEmail(auth, email);
+                show("If that email has an account, a reset link is on its way.", "ok");
+            } catch (err) { show(errText(err)); }
+        });
+    </script>
+</body>
+</html>

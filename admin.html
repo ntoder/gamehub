@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Admin · Noam's Game Hub</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0d1a; --bg-2: #12152b; --card: #171b36; --card-hover: #1e2347; --line: #2a3060;
+            --text: #eef0ff; --muted: #9aa0c8; --accent: #7c5cff; --accent-2: #2ee6c9;
+            --hot: #ff4d8d; --gold: #ffc94d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif; color: var(--text);
+            background: radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.2), transparent 60%), var(--bg);
+            min-height: 100vh;
+        }
+        .navbar {
+            position: sticky; top: 0; z-index: 10;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+            padding: 14px clamp(16px, 4vw, 40px);
+            background: rgba(11,13,26,.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+        }
+        .logo { font-family: 'Press Start 2P', monospace; font-size: 13px; text-decoration: none; color: var(--text); }
+        .logo span { color: var(--accent-2); }
+        .logo em { font-style: normal; color: var(--hot); margin-left: 6px; }
+        .me { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 14px; }
+        .btn {
+            border: 1px solid var(--line); background: var(--bg-2); color: var(--text);
+            border-radius: 10px; padding: 8px 14px; font: 600 13px 'Inter', sans-serif; cursor: pointer;
+            text-decoration: none; transition: background .2s, border-color .2s;
+        }
+        .btn:hover { background: var(--card-hover); border-color: var(--accent); }
+        .btn.danger:hover { border-color: var(--hot); color: var(--hot); }
+        .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+        main { max-width: 1200px; margin: 0 auto; padding: 32px clamp(16px, 4vw, 40px) 64px; }
+        h1 { font-size: 26px; font-weight: 800; margin-bottom: 20px; }
+
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 28px; }
+        .stat { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+        .stat .num { font-size: 30px; font-weight: 800; }
+        .stat .lbl { color: var(--muted); font-size: 13px; font-weight: 600; }
+        .stat:nth-child(2) .num { color: var(--gold); }
+        .stat:nth-child(3) .num { color: var(--hot); }
+        .stat:nth-child(4) .num { color: var(--accent-2); }
+
+        .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+        .toolbar input, .toolbar select {
+            background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px;
+            padding: 10px 12px; color: var(--text); font: 14px 'Inter', sans-serif; outline: none;
+        }
+        .toolbar input { flex: 1; min-width: 200px; }
+        .toolbar input:focus, .toolbar select:focus { border-color: var(--accent); }
+
+        .table-wrap { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 760px; }
+        th, td { padding: 12px 16px; text-align: left; font-size: 14px; border-bottom: 1px solid var(--line); }
+        th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .5px; background: var(--bg-2); }
+        tr:last-child td { border-bottom: 0; }
+        tbody tr:hover { background: var(--card-hover); }
+        .name { font-weight: 700; }
+        .email { color: var(--muted); font-size: 13px; }
+        .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+        .pill.admin { background: rgba(255,77,141,.15); color: var(--hot); }
+        .pill.user { background: rgba(154,160,200,.15); color: var(--muted); }
+        .pill.premium { background: rgba(255,201,77,.15); color: var(--gold); }
+        .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .empty { text-align: center; color: var(--muted); padding: 40px; }
+
+        .gate { max-width: 460px; margin: 15vh auto; text-align: center; padding: 0 16px; }
+        .gate h2 { font-family: 'Press Start 2P', monospace; font-size: 18px; line-height: 1.5; margin-bottom: 14px; }
+        .gate p { color: var(--muted); margin-bottom: 20px; }
+        .hidden { display: none !important; }
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--card); border: 1px solid var(--accent); padding: 12px 18px; border-radius: 12px;
+            font-size: 14px; box-shadow: 0 12px 30px rgba(0,0,0,.5); opacity: 0; transition: opacity .25s; pointer-events: none;
+        }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div id="loading" class="gate"><p>Checking access…</p></div>
+
+    <div id="denied" class="gate hidden">
+        <h2>Admins only</h2>
+        <p>Your account doesn't have admin access.</p>
+        <a class="btn" href="index.html">Back to games</a>
+    </div>
+
+    <div id="app" class="hidden">
+        <nav class="navbar">
+            <a class="logo" href="index.html">Noam's <span>Game Hub</span><em>admin</em></a>
+            <div class="me">
+                <span id="meName"></span>
+                <button class="btn" id="logout">Log out</button>
+            </div>
+        </nav>
+
+        <main>
+            <h1>Users</h1>
+
+            <section class="stats">
+                <div class="stat"><div class="num" id="sTotal">0</div><div class="lbl">Total users</div></div>
+                <div class="stat"><div class="num" id="sPremium">0</div><div class="lbl">Premium</div></div>
+                <div class="stat"><div class="num" id="sAdmins">0</div><div class="lbl">Admins</div></div>
+                <div class="stat"><div class="num" id="sNew">0</div><div class="lbl">New this week</div></div>
+            </section>
+
+            <div class="toolbar">
+                <input type="search" id="search" placeholder="Search by name or email…" aria-label="Search users">
+                <select id="filter" aria-label="Filter users">
+                    <option value="all">All users</option>
+                    <option value="premium">Premium</option>
+                    <option value="free">Free</option>
+                    <option value="admin">Admins</option>
+                </select>
+                <button class="btn" id="refresh">↻ Refresh</button>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>User</th><th>Role</th><th>Plan</th><th>Joined</th><th>Last login</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="rows"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script type="module">
+        import { auth, db } from "./firebase-config.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, getDoc, getDocs, collection, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const $ = (id) => document.getElementById(id);
+        let me = null;
+        let users = [];
+
+        function toast(text) {
+            const t = $("toast");
+            t.textContent = text;
+            t.classList.add("show");
+            clearTimeout(toast.timer);
+            toast.timer = setTimeout(() => t.classList.remove("show"), 2200);
+        }
+        const toDate = (ts) => ts && ts.toDate ? ts.toDate() : null;
+        const fmt = (ts) => {
+            const d = toDate(ts);
+            return d ? d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : "—";
+        };
+        const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+        // ---- Access check ----
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { location.href = "login.html?next=admin.html"; return; }
+            try {
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if (!snap.exists() || snap.data().role !== "admin") throw new Error("not admin");
+                me = { uid: user.uid, ...snap.data() };
+                $("meName").textContent = me.name || user.email;
+                $("loading").classList.add("hidden");
+                $("app").classList.remove("hidden");
+                await load();
+            } catch {
+                $("loading").classList.add("hidden");
+                $("denied").classList.remove("hidden");
+            }
+        });
+
+        $("logout").addEventListener("click", async () => { await signOut(auth); location.href = "index.html"; });
+
+        // ---- Data ----
+        async function load() {
+            const snap = await getDocs(collection(db, "users"));
+            users = snap.docs.map(d => ({ uid: d.id, ...d.data() }))
+                .sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+            stats();
+            render();
+        }
+
+        function stats() {
+            const weekAgo = Date.now() - 7 * 864e5;
+            $("sTotal").textContent = users.length;
+            $("sPremium").textContent = users.filter(u => u.premium).length;
+            $("sAdmins").textContent = users.filter(u => u.role === "admin").length;
+            $("sNew").textContent = users.filter(u => (toDate(u.createdAt) || 0) > weekAgo).length;
+        }
+
+        function render() {
+            const q = $("search").value.trim().toLowerCase();
+            const f = $("filter").value;
+            const list = users.filter(u => {
+                const text = ((u.name || "") + " " + (u.email || "")).toLowerCase();
+                if (q && !text.includes(q)) return false;
+                if (f === "premium") return u.premium;
+                if (f === "free") return !u.premium;
+                if (f === "admin") return u.role === "admin";
+                return true;
+            });
+
+            $("rows").innerHTML = list.length ? list.map(u => {
+                const self = u.uid === me.uid;
+                return `<tr>
+                    <td><div class="name">${esc(u.name)}${self ? " (you)" : ""}</div><div class="email">${esc(u.email)}</div></td>
+                    <td><span class="pill ${u.role === "admin" ? "admin" : "user"}">${u.role === "admin" ? "Admin" : "User"}</span></td>
+                    <td>${u.premium ? '<span class="pill premium">★ Premium</span>' : '<span class="email">Free</span>'}</td>
+                    <td>${fmt(u.createdAt)}</td>
+                    <td>${fmt(u.lastLogin)}</td>
+                    <td class="actions">
+                        <button class="btn" data-act="premium" data-uid="${u.uid}">${u.premium ? "Remove premium" : "Give premium"}</button>
+                        <button class="btn" data-act="role" data-uid="${u.uid}" ${self ? "disabled" : ""}>${u.role === "admin" ? "Remove admin" : "Make admin"}</button>
+                        <button class="btn danger" data-act="delete" data-uid="${u.uid}" ${self ? "disabled" : ""}>Delete</button>
+                    </td>
+                </tr>`;
+            }).join("") : '<tr><td colspan="6" class="empty">No users found</td></tr>';
+        }
+
+        $("search").addEventListener("input", render);
+        $("filter").addEventListener("change", render);
+        $("refresh").addEventListener("click", async () => { await load(); toast("Refreshed"); });
+
+        // ---- Actions ----
+        $("rows").addEventListener("click", async (e) => {
+            const btn = e.target.closest("button[data-act]");
+            if (!btn || btn.disabled) return;
+            const u = users.find(x => x.uid === btn.dataset.uid);
+            if (!u) return;
+            const ref = doc(db, "users", u.uid);
+            btn.disabled = true;
+            try {
+                if (btn.dataset.act === "premium") {
+                    await updateDoc(ref, { premium: !u.premium });
+                    u.premium = !u.premium;
+                    toast(`${u.name} is now ${u.premium ? "Premium" : "Free"}`);
+                } else if (btn.dataset.act === "role") {
+                    const next = u.role === "admin" ? "user" : "admin";
+                    if (next === "admin" && !confirm(`Give ${u.name} full admin access?`)) { btn.disabled = false; return; }
+                    await updateDoc(ref, { role: next });
+                    u.role = next;
+                    toast(`${u.name} is now ${next === "admin" ? "an admin" : "a regular user"}`);
+                } else if (btn.dataset.act === "delete") {
+                    if (!confirm(`Delete ${u.name}'s profile? This can't be undone.`)) { btn.disabled = false; return; }
+                    await deleteDoc(ref);
+                    users = users.filter(x => x.uid !== u.uid);
+                    toast(`Deleted ${u.name}'s profile`);
+                }
+                stats();
+                render();
+            } catch (err) {
+                toast("Failed: " + (err.code || err.message));
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
