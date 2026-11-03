@@ -360,6 +360,7 @@ function drawPacman() {
 }
 
 function endGame(won) {
+    if (window.GameHub) window.GameHub.saveScore(score);
     gameRunning = false;
     gamePaused = false;
     clearInterval(gameLoopId);

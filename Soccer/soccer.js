@@ -189,6 +189,7 @@ function updateDisplay() {
 }
 
 function endGame() {
+    if (window.GameHub) window.GameHub.saveScore(playerScore);
     gameRunning = false;
     clearInterval(gameLoopId);
     

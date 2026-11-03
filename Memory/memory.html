@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RX7DB1FEWY"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RX7DB1FEWY');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match · Noam's Game Hub</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/game-shell.css">
+    <style>
+        .wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        .levels { display: flex; gap: 8px; }
+        .levels button { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--muted); font: 600 14px Inter, sans-serif; cursor: pointer; }
+        .levels button.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+        .grid { display: grid; gap: 10px; grid-template-columns: repeat(var(--cols), 1fr); width: min(92vw, calc(var(--cols) * 96px)); position: relative; }
+        .card { aspect-ratio: 3 / 4; perspective: 600px; cursor: pointer; }
+        .inner { position: relative; width: 100%; height: 100%; transition: transform .35s; transform-style: preserve-3d; }
+        .card.open .inner, .card.done .inner { transform: rotateY(180deg); }
+        .face { position: absolute; inset: 0; border-radius: 12px; display: grid; place-items: center; backface-visibility: hidden; }
+        .fb { background: linear-gradient(135deg, #7c5cff, #2ee6c9); border: 2px solid #ffffff22; }
+        .fb::after { content: "?"; font-family: 'Press Start 2P', monospace; color: #ffffffaa; font-size: 18px; }
+        .front { background: var(--card); border: 2px solid var(--line); transform: rotateY(180deg); font-size: clamp(26px, 7vw, 40px); }
+        .card.done .front { border-color: var(--accent-2); background: #12352f; }
+        .grid .overlay { border-radius: 12px; }
+    </style>
+</head>
+<body>
+    <div class="gbar">
+        <a class="back" href="/">← Games</a>
+        <h1>Memory <span>Match</span></h1>
+        <div class="stats">
+            <div class="stat"><b id="moves">0</b><small>Moves</small></div>
+            <div class="stat"><b id="time">0</b><small>Seconds</small></div>
+            <div class="stat"><b id="best">0</b><small>Best</small></div>
+        </div>
+    </div>
+    <div class="stage">
+        <div class="wrap">
+            <div class="levels">
+                <button data-pairs="6">Easy</button>
+                <button data-pairs="8" class="active">Normal</button>
+                <button data-pairs="12">Hard</button>
+            </div>
+            <div class="grid" id="grid"></div>
+            <div class="overlay hidden" id="over" style="position:fixed"><div>
+                <h2>All matched! 🎉</h2>
+                <p id="final"></p>
+                <button class="btn" id="againBtn">↻ Play again</button>
+            </div></div>
+        </div>
+    </div>
+    <p class="hint">Flip two cards at a time. Fewer moves and less time = more points.</p>
+
+    <script>
+    (() => {
+        const $ = (id) => document.getElementById(id);
+        const EMOJI = ["🍕", "🚀", "🐙", "🎸", "🌵", "🦊", "⚽", "🍩", "🐢", "🎈", "👾", "🌈", "🍉", "🦄", "🎲", "🔥"];
+        let pairs = 8, first = null, lock = false, moves, matched, start, timer;
+        let best = +localStorage.getItem("memoryBest") || 0; $("best").textContent = best;
+
+        function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+        function newGame() {
+            clearInterval(timer); first = null; lock = false; moves = 0; matched = 0; start = 0;
+            $("moves").textContent = 0; $("time").textContent = 0; $("over").classList.add("hidden");
+            const pick = shuffle([...EMOJI]).slice(0, pairs);
+            const deck = shuffle([...pick, ...pick]);
+            const grid = $("grid");
+            grid.style.setProperty("--cols", pairs === 6 ? 4 : pairs === 8 ? 4 : 6);
+            grid.innerHTML = "";
+            deck.forEach((e) => {
+                const card = document.createElement("div");
+                card.className = "card"; card.dataset.e = e;
+                card.innerHTML = `<div class="inner"><div class="face fb"></div><div class="face front">${e}</div></div>`;
+                card.addEventListener("click", () => flip(card));
+                grid.appendChild(card);
+            });
+        }
+
+        function flip(card) {
+            if (lock || card.classList.contains("open") || card.classList.contains("done")) return;
+            if (!start) { start = Date.now(); timer = setInterval(() => ($("time").textContent = Math.floor((Date.now() - start) / 1000)), 250); }
+            card.classList.add("open"); beep(600, 0.03);
+            if (!first) { first = card; return; }
+            moves++; $("moves").textContent = moves;
+            if (first.dataset.e === card.dataset.e) {
+                first.classList.add("done"); card.classList.add("done");
+                first.classList.remove("open"); card.classList.remove("open");
+                first = null; matched++; beep(880, 0.08);
+                if (matched === pairs) win();
+            } else {
+                lock = true;
+                setTimeout(() => { first.classList.remove("open"); card.classList.remove("open"); first = null; lock = false; }, 750);
+            }
+        }
+
+        function win() {
+            clearInterval(timer);
+            const secs = Math.floor((Date.now() - start) / 1000);
+            const score = Math.max(10, Math.round(pairs * 100 - (moves - pairs) * 15 - secs * 3));
+            if (score > best) { best = score; localStorage.setItem("memoryBest", best); $("best").textContent = best; }
+            $("final").textContent = `${moves} moves · ${secs}s · score ${score}`;
+            setTimeout(() => $("over").classList.remove("hidden"), 400);
+            window.GameHub && window.GameHub.saveScore(score);
+        }
+
+        document.querySelectorAll(".levels button").forEach((b) => b.addEventListener("click", () => {
+            document.querySelectorAll(".levels button").forEach((x) => x.classList.toggle("active", x === b));
+            pairs = +b.dataset.pairs; newGame();
+        }));
+        $("againBtn").onclick = newGame;
+
+        let ac;
+        function beep(f, d) {
+            try {
+                ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+                const o = ac.createOscillator(), g = ac.createGain();
+                o.frequency.value = f; o.type = "sine"; g.gain.value = 0.06;
+                g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + d);
+                o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + d);
+            } catch (e) {}
+        }
+        newGame();
+    })();
+    </script>
+    <script type="module" src="/hub.js"></script>
+</body>
+</html>

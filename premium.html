@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RX7DB1FEWY"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RX7DB1FEWY');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Premium · Noam's Game Hub</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/game-shell.css">
+    <style>
+        body { -webkit-user-select: auto; user-select: auto; }
+        main { max-width: 760px; margin: 0 auto; padding: clamp(32px, 7vw, 72px) 16px 64px; width: 100%; }
+        .hero { text-align: center; margin-bottom: 32px; }
+        .hero .star { font-size: 56px; color: var(--gold); }
+        .hero h2 { font-family: 'Press Start 2P', monospace; font-size: clamp(18px, 4vw, 28px); line-height: 1.5; margin: 10px 0 12px; }
+        .hero p { color: var(--muted); font-size: 17px; }
+        .plan {
+            background: linear-gradient(135deg, rgba(255,201,77,.14), rgba(124,92,255,.14));
+            border: 1px solid rgba(255,201,77,.45); border-radius: 22px; padding: clamp(22px, 5vw, 36px);
+        }
+        .price { display: flex; align-items: baseline; gap: 10px; justify-content: center; margin-bottom: 6px; }
+        .price b { font-size: 56px; font-weight: 800; }
+        .price span { color: var(--muted); font-weight: 600; }
+        .once { text-align: center; color: var(--gold); font-weight: 700; margin-bottom: 22px; }
+        ul.perks { list-style: none; display: grid; gap: 10px; margin-bottom: 26px; }
+        ul.perks li { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+        .games { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .games span { background: #ffc94d22; color: var(--gold); border-radius: 999px; padding: 3px 10px; font-size: 13px; font-weight: 700; }
+        .how { margin-top: 28px; }
+        .how h3 { font-size: 18px; margin-bottom: 12px; }
+        .how ol { color: var(--muted); padding-left: 22px; display: grid; gap: 8px; line-height: 1.5; }
+        .how b { color: var(--text); }
+        .cta { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .status { text-align: center; font-weight: 600; padding: 12px 16px; border-radius: 12px; }
+        .status.ok { background: #2ee6a022; color: #2ee6a0; }
+        .status.wait { background: #ffc94d22; color: var(--gold); }
+        a { color: var(--accent-2); }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="gbar">
+        <a class="back" href="/">← Games</a>
+        <h1>Game Hub <span>Premium</span></h1>
+        <a class="back" href="/profile">👤 Profile</a>
+    </div>
+    <main>
+        <section class="hero">
+            <div class="star">★</div>
+            <h2>Go Premium</h2>
+            <p>One payment. Yours forever.</p>
+        </section>
+
+        <section class="plan">
+            <div class="price"><b>₪10</b><span>lifetime</span></div>
+            <div class="once">Pay once · no subscription</div>
+            <ul class="perks">
+                <li>🚫 <b>No ads</b> anywhere on the Game Hub</li>
+                <li>★ <b>Unlock every Premium game</b><div class="games" id="premGames"></div></li>
+                <li>🏆 A gold ★ next to your name</li>
+            </ul>
+            <div class="cta">
+                <div class="status ok hidden" id="isPrem">★ You already have Premium. Thanks for supporting the hub!</div>
+                <div class="status wait hidden" id="isWaiting">⏳ Request sent! Pay Noam ₪10 and he'll switch it on.</div>
+                <button class="btn" id="requestBtn">★ Request Premium</button>
+                <a class="btn hidden" id="loginBtn" href="/login?next=/premium" style="text-decoration:none">Log in to get Premium</a>
+            </div>
+
+            <div class="how">
+                <h3>How it works</h3>
+                <ol>
+                    <li>Log in (or make a free account) and press <b>Request Premium</b>.</li>
+                    <li>Pay <b>Noam ₪10 in cash</b>.</li>
+                    <li>Noam turns on Premium for your account. Refresh the page and you're in.</li>
+                </ol>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { db } from "/firebase-config.js";
+        import { doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { GAMES, onAccount, isPremium } from "/hub.js";
+        const $ = (id) => document.getElementById(id);
+
+        onAccount(({ user, profile, premiumGames }) => {
+            $("premGames").innerHTML = premiumGames.filter((id) => GAMES[id]).map((id) => `<span>${GAMES[id].name}</span>`).join("");
+            const prem = isPremium(profile), waiting = !prem && profile?.premiumRequested;
+            $("isPrem").classList.toggle("hidden", !prem);
+            $("isWaiting").classList.toggle("hidden", !waiting);
+            $("requestBtn").classList.toggle("hidden", !user || prem || waiting);
+            $("loginBtn").classList.toggle("hidden", !!user);
+        });
+
+        $("requestBtn").addEventListener("click", async () => {
+            const btn = $("requestBtn"); btn.disabled = true;
+            try {
+                const { state } = await import("/hub.js");
+                await updateDoc(doc(db, "users", state.user.uid), { premiumRequested: true, premiumRequestedAt: serverTimestamp() });
+                state.profile = { ...(state.profile || {}), premiumRequested: true };
+                btn.classList.add("hidden"); $("isWaiting").classList.remove("hidden");
+            } catch (e) { btn.disabled = false; alert("Couldn't send the request: " + (e.code || e.message)); }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RX7DB1FEWY"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RX7DB1FEWY');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breakout · Noam's Game Hub</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/game-shell.css">
+</head>
+<body>
+    <div class="gbar">
+        <a class="back" href="/">← Games</a>
+        <h1><span>Breakout</span></h1>
+        <div class="stats">
+            <div class="stat"><b id="score">0</b><small>Score</small></div>
+            <div class="stat"><b id="lives">3</b><small>Lives</small></div>
+            <div class="stat"><b id="level">1</b><small>Level</small></div>
+        </div>
+    </div>
+    <div class="stage">
+        <div class="frame">
+            <canvas id="c" width="640" height="560"></canvas>
+            <div class="overlay" id="start"><div>
+                <h2>Breakout</h2>
+                <p>Move with the mouse, ⬅ ➡ or your finger.<br>Click / Space to launch. Smash every brick!</p>
+                <button class="btn" id="startBtn">▶ Play</button>
+            </div></div>
+            <div class="overlay hidden" id="over"><div>
+                <h2 id="overTitle">Game Over</h2>
+                <p id="final"></p>
+                <button class="btn" id="againBtn">↻ Play again</button>
+            </div></div>
+        </div>
+    </div>
+    <p class="hint">Best: <b id="best">0</b> · Gold bricks take two hits · catch the ★ for a wider paddle</p>
+
+    <script>
+    (() => {
+        const cv = document.getElementById("c"), ctx = cv.getContext("2d");
+        const W = cv.width, H = cv.height, $ = (id) => document.getElementById(id);
+        const ROWS_COLORS = ["#ff4d8d", "#ff9d4d", "#ffc94d", "#2ee6a0", "#2ee6c9", "#7c5cff"];
+        let best = +localStorage.getItem("breakoutBest") || 0; $("best").textContent = best;
+        let paddle, ball, bricks, score, lives, level, running, stuck, keys = {}, powers, last;
+
+        function buildLevel() {
+            bricks = [];
+            const cols = 10, rows = Math.min(6 + level - 1, 9), bw = (W - 40) / cols;
+            for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+                if (level > 1 && (r + c + level) % 7 === 0) continue;
+                const tough = level > 1 && Math.random() < 0.12 + level * 0.03;
+                bricks.push({ x: 20 + c * bw, y: 60 + r * 26, w: bw - 4, h: 20, hp: tough ? 2 : 1, color: ROWS_COLORS[r % 6] });
+            }
+        }
+        function resetBall() {
+            stuck = true;
+            ball = { x: paddle.x, y: paddle.y - 10, r: 8, vx: 0, vy: 0, speed: 6 + level * 0.6 };
+        }
+        function newGame() {
+            score = 0; lives = 3; level = 1; powers = [];
+            paddle = { x: W / 2, y: H - 30, w: 100, wide: 0 };
+            buildLevel(); resetBall(); hud();
+        }
+        function hud() { $("score").textContent = score; $("lives").textContent = lives; $("level").textContent = level; }
+
+        function launch() {
+            if (!stuck) return;
+            stuck = false;
+            const a = -Math.PI / 2 + (Math.random() - 0.5) * 0.8;
+            ball.vx = Math.cos(a) * ball.speed; ball.vy = Math.sin(a) * ball.speed;
+        }
+
+        function update(k) {
+            if (keys.left) paddle.x -= 9 * k;
+            if (keys.right) paddle.x += 9 * k;
+            if (paddle.wide > 0) paddle.wide -= k;
+            paddle.w = paddle.wide > 0 ? 160 : 100;
+            paddle.x = Math.max(paddle.w / 2, Math.min(W - paddle.w / 2, paddle.x));
+            if (stuck) { ball.x = paddle.x; ball.y = paddle.y - 12; return; }
+
+            const steps = 3;
+            for (let s = 0; s < steps; s++) {
+                ball.x += ball.vx * k / steps; ball.y += ball.vy * k / steps;
+                if (ball.x < ball.r) { ball.x = ball.r; ball.vx *= -1; }
+                if (ball.x > W - ball.r) { ball.x = W - ball.r; ball.vx *= -1; }
+                if (ball.y < ball.r) { ball.y = ball.r; ball.vy *= -1; }
+                // paddle
+                if (ball.vy > 0 && ball.y + ball.r >= paddle.y && ball.y + ball.r <= paddle.y + 14 &&
+                    Math.abs(ball.x - paddle.x) <= paddle.w / 2 + ball.r) {
+                    const hitPos = (ball.x - paddle.x) / (paddle.w / 2);
+                    const a = -Math.PI / 2 + hitPos * 1.05;
+                    ball.vx = Math.cos(a) * ball.speed; ball.vy = Math.sin(a) * ball.speed;
+                    beep(330, 0.04);
+                }
+                // bricks
+                for (const b of bricks) {
+                    if (b.hp <= 0) continue;
+                    const cx = Math.max(b.x, Math.min(ball.x, b.x + b.w)), cy = Math.max(b.y, Math.min(ball.y, b.y + b.h));
+                    if ((ball.x - cx) ** 2 + (ball.y - cy) ** 2 > ball.r ** 2) continue;
+                    const overlapX = Math.min(ball.x + ball.r - b.x, b.x + b.w - (ball.x - ball.r));
+                    const overlapY = Math.min(ball.y + ball.r - b.y, b.y + b.h - (ball.y - ball.r));
+                    if (overlapX < overlapY) ball.vx *= -1; else ball.vy *= -1;
+                    b.hp--;
+                    score += b.hp > 0 ? 5 : 10 * level; hud();
+                    beep(b.hp > 0 ? 440 : 660, 0.04);
+                    if (b.hp <= 0 && Math.random() < 0.08) powers.push({ x: b.x + b.w / 2, y: b.y });
+                    break;
+                }
+            }
+            ball.speed = Math.min(13, ball.speed + 0.0008 * k);
+            const sp = Math.hypot(ball.vx, ball.vy) || 1;
+            ball.vx = ball.vx / sp * ball.speed; ball.vy = ball.vy / sp * ball.speed;
+
+            powers.forEach((p) => (p.y += 3 * k));
+            powers = powers.filter((p) => {
+                if (p.y > paddle.y - 10 && p.y < paddle.y + 14 && Math.abs(p.x - paddle.x) < paddle.w / 2 + 10) { paddle.wide = 600; beep(990, 0.12); return false; }
+                return p.y < H;
+            });
+
+            if (ball.y > H + 20) {
+                lives--; hud(); beep(140, 0.25);
+                if (lives <= 0) return end(false);
+                resetBall();
+            }
+            if (bricks.every((b) => b.hp <= 0)) {
+                level++; score += 100; hud(); beep(880, 0.2);
+                buildLevel(); powers = []; resetBall();
+            }
+        }
+
+        function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.fill(); }
+        function draw() {
+            ctx.fillStyle = "#12152b"; ctx.fillRect(0, 0, W, H);
+            for (const b of bricks) {
+                if (b.hp <= 0) continue;
+                ctx.fillStyle = b.hp > 1 ? "#ffd700" : b.color; roundRect(b.x, b.y, b.w, b.h, 5);
+                ctx.fillStyle = "rgba(255,255,255,.18)"; ctx.fillRect(b.x + 3, b.y + 3, b.w - 6, 4);
+            }
+            powers.forEach((p) => { ctx.fillStyle = "#ffc94d"; ctx.font = "20px sans-serif"; ctx.textAlign = "center"; ctx.fillText("★", p.x, p.y); });
+            ctx.fillStyle = paddle.wide > 0 ? "#ffc94d" : "#2ee6c9";
+            roundRect(paddle.x - paddle.w / 2, paddle.y, paddle.w, 12, 6);
+            ctx.fillStyle = "#eef0ff"; ctx.shadowColor = "#7c5cff"; ctx.shadowBlur = 14;
+            ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+            if (stuck && running) {
+                ctx.fillStyle = "#9aa0c8"; ctx.font = "600 15px Inter, sans-serif"; ctx.textAlign = "center";
+                ctx.fillText("Click or press Space to launch", W / 2, H / 2 + 60);
+            }
+        }
+
+        function loop(now) {
+            if (!running) return;
+            const k = Math.min(3, (now - last) / 16.67); last = now;
+            update(k); draw(); if (running) requestAnimationFrame(loop);
+        }
+        function end() {
+            running = false; draw();
+            if (score > best) { best = score; localStorage.setItem("breakoutBest", best); $("best").textContent = best; }
+            $("final").textContent = `Score ${score} · reached level ${level}`;
+            $("over").classList.remove("hidden");
+            window.GameHub && window.GameHub.saveScore(score);
+        }
+        function start() {
+            newGame(); running = true; last = performance.now();
+            $("start").classList.add("hidden"); $("over").classList.add("hidden");
+            requestAnimationFrame(loop);
+        }
+
+        function toCanvasX(clientX) { const r = cv.getBoundingClientRect(); return (clientX - r.left) * (W / r.width); }
+        cv.addEventListener("pointermove", (e) => { if (paddle) paddle.x = toCanvasX(e.clientX); });
+        cv.addEventListener("pointerdown", (e) => { if (paddle) paddle.x = toCanvasX(e.clientX); launch(); });
+        addEventListener("keydown", (e) => {
+            if (e.code === "ArrowLeft" || e.code === "KeyA") keys.left = true;
+            if (e.code === "ArrowRight" || e.code === "KeyD") keys.right = true;
+            if (e.code === "Space") { e.preventDefault(); running ? launch() : start(); }
+        });
+        addEventListener("keyup", (e) => {
+            if (e.code === "ArrowLeft" || e.code === "KeyA") keys.left = false;
+            if (e.code === "ArrowRight" || e.code === "KeyD") keys.right = false;
+        });
+        $("startBtn").onclick = start; $("againBtn").onclick = start;
+
+        let ac;
+        function beep(f, d) {
+            try {
+                ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+                const o = ac.createOscillator(), g = ac.createGain();
+                o.frequency.value = f; o.type = "triangle"; g.gain.value = 0.06;
+                g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + d);
+                o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + d);
+            } catch (e) {}
+        }
+        newGame(); draw();
+    })();
+    </script>
+    <script type="module" src="/hub.js"></script>
+</body>
+</html>

@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8671583156732584"
-     crossorigin="anonymous"></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RX7DB1FEWY"></script>
     <script>
@@ -15,12 +13,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Noam's Game Hub — free browser games: Noametry, Tetris, Snake, Flappy Bird and more.">
     <title>Noam's Game Hub</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <script src="script.js"></script>
-    <style>
+        <style>
         :root {
             --bg: #0b0d1a;
             --bg-2: #12152b;
@@ -73,6 +70,7 @@
         }
         .navbar ul a:hover, .navbar ul a:focus-visible { background: var(--card); color: var(--text); outline: none; }
         .navbar ul a.active { background: var(--accent); color: #fff; }
+        .navbar ul a.prem-link { color: #ffc94d; }
         .navbar ul a.danger:hover { background: var(--hot); color: #fff; }
         .menu-btn {
             display: none; background: var(--card); color: var(--text);
@@ -213,6 +211,10 @@
             background: rgba(11,13,26,.8); border: 1px solid var(--line);
         }
         .tag.original { background: var(--hot); border-color: var(--hot); color: #fff; }
+        .tag.new { background: var(--accent-2); border-color: var(--accent-2); color: #0b0d1a; }
+        .tag.prem { left: auto; right: 10px; background: #ffc94d; border-color: #ffc94d; color: #0b0d1a; }
+        .card.locked .thumb img { filter: grayscale(.6) brightness(.7); }
+        .card.locked .thumb::after { content: '★ PREMIUM'; }
         .card-body { padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
         .card h3 { font-size: 18px; font-weight: 800; }
         .card p { color: var(--muted); font-size: 14px; }
@@ -255,18 +257,19 @@
 </head>
 <body>
     <nav class="navbar" id="navbar">
-        <a class="logo" href="index.html">
-            <img src="favicon.png" alt="" onerror="this.style.display='none'">
+        <a class="logo" href="/">
+            <img src="/favicon.png" alt="" onerror="this.style.display='none'">
             Noam's <span>Game Hub</span>
         </a>
         <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
         <ul id="navLinks">
-            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="/" class="active">Home</a></li>
             <li><a href="#games">Games</a></li>
-            <li><a href="Websites/index.html">Websites</a></li>
-            <li><a href="mybio.html">My Bio</a></li>
+            <li><a href="/Websites/">Websites</a></li>
+            <li><a href="/mybio">My Bio</a></li>
+            <li><a href="/premium" class="prem-link">★ Premium</a></li>
             <li class="account" id="account">
-                <a href="login.html" class="login-btn" id="loginBtn">Log in</a>
+                <a href="/login" class="login-btn" id="loginBtn">Log in</a>
                 <div class="user-menu hidden" id="userMenu">
                     <button class="user-btn" id="userBtn" aria-haspopup="true" aria-expanded="false">
                         <span class="avatar" id="userAvatar">?</span>
@@ -275,7 +278,8 @@
                         <span aria-hidden="true">▾</span>
                     </button>
                     <div class="dropdown" id="dropdown" role="menu">
-                        <a href="admin.html" class="hidden" id="adminLink" role="menuitem">🛠️ Admin dashboard</a>
+                        <a href="/profile" role="menuitem">👤 My profile</a>
+                        <a href="/admin" class="hidden" id="adminLink" role="menuitem">🛠️ Admin dashboard</a>
                         <button id="logoutBtn" role="menuitem">Log out</button>
                     </div>
                 </div>
@@ -284,30 +288,30 @@
     </nav>
 
     <header class="hero">
-        <div class="badge">🎮 11 free games · no downloads</div>
+        <div class="badge">🎮 <span id="gameCount">16</span> games · no downloads · free account saves your scores</div>
         <h1>Welcome to<br>Noam's Game Hub!</h1>
         <p>A collection of my favorite games and websites that I've created or enjoy. Pick a game, hit play, and have fun!</p>
         <div class="hero-actions">
             <a class="btn btn-primary" href="#games">▶ Browse games</a>
-            <a class="btn btn-ghost" href="Noametry/noametry.html">Try Noametry</a>
+            <a class="btn btn-ghost" href="/Noametry/noametry">Try Noametry</a>
         </div>
     </header>
 
     <main class="section">
         <!-- Featured -->
         <section class="featured" aria-label="Featured game">
-            <div class="f-img"><img src="Noametry.png" alt="Noametry Game Image" onerror="this.style.display='none'"></div>
+            <div class="f-img"><img src="/Noametry.png" alt="Noametry Game Image" onerror="this.style.display='none'"></div>
             <div class="f-body">
                 <span class="tag original" style="position:static;align-self:flex-start">★ Featured · Original</span>
                 <h2>Noametry</h2>
                 <p>A fun and challenging puzzle game where you solve geometric puzzles to progress through levels.</p>
-                <a class="btn btn-primary" href="Noametry/noametry.html">▶ Play Noametry</a>
+                <a class="btn btn-primary" href="/Noametry/noametry">▶ Play Noametry</a>
             </div>
         </section>
 
         <!-- All games -->
         <div class="section-head" id="games">
-            <h2>All Games <small id="count">11 games</small></h2>
+            <h2>All Games <small id="count"></small></h2>
             <label class="search">
                 <span aria-hidden="true">🔍</span>
                 <input type="search" id="search" placeholder="Search games…" aria-label="Search games">
@@ -321,131 +325,81 @@
             <button class="chip" data-filter="runner">Runner</button>
             <button class="chip" data-filter="platformer">Platformer</button>
             <button class="chip" data-filter="sports">Sports</button>
+            <button class="chip" data-filter="premium">★ Premium</button>
         </div>
 
-        <div class="grid" id="grid">
-            <a class="card" id="game1" href="Noametry/noametry.html" data-tags="puzzle">
-                <div class="thumb"><span class="tag original">Original</span><img src="Noametry.png" alt="Noametry Game Image" loading="lazy"></div>
-                <div class="card-body"><h3>Noametry</h3><p>Solve geometric puzzles to progress through levels.</p></div>
-            </a>
-            <a class="card" id="game2" href="FlappyBird/flappybird.html" data-tags="arcade">
-                <div class="thumb"><span class="tag">Arcade</span><img src="FlappyBird.jpeg" alt="Flappy Bird Game Image" loading="lazy"></div>
-                <div class="card-body"><h3>Flappy Bird</h3><p>Simple yet addictive — guide the bird through the pipes.</p></div>
-            </a>
-            <a class="card" id="game3" href="SubwaySurfer/subwaysurf.html" data-tags="runner">
-                <div class="thumb"><span class="tag">Runner</span><img src="subwaysurf.jpeg" alt="Subway Surfer Game Image" loading="lazy"></div>
-                <div class="card-body"><h3>Subway Surfer</h3><p>Endless runner — run and jump over obstacles.</p></div>
-            </a>
-            <a class="card" id="game4" href="Snake/snake.html" data-tags="arcade">
-                <div class="thumb"><span class="tag">Arcade</span><img src="snake.jpeg" alt="Snake Game Image" loading="lazy"></div>
-                <div class="card-body"><h3>Snake</h3><p>The classic — eat food and grow longer.</p></div>
-            </a>
-            <a class="card" id="game5" href="Pacman/pacman.html" data-tags="arcade">
-                <div class="thumb"><span class="tag">Arcade</span><img src="pacman.jpeg" alt="Pacman Game Image" loading="lazy"></div>
-                <div class="card-body"><h3>Pacman</h3><p>Eat all the dots and avoid the ghosts.</p></div>
-            </a>
-            <a class="card" id="game6" href="DinoGame/dinogame.html" data-tags="runner arcade">
-                <div class="thumb"><span class="tag">Runner</span><img src="dinogame.jpeg" alt="Dino Game Image" loading="lazy"></div>
-                <div class="card-body"><h3>Dino Game</h3><p>Jump the dinosaur over cacti and dodge birds.</p></div>
-            </a>
-            <a class="card" id="game7" href="Mario/mario.html" data-tags="platformer">
-                <div class="thumb"><span class="tag">Platformer</span><img src="mario.jpeg" alt="Mario Game Image" loading="lazy"></div>
-                <div class="card-body"><h3>Mario</h3><p>Classic platformer — stomp enemies and collect coins.</p></div>
-            </a>
-            <a class="card" id="game8" href="Tetris/tetris.html" data-tags="puzzle">
-                <div class="thumb"><span class="tag">Puzzle</span><img src="tetris.jpeg" alt="Tetris Game Image" loading="lazy"></div>
-                <div class="card-body"><h3>Tetris</h3><p>Arrange falling blocks to clear lines.</p></div>
-            </a>
-            <a class="card" id="game9" href="MotorRacing/motorracing.html" data-tags="sports">
-                <div class="thumb"><span class="tag">Racing</span><img src="motorracing.jpeg" alt="Motor Racing Game Image" loading="lazy"></div>
-                <div class="card-body"><h3>Motor Racing</h3><p>Race against other drivers to the finish line.</p></div>
-            </a>
-            <a class="card" id="game10" href="Soccer/soccer.html" data-tags="sports">
-                <div class="thumb"><span class="tag">Sports</span><img src="soccer.jpeg" alt="Soccer Game Image" loading="lazy"></div>
-                <div class="card-body"><h3>Soccer</h3><p>Score goals against the opposing team.</p></div>
-            </a>
-            <a class="card" id="game11" href="BubbleBobble/bubblebobble.html" data-tags="arcade">
-                <div class="thumb"><span class="tag">Arcade</span><img src="BubbleBobble.jpeg" alt="Bubble Bobble Game Image" loading="lazy"></div>
-                <div class="card-body"><h3>Bubble Bobble</h3><p>Blow bubbles to trap and defeat monsters.</p></div>
-            </a>
-        </div>
+        <div class="grid" id="grid"></div>
         <p class="empty" id="empty">No games match your search 😕</p>
     </main>
 
     <footer>
-        Made with ❤️ by Noam · <a href="mybio.html">About me</a> · <a href="Websites/index.html">More websites</a>
+        Made with ❤️ by Noam · <a href="/mybio">About me</a> · <a href="/Websites/">More websites</a> · <a href="/premium">Premium</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a>
     </footer>
 
-    <script>
-    (function () {
-        // Hide broken thumbnails so the gradient shows instead
-        document.querySelectorAll('.thumb img').forEach(function (img) {
-            img.addEventListener('error', function () { img.style.display = 'none'; });
-        });
-
-        // Mobile menu
-        var btn = document.getElementById('menuBtn');
-        var links = document.getElementById('navLinks');
-        btn.addEventListener('click', function () {
-            var open = links.classList.toggle('open');
-            btn.setAttribute('aria-expanded', open);
-        });
-
-        // Search + category filter
-        var cards = Array.prototype.slice.call(document.querySelectorAll('#grid .card'));
-        var search = document.getElementById('search');
-        var chips = document.querySelectorAll('.chip');
-        var count = document.getElementById('count');
-        var empty = document.getElementById('empty');
-        var filter = 'all';
-
-        function apply() {
-            var q = search.value.trim().toLowerCase();
-            var shown = 0;
-            cards.forEach(function (c) {
-                var matchText = c.textContent.toLowerCase().indexOf(q) !== -1;
-                var matchTag = filter === 'all' || (c.dataset.tags || '').split(' ').indexOf(filter) !== -1;
-                var show = matchText && matchTag;
-                c.style.display = show ? '' : 'none';
-                if (show) shown++;
-            });
-            count.textContent = shown + (shown === 1 ? ' game' : ' games');
-            empty.style.display = shown ? 'none' : 'block';
-        }
-
-        search.addEventListener('input', apply);
-        chips.forEach(function (chip) {
-            chip.addEventListener('click', function () {
-                chips.forEach(function (c) { c.classList.remove('active'); });
-                chip.classList.add('active');
-                filter = chip.dataset.filter;
-                apply();
-            });
-        });
-    })();
-    </script>
-
-    <!-- Login state in the navbar -->
     <script type="module">
-        import { auth, db } from "./firebase-config.js";
-        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { GAMES, DEFAULT_PREMIUM } from "/games.js";
+        // Firebase-powered parts load afterwards; the game list works even if they're blocked
+        let isPremiumGame = (id) => DEFAULT_PREMIUM.includes(id), isLockedGame = isPremiumGame;
 
         const $ = (id) => document.getElementById(id);
+        const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+        const ids = Object.keys(GAMES);
+        $("gameCount").textContent = ids.length;
+
+        // ---------- Game grid ----------
+        let filter = "all";
+        function renderGrid() {
+            $("grid").innerHTML = ids.map((id) => {
+                const g = GAMES[id], prem = isPremiumGame(id), locked = isLockedGame(id);
+                const tag = g.original ? '<span class="tag original">Original</span>'
+                          : g.isNew ? '<span class="tag new">New</span>'
+                          : `<span class="tag">${esc(g.tags[0])}</span>`;
+                return `<a class="card${locked ? " locked" : ""}" href="${g.path}" data-tags="${g.tags.join(" ")}${prem ? " premium" : ""}">
+                    <div class="thumb">${tag}${prem ? '<span class="tag prem">★ Premium</span>' : ""}
+                        <img src="${g.img}" alt="${esc(g.name)}" loading="lazy" onerror="this.style.display='none'"></div>
+                    <div class="card-body"><h3>${esc(g.name)}</h3><p>${esc(g.desc)}</p></div>
+                </a>`;
+            }).join("");
+            apply();
+        }
+        function apply() {
+            const q = $("search").value.trim().toLowerCase();
+            let shown = 0;
+            $("grid").querySelectorAll(".card").forEach((c) => {
+                const ok = c.textContent.toLowerCase().includes(q) && (filter === "all" || c.dataset.tags.split(" ").includes(filter));
+                c.style.display = ok ? "" : "none"; if (ok) shown++;
+            });
+            $("count").textContent = shown + (shown === 1 ? " game" : " games");
+            $("empty").style.display = shown ? "none" : "block";
+        }
+        $("search").addEventListener("input", apply);
+        document.querySelectorAll(".chip").forEach((chip) => chip.addEventListener("click", () => {
+            document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === chip));
+            filter = chip.dataset.filter; apply();
+        }));
+        renderGrid();
+
+        // ---------- Mobile menu ----------
+        $("menuBtn").addEventListener("click", () => {
+            const open = $("navLinks").classList.toggle("open");
+            $("menuBtn").setAttribute("aria-expanded", open);
+        });
+
+        // ---------- Account ----------
         const menu = $("userMenu");
-
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                $("loginBtn").classList.remove("hidden");
-                menu.classList.add("hidden");
-                return;
-            }
-            let profile = {};
-            try {
-                const snap = await getDoc(doc(db, "users", user.uid));
-                if (snap.exists()) profile = snap.data();
-            } catch (e) { /* show the basics even if the profile can't load */ }
-
+        let hubMod, fbAuth, authMod;
+        try {
+            [hubMod, fbAuth, authMod] = await Promise.all([
+                import("/hub.js"), import("/firebase-config.js"),
+                import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js")]);
+        } catch (e) { console.warn("Accounts unavailable", e); }
+        if (hubMod) {
+        const { onAccount, isPremium } = hubMod;
+        isPremiumGame = hubMod.isPremiumGame; isLockedGame = hubMod.isLockedGame;
+        onAccount(({ user, profile }) => {
+            renderGrid();
+            if (!user) { $("loginBtn").classList.remove("hidden"); menu.classList.add("hidden"); return; }
+            profile = profile || {};
             const name = profile.name || user.displayName || user.email.split("@")[0];
             $("userName").textContent = name;
             const avatar = $("userAvatar");
@@ -453,30 +407,20 @@
                 avatar.textContent = "";
                 const img = document.createElement("img");
                 img.src = user.photoURL; img.alt = ""; img.referrerPolicy = "no-referrer";
-                avatar.appendChild(img);
-            } else {
-                avatar.textContent = name.charAt(0).toUpperCase();
-            }
-            $("premiumStar").classList.toggle("hidden", !profile.premium);
+                avatar.replaceChildren(img);
+            } else avatar.textContent = name.charAt(0).toUpperCase();
+            $("premiumStar").classList.toggle("hidden", !isPremium(profile));
             $("adminLink").classList.toggle("hidden", profile.role !== "admin");
-
             $("loginBtn").classList.add("hidden");
             menu.classList.remove("hidden");
         });
-
         $("userBtn").addEventListener("click", (e) => {
             e.stopPropagation();
-            const open = menu.classList.toggle("open");
-            $("userBtn").setAttribute("aria-expanded", open);
+            $("userBtn").setAttribute("aria-expanded", menu.classList.toggle("open"));
         });
-        document.addEventListener("click", () => {
-            menu.classList.remove("open");
-            $("userBtn").setAttribute("aria-expanded", "false");
-        });
-        $("logoutBtn").addEventListener("click", async () => {
-            await signOut(auth);
-            location.reload();
-        });
+        document.addEventListener("click", () => { menu.classList.remove("open"); $("userBtn").setAttribute("aria-expanded", "false"); });
+        $("logoutBtn").addEventListener("click", async () => { await authMod.signOut(fbAuth.auth); location.reload(); });
+        }
     </script>
 </body>
 </html>

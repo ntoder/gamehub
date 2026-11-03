@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RX7DB1FEWY"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RX7DB1FEWY');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Shooter · Noam's Game Hub</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/game-shell.css">
+</head>
+<body>
+    <div class="gbar">
+        <a class="back" href="/">← Games</a>
+        <h1>Space <span>Shooter</span></h1>
+        <div class="stats">
+            <div class="stat"><b id="score">0</b><small>Score</small></div>
+            <div class="stat"><b id="lives">3</b><small>Lives</small></div>
+            <div class="stat"><b id="wave">1</b><small>Wave</small></div>
+        </div>
+    </div>
+    <div class="stage">
+        <div class="frame">
+            <canvas id="c" width="480" height="640"></canvas>
+            <div class="overlay" id="start"><div>
+                <h2>Space<br>Shooter</h2>
+                <p>⬅ ➡ ⬆ ⬇ / WASD to fly · Space to fire<br>On phones: drag to fly, it fires by itself.<br>Boss every 5th wave!</p>
+                <button class="btn" id="startBtn">▶ Launch</button>
+            </div></div>
+            <div class="overlay hidden" id="over"><div>
+                <h2>Ship destroyed</h2>
+                <p id="final"></p>
+                <button class="btn" id="againBtn">↻ Fly again</button>
+            </div></div>
+        </div>
+    </div>
+    <p class="hint">Best: <b id="best">0</b> · Power-ups: <span style="color:#2ee6c9">◆ double shot</span> · <span style="color:#ff4d8d">♥ extra life</span> · <span style="color:#ffc94d">◎ shield</span></p>
+
+    <script>
+    (() => {
+        const cv = document.getElementById("c"), ctx = cv.getContext("2d");
+        const W = cv.width, H = cv.height, $ = (id) => document.getElementById(id);
+        let best = +localStorage.getItem("spaceBest") || 0; $("best").textContent = best;
+        const stars = Array.from({ length: 90 }, () => ({ x: Math.random() * W, y: Math.random() * H, s: Math.random() * 2 + 0.5 }));
+        let ship, bullets, enemies, ebullets, parts, powers, score, lives, wave, running, last, keys = {}, fireCd, waveDelay, touchFire = false;
+
+        function reset() {
+            ship = { x: W / 2, y: H - 70, inv: 0, double: 0, shield: 0 };
+            bullets = []; enemies = []; ebullets = []; parts = []; powers = [];
+            score = 0; lives = 3; wave = 0; fireCd = 0; waveDelay = 0; nextWave(); hud();
+        }
+        function hud() { $("score").textContent = score; $("lives").textContent = lives; $("wave").textContent = wave; }
+
+        function nextWave() {
+            wave++; hud();
+            if (wave % 5 === 0) {
+                enemies.push({ boss: true, x: W / 2, y: -80, ty: 110, w: 120, h: 60, hp: 40 + wave * 6, maxHp: 40 + wave * 6, t: 0 });
+                return;
+            }
+            const rows = Math.min(2 + Math.floor(wave / 2), 5), cols = 7;
+            for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+                enemies.push({ x: 60 + c * 60, y: -40 - r * 50, ty: 70 + r * 46, w: 34, h: 26, hp: r === 0 && wave > 2 ? 2 : 1,
+                    kind: r % 3, t: Math.random() * 6, dive: 0 });
+            }
+        }
+
+        function boom(x, y, color, n = 14) {
+            for (let i = 0; i < n; i++) {
+                const a = Math.random() * Math.PI * 2, s = Math.random() * 4 + 1;
+                parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 30 + Math.random() * 20, color });
+            }
+        }
+
+        function fire() {
+            if (fireCd > 0) return;
+            fireCd = 9; beep(880, 0.03, "square", 0.025);
+            if (ship.double > 0) { bullets.push({ x: ship.x - 12, y: ship.y - 10 }, { x: ship.x + 12, y: ship.y - 10 }); }
+            else bullets.push({ x: ship.x, y: ship.y - 18 });
+        }
+
+        function hitShip() {
+            if (ship.inv > 0) return;
+            if (ship.shield > 0) { ship.shield = 0; ship.inv = 60; beep(300, 0.1); return; }
+            lives--; hud(); boom(ship.x, ship.y, "#2ee6c9", 30); beep(110, 0.4, "sawtooth");
+            ship.inv = 120;
+            if (lives <= 0) end();
+        }
+
+        function update(k) {
+            stars.forEach((s) => { s.y += s.s * k; if (s.y > H) { s.y = 0; s.x = Math.random() * W; } });
+            const sp = 6 * k;
+            if (keys.left) ship.x -= sp; if (keys.right) ship.x += sp;
+            if (keys.up) ship.y -= sp; if (keys.down) ship.y += sp;
+            ship.x = Math.max(20, Math.min(W - 20, ship.x)); ship.y = Math.max(H / 2, Math.min(H - 30, ship.y));
+            if (fireCd > 0) fireCd -= k;
+            if (keys.fire || touchFire) fire();
+            ["inv", "double", "shield"].forEach((p) => { if (ship[p] > 0) ship[p] -= k; });
+
+            bullets.forEach((b) => (b.y -= 11 * k)); bullets = bullets.filter((b) => b.y > -10);
+            ebullets.forEach((b) => { b.x += b.vx * k; b.y += b.vy * k; }); ebullets = ebullets.filter((b) => b.y < H + 10 && b.x > -10 && b.x < W + 10);
+
+            for (const e of enemies) {
+                e.t += 0.03 * k;
+                if (e.boss) {
+                    if (e.y < e.ty) e.y += 1.5 * k;
+                    e.x = W / 2 + Math.sin(e.t) * 140;
+                    if (Math.random() < 0.05 * k) for (let i = -2; i <= 2; i++) ebullets.push({ x: e.x + i * 20, y: e.y + 30, vx: i * 0.8, vy: 4 });
+                } else {
+                    if (e.y < e.ty && !e.dive) e.y += 3 * k;
+                    else if (!e.dive) {
+                        e.x += Math.sin(e.t) * 0.8 * k;
+                        if (Math.random() < (0.0006 + wave * 0.0002) * k) e.dive = 1;
+                        if (Math.random() < (0.002 + wave * 0.0006) * k) ebullets.push({ x: e.x, y: e.y + 12, vx: 0, vy: 4 + wave * 0.2 });
+                    } else {
+                        e.y += (4 + wave * 0.2) * k; e.x += (ship.x - e.x) * 0.02 * k;
+                        if (e.y > H + 30) { e.y = -30; e.dive = 0; }
+                    }
+                }
+                for (const b of bullets) {
+                    if (Math.abs(b.x - e.x) < e.w / 2 && Math.abs(b.y - e.y) < e.h / 2) {
+                        b.y = -100; e.hp--;
+                        if (e.hp <= 0) {
+                            score += e.boss ? 500 : (e.dive ? 40 : 20); hud();
+                            boom(e.x, e.y, e.boss ? "#ffc94d" : ["#ff4d8d", "#7c5cff", "#2ee6a0"][e.kind || 0], e.boss ? 60 : 14);
+                            beep(e.boss ? 200 : 260, e.boss ? 0.5 : 0.08, "sawtooth", 0.04);
+                            if (Math.random() < (e.boss ? 1 : 0.06)) powers.push({ x: e.x, y: e.y, type: ["double", "life", "shield"][Math.floor(Math.random() * 3)] });
+                        } else beep(500, 0.02);
+                        break;
+                    }
+                }
+                if (Math.abs(e.x - ship.x) < e.w / 2 + 14 && Math.abs(e.y - ship.y) < e.h / 2 + 14) { if (!e.boss) e.hp = 0; hitShip(); }
+            }
+            enemies = enemies.filter((e) => e.hp > 0);
+            for (const b of ebullets) if (Math.abs(b.x - ship.x) < 14 && Math.abs(b.y - ship.y) < 16) { b.y = H + 100; hitShip(); }
+
+            powers.forEach((p) => (p.y += 2.2 * k));
+            powers = powers.filter((p) => {
+                if (Math.abs(p.x - ship.x) < 24 && Math.abs(p.y - ship.y) < 24) {
+                    if (p.type === "double") ship.double = 700;
+                    if (p.type === "life") { lives = Math.min(5, lives + 1); hud(); }
+                    if (p.type === "shield") ship.shield = 900;
+                    beep(1200, 0.12, "sine"); return false;
+                }
+                return p.y < H + 20;
+            });
+
+            parts.forEach((p) => { p.x += p.vx * k; p.y += p.vy * k; p.life -= k; }); parts = parts.filter((p) => p.life > 0);
+            if (!enemies.length && running) { waveDelay += k; if (waveDelay > 70) { waveDelay = 0; nextWave(); } }
+        }
+
+        function drawShip() {
+            if (ship.inv > 0 && Math.floor(ship.inv / 6) % 2) return;
+            const { x, y } = ship;
+            ctx.fillStyle = "#2ee6c9";
+            ctx.beginPath(); ctx.moveTo(x, y - 20); ctx.lineTo(x + 16, y + 14); ctx.lineTo(x + 5, y + 8); ctx.lineTo(x - 5, y + 8); ctx.lineTo(x - 16, y + 14); ctx.closePath(); ctx.fill();
+            ctx.fillStyle = "#eef0ff"; ctx.beginPath(); ctx.ellipse(x, y - 2, 4, 8, 0, 0, 7); ctx.fill();
+            ctx.fillStyle = Math.random() < 0.5 ? "#ffc94d" : "#ff4d8d"; ctx.fillRect(x - 3, y + 9, 6, 6 + Math.random() * 8);
+            if (ship.shield > 0) { ctx.strokeStyle = "#ffc94daa"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 26, 0, 7); ctx.stroke(); }
+        }
+        function drawEnemy(e) {
+            if (e.boss) {
+                ctx.fillStyle = "#ff4d8d";
+                ctx.beginPath(); ctx.ellipse(e.x, e.y, 60, 26, 0, 0, 7); ctx.fill();
+                ctx.fillStyle = "#7c5cff"; ctx.beginPath(); ctx.ellipse(e.x, e.y - 14, 30, 18, 0, Math.PI, 0); ctx.fill();
+                ctx.fillStyle = "#ffc94d"; for (let i = -2; i <= 2; i++) ctx.fillRect(e.x + i * 22 - 4, e.y + 4, 8, 8);
+                ctx.fillStyle = "#2a3060"; ctx.fillRect(e.x - 60, e.y - 50, 120, 6);
+                ctx.fillStyle = "#ff4d8d"; ctx.fillRect(e.x - 60, e.y - 50, 120 * e.hp / e.maxHp, 6);
+                return;
+            }
+            const c = ["#ff4d8d", "#7c5cff", "#2ee6a0"][e.kind], f = Math.floor(e.t * 3) % 2;
+            ctx.fillStyle = e.hp > 1 ? "#ffc94d" : c;
+            const x = e.x - 15, y = e.y - 12;
+            ctx.fillRect(x + 6, y, 18, 6); ctx.fillRect(x, y + 6, 30, 10);
+            ctx.fillRect(x + (f ? 0 : 4), y + 16, 6, 8); ctx.fillRect(x + (f ? 24 : 20), y + 16, 6, 8);
+            ctx.fillStyle = "#0b0d1a"; ctx.fillRect(x + 8, y + 8, 4, 4); ctx.fillRect(x + 18, y + 8, 4, 4);
+        }
+        function draw() {
+            ctx.fillStyle = "#0b0d1a"; ctx.fillRect(0, 0, W, H);
+            stars.forEach((s) => { ctx.fillStyle = `rgba(238,240,255,${s.s / 3})`; ctx.fillRect(s.x, s.y, s.s, s.s); });
+            ctx.fillStyle = "#eef0ff"; bullets.forEach((b) => ctx.fillRect(b.x - 2, b.y - 8, 4, 12));
+            ctx.fillStyle = "#ff4d8d"; ebullets.forEach((b) => { ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, 7); ctx.fill(); });
+            enemies.forEach(drawEnemy);
+            powers.forEach((p) => {
+                ctx.font = "22px sans-serif"; ctx.textAlign = "center";
+                ctx.fillStyle = { double: "#2ee6c9", life: "#ff4d8d", shield: "#ffc94d" }[p.type];
+                ctx.fillText({ double: "◆", life: "♥", shield: "◎" }[p.type], p.x, p.y);
+            });
+            parts.forEach((p) => { ctx.globalAlpha = p.life / 50; ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, 3, 3); });
+            ctx.globalAlpha = 1;
+            if (running) drawShip();
+            if (!enemies.length && running) {
+                ctx.fillStyle = "#eef0ff"; ctx.font = "16px 'Press Start 2P', monospace"; ctx.textAlign = "center";
+                ctx.fillText((wave + 1) % 5 === 0 ? "⚠ BOSS INCOMING" : `WAVE ${wave + 1}`, W / 2, H / 2);
+            }
+        }
+        function loop(now) {
+            const k = Math.min(3, (now - last) / 16.67); last = now;
+            update(k); draw();
+            if (running || parts.length) requestAnimationFrame(loop);
+        }
+        function end() {
+            running = false;
+            if (score > best) { best = score; localStorage.setItem("spaceBest", best); $("best").textContent = best; }
+            $("final").textContent = `Score ${score} · reached wave ${wave}`;
+            setTimeout(() => $("over").classList.remove("hidden"), 600);
+            window.GameHub && window.GameHub.saveScore(score);
+        }
+        function start() {
+            reset(); running = true; last = performance.now();
+            $("start").classList.add("hidden"); $("over").classList.add("hidden");
+            requestAnimationFrame(loop);
+        }
+
+        const map = { ArrowLeft: "left", KeyA: "left", ArrowRight: "right", KeyD: "right", ArrowUp: "up", KeyW: "up", ArrowDown: "down", KeyS: "down", Space: "fire" };
+        addEventListener("keydown", (e) => { if (map[e.code]) { e.preventDefault(); keys[map[e.code]] = true; } });
+        addEventListener("keyup", (e) => { if (map[e.code]) keys[map[e.code]] = false; });
+        function toCanvas(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * (W / r.width), y: (e.clientY - r.top) * (H / r.height) }; }
+        cv.addEventListener("pointerdown", (e) => { touchFire = true; const p = toCanvas(e); ship.x = p.x; ship.y = Math.max(H / 2, p.y - 40); });
+        cv.addEventListener("pointermove", (e) => { if (!touchFire) return; const p = toCanvas(e); ship.x = p.x; ship.y = Math.max(H / 2, p.y - 40); });
+        addEventListener("pointerup", () => (touchFire = false));
+        $("startBtn").onclick = start; $("againBtn").onclick = start;
+
+        let ac;
+        function beep(f, d, type = "square", vol = 0.05) {
+            try {
+                ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+                const o = ac.createOscillator(), g = ac.createGain();
+                o.frequency.value = f; o.type = type; g.gain.value = vol;
+                g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + d);
+                o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + d);
+            } catch (e) {}
+        }
+        reset(); draw();
+    })();
+    </script>
+    <script type="module" src="/hub.js"></script>
+</body>
+</html>

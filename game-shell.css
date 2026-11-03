@@ -1,0 +1,50 @@
+/* Shared look for Game Hub games (dark arcade theme) */
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap");
+:root {
+    --bg: #0b0d1a; --bg-2: #12152b; --card: #171b36; --card-hover: #1e2347; --line: #2a3060;
+    --text: #eef0ff; --muted: #9aa0c8; --accent: #7c5cff; --accent-2: #2ee6c9; --hot: #ff4d8d; --gold: #ffc94d;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+    font-family: 'Inter', system-ui, sans-serif; color: var(--text);
+    background:
+        radial-gradient(1000px 500px at 10% -10%, rgba(124,92,255,.22), transparent 60%),
+        radial-gradient(800px 400px at 110% 10%, rgba(46,230,201,.12), transparent 60%), var(--bg);
+    display: flex; flex-direction: column; min-height: 100vh;
+    -webkit-user-select: none; user-select: none;
+}
+.gbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    padding: 12px clamp(12px, 3vw, 32px); border-bottom: 1px solid var(--line);
+    background: rgba(11,13,26,.8); backdrop-filter: blur(10px);
+}
+.gbar a.back { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 14px; }
+.gbar a.back:hover { color: var(--text); }
+.gbar h1 { font-family: 'Press Start 2P', monospace; font-size: clamp(12px, 2.4vw, 16px); }
+.gbar h1 span { color: var(--accent-2); }
+.stats { display: flex; gap: 8px; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 6px 12px; text-align: center; min-width: 70px; }
+.stat b { display: block; font-size: 18px; }
+.stat small { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+.stage { flex: 1; display: grid; place-items: center; padding: 16px; position: relative; }
+.frame { position: relative; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--bg-2); box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+canvas { display: block; max-width: 100%; touch-action: none; }
+.overlay {
+    position: absolute; inset: 0; display: grid; place-items: center; text-align: center;
+    background: rgba(11,13,26,.82); backdrop-filter: blur(4px); padding: 20px;
+}
+.overlay.hidden { display: none; }
+.overlay h2 { font-family: 'Press Start 2P', monospace; font-size: clamp(16px, 3vw, 22px); line-height: 1.5; margin-bottom: 12px; }
+.overlay p { color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
+.btn {
+    border: 0; border-radius: 12px; padding: 12px 22px; cursor: pointer;
+    font: 700 15px 'Inter', sans-serif; background: var(--accent); color: #fff;
+    box-shadow: 0 8px 24px rgba(124,92,255,.4); transition: transform .15s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn.ghost { background: var(--card); box-shadow: none; border: 1px solid var(--line); }
+.hint { color: var(--muted); font-size: 13px; text-align: center; padding: 0 16px 16px; }
+.touch { display: none; gap: 10px; justify-content: center; padding-bottom: 16px; }
+.touch button { width: 64px; height: 56px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 22px; }
+@media (hover: none) { .touch { display: flex; } }

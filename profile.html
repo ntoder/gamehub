@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>My Profile · Noam's Game Hub</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0d1a; --bg-2: #12152b; --card: #171b36; --card-hover: #1e2347; --line: #2a3060;
+            --text: #eef0ff; --muted: #9aa0c8; --accent: #7c5cff; --accent-2: #2ee6c9; --hot: #ff4d8d; --gold: #ffc94d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif; color: var(--text); min-height: 100vh;
+            background:
+                radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.25), transparent 60%),
+                radial-gradient(900px 500px at 110% 10%, rgba(46,230,201,.15), transparent 60%), var(--bg);
+        }
+        .hidden { display: none !important; }
+        .navbar {
+            position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; flex-wrap: wrap; padding: 14px clamp(16px, 4vw, 48px);
+            background: rgba(11,13,26,.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+        }
+        .logo { font-family: 'Press Start 2P', monospace; font-size: 14px; text-decoration: none; color: var(--text); }
+        .logo span { color: var(--accent-2); }
+        .btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            border: 1px solid var(--line); background: var(--bg-2); color: var(--text);
+            border-radius: 10px; padding: 9px 14px; font: 600 14px 'Inter', sans-serif; cursor: pointer; text-decoration: none;
+            transition: background .2s, border-color .2s;
+        }
+        .btn:hover { background: var(--card-hover); border-color: var(--accent); }
+        .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .nav-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        main { max-width: 1100px; margin: 0 auto; padding: 36px clamp(16px, 4vw, 48px) 64px; }
+
+        .hero {
+            display: flex; gap: 24px; align-items: center; flex-wrap: wrap;
+            background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(46,230,201,.10));
+            border: 1px solid var(--line); border-radius: 22px; padding: clamp(22px, 4vw, 36px); margin-bottom: 24px;
+        }
+        .avatar {
+            width: 92px; height: 92px; border-radius: 24px; flex: none; overflow: hidden;
+            display: grid; place-items: center; font-size: 38px; font-weight: 800; color: #fff;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            box-shadow: 0 0 0 5px rgba(124,92,255,.18);
+        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .who { flex: 1; min-width: 220px; }
+        .name-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        h1 { font-size: clamp(22px, 4vw, 30px); font-weight: 800; }
+        .edit { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 16px; }
+        .edit:hover { color: var(--text); }
+        .name-form { display: flex; gap: 8px; flex-wrap: wrap; }
+        .name-form input {
+            background: var(--bg-2); border: 1px solid var(--accent); border-radius: 10px;
+            padding: 9px 12px; color: var(--text); font: 600 18px 'Inter', sans-serif; outline: none; min-width: 0; width: 220px;
+        }
+        .meta { color: var(--muted); font-size: 14px; margin-top: 6px; }
+        .pills { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .pill { padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+        .pill.premium { background: rgba(255,201,77,.15); color: var(--gold); border: 1px solid rgba(255,201,77,.35); }
+        .pill.free { background: rgba(154,160,200,.12); color: var(--muted); border: 1px solid var(--line); }
+        .pill.admin { background: rgba(255,77,141,.15); color: var(--hot); border: 1px solid rgba(255,77,141,.35); }
+
+        .upsell {
+            display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;
+            border: 1px dashed rgba(255,201,77,.5); background: rgba(255,201,77,.06);
+            border-radius: 16px; padding: 16px 20px; margin-bottom: 24px; color: var(--muted); font-size: 14px;
+        }
+        .upsell strong { color: var(--gold); }
+
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 32px; }
+        .stat { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+        .stat .num { font-size: 28px; font-weight: 800; }
+        .stat .lbl { color: var(--muted); font-size: 13px; font-weight: 600; }
+
+        h2 { font-size: 22px; font-weight: 800; margin-bottom: 16px; }
+        .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+        .game {
+            display: flex; gap: 14px; align-items: center; text-decoration: none; color: var(--text);
+            background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 12px;
+            transition: transform .2s, border-color .2s, background .2s;
+        }
+        .game:hover { transform: translateY(-3px); border-color: var(--accent); background: var(--card-hover); }
+        .game.locked { opacity: .55; }
+        .thumb { width: 64px; height: 64px; border-radius: 12px; overflow: hidden; flex: none; background: linear-gradient(135deg, #2a2160, #123a4a); }
+        .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .g-name { font-weight: 800; }
+        .g-name .lock { color: var(--gold); font-size: 13px; margin-left: 4px; }
+        .g-best { font-size: 14px; color: var(--accent-2); font-weight: 700; margin-top: 2px; }
+        .g-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+        .g-none { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+        .loading { text-align: center; color: var(--muted); padding: 20vh 16px; }
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--card); border: 1px solid var(--accent); padding: 12px 18px; border-radius: 12px;
+            font-size: 14px; opacity: 0; transition: opacity .25s; pointer-events: none;
+        }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="logo" href="/">Noam's <span>Game Hub</span></a>
+        <div class="nav-actions">
+            <a class="btn" href="/">🎮 Games</a>
+            <a class="btn hidden" href="/admin" id="adminLink">🛠️ Admin</a>
+            <button class="btn" id="logout">Log out</button>
+        </div>
+    </nav>
+
+    <div class="loading" id="loading">Loading your profile…</div>
+
+    <main class="hidden" id="main">
+        <section class="hero">
+            <div class="avatar" id="avatar">?</div>
+            <div class="who">
+                <div class="name-row" id="nameView">
+                    <h1 id="name">Player</h1>
+                    <button class="edit" id="editName" title="Change display name" aria-label="Change display name">✏️</button>
+                </div>
+                <form class="name-form hidden" id="nameForm">
+                    <input id="nameInput" maxlength="30" required aria-label="Display name">
+                    <button class="btn primary" type="submit">Save</button>
+                    <button class="btn" type="button" id="cancelName">Cancel</button>
+                </form>
+                <div class="meta" id="email"></div>
+                <div class="meta" id="since"></div>
+                <div class="pills" id="pills"></div>
+            </div>
+        </section>
+
+        <div class="upsell hidden" id="upsell">
+            <span><strong>★ Premium</strong> removes all ads and unlocks every ★ game.</span>
+            <a class="btn primary" id="upsellBtn" href="/premium" style="text-decoration:none">★ Get Premium · ₪10</a>
+        </div>
+
+        <section class="stats">
+            <div class="stat"><div class="num" id="sGames">0</div><div class="lbl">Games played</div></div>
+            <div class="stat"><div class="num" id="sPlays">0</div><div class="lbl">Total plays</div></div>
+            <div class="stat"><div class="num" id="sFav">—</div><div class="lbl">Most played</div></div>
+        </section>
+
+        <h2>My games</h2>
+        <div class="grid" id="games"></div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script type="module">
+        import { auth, db } from "/firebase-config.js";
+        import { signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { ready, state, GAMES, isPremium, isLockedGame, getMyGames } from "/hub.js";
+
+        const $ = (id) => document.getElementById(id);
+        const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+        const fmtDate = (ts) => ts?.toDate ? ts.toDate().toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : null;
+
+        function toast(text) {
+            const t = $("toast");
+            t.textContent = text; t.classList.add("show");
+            clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove("show"), 2200);
+        }
+
+        await ready;
+        if (!state.user) { location.href = "/login?next=/profile"; throw new Error("not signed in"); }
+
+        const user = state.user;
+        const profile = state.profile || {};
+        let name = profile.name || user.displayName || user.email.split("@")[0];
+
+        // Header
+        function renderName() {
+            $("name").textContent = name;
+            const av = $("avatar");
+            if (user.photoURL) {
+                av.innerHTML = "";
+                const img = document.createElement("img");
+                img.src = user.photoURL; img.alt = ""; img.referrerPolicy = "no-referrer";
+                av.appendChild(img);
+            } else av.textContent = name.charAt(0).toUpperCase();
+        }
+        renderName();
+        $("email").textContent = user.email;
+        const since = fmtDate(profile.createdAt);
+        $("since").textContent = since ? `Member since ${since}` : "";
+        $("pills").innerHTML =
+            (profile.premium ? '<span class="pill premium">★ Premium</span>' : '<span class="pill free">Free plan</span>') +
+            (profile.role === "admin" ? '<span class="pill admin">Admin</span>' : "");
+        $("upsell").classList.toggle("hidden", isPremium(profile));
+        if (profile.premiumRequested && !isPremium(profile)) {
+            $("upsellBtn").outerHTML = '<span style="color:var(--gold);font-weight:700">⏳ Premium requested · pay Noam ₪10 to activate</span>';
+        }
+        $("adminLink").classList.toggle("hidden", profile.role !== "admin");
+
+        // Edit name
+        $("editName").addEventListener("click", () => {
+            $("nameInput").value = name;
+            $("nameView").classList.add("hidden");
+            $("nameForm").classList.remove("hidden");
+            $("nameInput").focus();
+        });
+        $("cancelName").addEventListener("click", () => {
+            $("nameForm").classList.add("hidden");
+            $("nameView").classList.remove("hidden");
+        });
+        $("nameForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const next = $("nameInput").value.trim().slice(0, 30);
+            if (!next) return;
+            try {
+                await updateDoc(doc(db, "users", user.uid), { name: next });
+                await updateProfile(user, { displayName: next });
+                name = next;
+                renderName();
+                toast("Name updated");
+            } catch (err) { toast("Couldn't save: " + (err.code || err.message)); }
+            $("nameForm").classList.add("hidden");
+            $("nameView").classList.remove("hidden");
+        });
+
+        // Games + stats
+        const mine = await getMyGames(user.uid);
+        const playedIds = Object.keys(mine).filter(id => mine[id].plays);
+        const totalPlays = playedIds.reduce((n, id) => n + (mine[id].plays || 0), 0);
+        const fav = playedIds.sort((a, b) => (mine[b].plays || 0) - (mine[a].plays || 0))[0];
+        $("sGames").textContent = playedIds.length;
+        $("sPlays").textContent = totalPlays;
+        $("sFav").textContent = fav ? (GAMES[fav]?.name || fav) : "—";
+
+        const order = Object.keys(GAMES).sort((a, b) => {
+            const la = mine[a]?.lastPlayed?.toMillis?.() || 0, lb = mine[b]?.lastPlayed?.toMillis?.() || 0;
+            return lb - la;
+        });
+        $("games").innerHTML = order.map(id => {
+            const g = GAMES[id], m = mine[id];
+            const locked = isLockedGame(id, profile);
+            const info = m && m.plays
+                ? `${m.best !== undefined ? `<div class="g-best">🏆 Best: ${esc(m.best)}</div>` : ""}
+                   <div class="g-sub">${m.plays} play${m.plays === 1 ? "" : "s"} · last ${esc(fmtDate(m.lastPlayed) || "—")}</div>`
+                : `<div class="g-none">${locked ? "★ Premium only" : "Not played yet"}</div>`;
+            return `<a class="game ${locked ? "locked" : ""}" href="${locked ? "#" : esc(g.path)}" ${locked ? 'aria-disabled="true"' : ""}>
+                <div class="thumb"><img src="${esc(g.img)}" alt="" loading="lazy" onerror="this.remove()"></div>
+                <div><div class="g-name">${esc(g.name)}${locked ? '<span class="lock">★</span>' : ""}</div>${info}</div>
+            </a>`;
+        }).join("");
+        document.querySelectorAll(".game.locked").forEach(a => a.addEventListener("click", e => {
+            e.preventDefault(); toast("★ This game needs Premium");
+        }));
+
+        $("loading").classList.add("hidden");
+        $("main").classList.remove("hidden");
+
+        $("logout").addEventListener("click", async () => { await signOut(auth); location.href = "/"; });
+    </script>
+</body>
+</html>

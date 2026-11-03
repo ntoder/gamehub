@@ -1,52 +1,250 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RX7DB1FEWY"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RX7DB1FEWY');
-</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RX7DB1FEWY"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RX7DB1FEWY');</script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>סאבווי סרפרס - גרסת הדפדפן</title>
-
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="subwaysurf.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subway Runner · Noam's Game Hub</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/game-shell.css">
 </head>
 <body>
-
-    <div id="game-container"></div>
-
-    <div id="ui-layer">
-        <div class="score-box" id="score-display">ניקוד: 0</div>
-
-        <div id="start-screen" class="overlay">
-            <h1 class="text-5xl font-black mb-4 tracking-tighter">SUBWAY RUNNER</h1>
-            <p class="text-xl">מוכנים לרוץ?</p>
-            <button class="btn" onclick="startGame()">התחל משחק</button>
-            <div class="mt-8 text-center text-sm opacity-70">
-                <p>השתמש בחצים או החלק את האצבע כדי לזוז, לקפוץ ולהתכופף</p>
-            </div>
-        </div>
-
-        <div id="game-over-screen" class="overlay" style="display: none;">
-            <h2 class="text-6xl font-black mb-2 text-red-500">נפסלת!</h2>
-            <p id="final-score" class="text-2xl mb-4"></p>
-            <button class="btn" onclick="startGame()">נסה שוב</button>
+    <div class="gbar">
+        <a class="back" href="/">← Games</a>
+        <h1>Subway <span>Runner</span></h1>
+        <div class="stats">
+            <div class="stat"><b id="score">0</b><small>Score</small></div>
+            <div class="stat"><b id="best">0</b><small>Best</small></div>
         </div>
     </div>
 
-    <!-- JS -->
-    <script src="subwaysurf.js"></script>
+    <div class="stage">
+        <div class="frame">
+            <canvas id="c" width="420" height="640"></canvas>
+            <div class="overlay" id="start">
+                <div>
+                    <h2>Subway<br>Runner</h2>
+                    <p>⬅ ➡ switch lanes · ⬆ / Space jump<br>Jump the barriers, dodge the trains, grab coins!</p>
+                    <button class="btn" id="startBtn">▶ Run</button>
+                </div>
+            </div>
+            <div class="overlay hidden" id="over">
+                <div>
+                    <h2>Busted!</h2>
+                    <p id="final"></p>
+                    <button class="btn" id="againBtn">↻ Run again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="touch">
+        <button data-k="left">⬅</button><button data-k="jump">⬆</button><button data-k="right">➡</button>
+    </div>
+    <p class="hint">Swipe on the game to move on phones</p>
+
+    <script>
+    (() => {
+        const cv = document.getElementById("c"), ctx = cv.getContext("2d");
+        const W = cv.width, H = cv.height, HOR = 150, BASE = H - 40;
+        const $ = (id) => document.getElementById(id);
+        let best = +localStorage.getItem("subwayBest") || 0;
+        $("best").textContent = best;
+
+        let lane, jumpT, objs, speed, dist, coins, running, spawnT, last, shake;
+
+        function reset() {
+            lane = 1; jumpT = 0; objs = []; speed = 0.45; dist = 0; coins = 0; spawnT = 0; shake = 0;
+        }
+        // perspective helpers: z = 0 far (horizon) → 1 near (bottom)
+        const yAt = (z) => HOR + (BASE - HOR) * z * z;
+        const scaleAt = (z) => 0.12 + 0.88 * z * z;
+        const xAt = (laneIdx, z) => W / 2 + (laneIdx - 1) * 120 * scaleAt(z);
+
+        function spawn() {
+            const r = Math.random();
+            const l = Math.floor(Math.random() * 3);
+            if (r < 0.38) objs.push({ type: "train", lane: l, z: 0, len: 0.22 });
+            else if (r < 0.7) objs.push({ type: "barrier", lane: l, z: 0 });
+            else for (let i = 0; i < 4; i++) objs.push({ type: "coin", lane: l, z: -i * 0.07 });
+            // sometimes block two lanes, never all three
+            if (r < 0.2) {
+                const l2 = (l + 1 + Math.floor(Math.random() * 2)) % 3;
+                objs.push({ type: "train", lane: l2, z: -0.05, len: 0.22 });
+            }
+        }
+
+        function jumpH() { return jumpT > 0 ? Math.sin((1 - jumpT) * Math.PI) * 70 : 0; }
+
+        function update(dt) {
+            dist += speed * dt * 60;
+            speed = Math.min(1.3, speed + dt * 0.012);
+            if (jumpT > 0) jumpT = Math.max(0, jumpT - dt * 1.6);
+            spawnT -= dt * speed;
+            if (spawnT <= 0) { spawn(); spawnT = 0.55 + Math.random() * 0.45; }
+
+            for (const o of objs) o.z += dt * speed * 0.9;
+            const airborne = jumpH() > 30;
+            for (const o of objs) {
+                if (o.hit || o.lane !== lane) continue;
+                const near = o.type === "train" ? (o.z > 0.86 && o.z - o.len < 0.98) : (o.z > 0.88 && o.z < 0.98);
+                if (!near) continue;
+                if (o.type === "coin") { o.hit = true; coins++; beep(880, 0.05); }
+                else if (o.type === "barrier" && !airborne) return crash();
+                else if (o.type === "train") return crash();
+            }
+            objs = objs.filter((o) => (o.type === "train" ? o.z - o.len : o.z) < 1.15 && !(o.type === "coin" && o.hit));
+            $("score").textContent = score();
+        }
+
+        const score = () => Math.floor(dist / 10) + coins * 10;
+
+        function drawTrack() {
+            const sky = ctx.createLinearGradient(0, 0, 0, HOR);
+            sky.addColorStop(0, "#1b1640"); sky.addColorStop(1, "#3a2a7a");
+            ctx.fillStyle = sky; ctx.fillRect(0, 0, W, HOR);
+            // city silhouette
+            ctx.fillStyle = "#151233";
+            for (let i = 0; i < 12; i++) {
+                const bw = 40, bh = 30 + ((i * 37) % 70);
+                ctx.fillRect(i * 36 - 10, HOR - bh, bw, bh);
+            }
+            ctx.fillStyle = "#12152b"; ctx.fillRect(0, HOR, W, H - HOR);
+            // rails per lane
+            for (let l = 0; l < 3; l++) {
+                ctx.fillStyle = "#1e2347";
+                ctx.beginPath();
+                ctx.moveTo(xAt(l, 0) - 6, HOR); ctx.lineTo(xAt(l, 0) + 6, HOR);
+                ctx.lineTo(xAt(l, 1.05) + 58, yAt(1.05)); ctx.lineTo(xAt(l, 1.05) - 58, yAt(1.05));
+                ctx.fill();
+            }
+            // sleepers
+            const off = (dist / 40) % 1;
+            ctx.strokeStyle = "#2a3060"; ctx.lineWidth = 2;
+            for (let i = 0; i < 14; i++) {
+                const z = (i + off) / 13;
+                const y = yAt(z), s = scaleAt(z);
+                ctx.globalAlpha = 0.3 + 0.7 * z;
+                ctx.beginPath(); ctx.moveTo(W / 2 - 190 * s, y); ctx.lineTo(W / 2 + 190 * s, y); ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        function drawObj(o) {
+            if (o.z < 0) return;
+            const z = Math.min(o.z, 1.1), y = yAt(z), s = scaleAt(z), x = xAt(o.lane, z);
+            if (o.type === "coin") {
+                ctx.fillStyle = "#ffc94d";
+                ctx.beginPath(); ctx.ellipse(x, y - 40 * s, 12 * s, 14 * s, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = "#fff3"; ctx.fillRect(x - 3 * s, y - 50 * s, 3 * s, 16 * s);
+            } else if (o.type === "barrier") {
+                ctx.fillStyle = "#ff4d8d";
+                ctx.fillRect(x - 52 * s, y - 34 * s, 104 * s, 14 * s);
+                ctx.fillStyle = "#fff";
+                for (let i = 0; i < 4; i++) ctx.fillRect(x - 46 * s + i * 26 * s, y - 34 * s, 12 * s, 14 * s);
+                ctx.fillStyle = "#9aa0c8";
+                ctx.fillRect(x - 48 * s, y - 20 * s, 6 * s, 20 * s); ctx.fillRect(x + 42 * s, y - 20 * s, 6 * s, 20 * s);
+            } else {
+                const zBack = Math.max(0, o.z - o.len);
+                const yb = yAt(zBack), sb = scaleAt(zBack), xb = xAt(o.lane, zBack);
+                const hF = 150 * s, hB = 150 * sb;
+                // roof
+                ctx.fillStyle = "#3d7bd9";
+                ctx.beginPath();
+                ctx.moveTo(xb - 54 * sb, yb - hB); ctx.lineTo(xb + 54 * sb, yb - hB);
+                ctx.lineTo(x + 54 * s, y - hF); ctx.lineTo(x - 54 * s, y - hF); ctx.fill();
+                // front
+                ctx.fillStyle = "#2a5cb0";
+                ctx.fillRect(x - 54 * s, y - hF, 108 * s, hF);
+                ctx.fillStyle = "#9fd3ff";
+                ctx.fillRect(x - 42 * s, y - hF + 18 * s, 84 * s, 40 * s);
+                ctx.fillStyle = "#ffc94d";
+                ctx.fillRect(x - 40 * s, y - 24 * s, 16 * s, 10 * s); ctx.fillRect(x + 24 * s, y - 24 * s, 16 * s, 10 * s);
+            }
+        }
+
+        let px = xAt(1, 0.93);
+        function drawPlayer(dt) {
+            const target = xAt(lane, 0.93);
+            px += (target - px) * Math.min(1, dt * 14);
+            const y = yAt(0.93) - jumpH();
+            ctx.fillStyle = "rgba(0,0,0,.35)";
+            ctx.beginPath(); ctx.ellipse(px, yAt(0.93), 22, 7, 0, 0, Math.PI * 2); ctx.fill();
+            const t = performance.now() / 90;
+            // legs
+            ctx.strokeStyle = "#2ee6c9"; ctx.lineWidth = 7; ctx.lineCap = "round";
+            const swing = jumpT > 0 ? 0 : Math.sin(t) * 9;
+            ctx.beginPath(); ctx.moveTo(px - 6, y - 26); ctx.lineTo(px - 6 + swing, y - 4);
+            ctx.moveTo(px + 6, y - 26); ctx.lineTo(px + 6 - swing, y - 4); ctx.stroke();
+            // body + head + cap
+            ctx.fillStyle = "#7c5cff"; ctx.fillRect(px - 14, y - 58, 28, 34);
+            ctx.fillStyle = "#ffd7b0"; ctx.beginPath(); ctx.arc(px, y - 68, 11, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = "#ff4d8d"; ctx.fillRect(px - 12, y - 80, 24, 7); ctx.fillRect(px, y - 76, 16, 4);
+        }
+
+        function frame(now) {
+            if (!running) return;
+            const dt = Math.min(0.05, (now - last) / 1000); last = now;
+            update(dt);
+            ctx.save();
+            if (shake > 0) { ctx.translate((Math.random() - .5) * shake, 0); shake *= 0.9; }
+            drawTrack();
+            const sorted = [...objs].sort((a, b) => a.z - b.z);
+            sorted.filter((o) => o.z < 0.93).forEach(drawObj);
+            drawPlayer(dt);
+            sorted.filter((o) => o.z >= 0.93).forEach(drawObj);
+            ctx.restore();
+            if (running) requestAnimationFrame(frame);
+        }
+
+        function crash() {
+            running = false; beep(140, 0.3);
+            const s = score();
+            if (s > best) { best = s; localStorage.setItem("subwayBest", best); $("best").textContent = best; }
+            $("final").textContent = `Score ${s} · ${coins} coins`;
+            $("over").classList.remove("hidden");
+            window.GameHub && window.GameHub.saveScore(s);
+        }
+
+        function start() {
+            reset(); running = true; last = performance.now();
+            $("start").classList.add("hidden"); $("over").classList.add("hidden");
+            requestAnimationFrame(frame);
+        }
+
+        function act(k) {
+            if (!running) return;
+            if (k === "left" && lane > 0) lane--;
+            if (k === "right" && lane < 2) lane++;
+            if (k === "jump" && jumpT === 0) { jumpT = 1; beep(520, 0.06); }
+        }
+        addEventListener("keydown", (e) => {
+            const map = { ArrowLeft: "left", KeyA: "left", ArrowRight: "right", KeyD: "right", ArrowUp: "jump", KeyW: "jump", Space: "jump" };
+            if (map[e.code]) { e.preventDefault(); if (!running && (e.code === "Space")) return start(); act(map[e.code]); }
+        });
+        document.querySelectorAll(".touch button").forEach((b) => b.addEventListener("pointerdown", () => act(b.dataset.k)));
+        let sx = 0, sy = 0;
+        cv.addEventListener("pointerdown", (e) => { sx = e.clientX; sy = e.clientY; });
+        cv.addEventListener("pointerup", (e) => {
+            const dx = e.clientX - sx, dy = e.clientY - sy;
+            if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy)) act(dx < 0 ? "left" : "right");
+            else if (dy < -30 || (Math.abs(dx) < 10 && Math.abs(dy) < 10)) act("jump");
+        });
+        $("startBtn").onclick = start; $("againBtn").onclick = start;
+
+        let ac;
+        function beep(f, d) {
+            try {
+                ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+                const o = ac.createOscillator(), g = ac.createGain();
+                o.frequency.value = f; o.type = "square"; g.gain.value = 0.05;
+                g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + d);
+                o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + d);
+            } catch (e) {}
+        }
+        reset(); drawTrack(); drawPlayer(0);
+    })();
+    </script>
+    <script type="module" src="/hub.js"></script>
 </body>
 </html>

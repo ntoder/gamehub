@@ -352,6 +352,7 @@ function levelUp() {
 }
 
 function endGame() {
+    if (window.GameHub) window.GameHub.saveScore(score);
     gameRunning = false;
     clearInterval(gameLoopId);
     gameStatusDisplay.textContent = `Game Over! Final Score: ${score}`;

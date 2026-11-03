@@ -266,6 +266,7 @@ function startGame() {
 
 // End game
 function endGame() {
+    if (window.GameHub) window.GameHub.saveScore(score);
     gameRunning = false;
     gameOverFlag = true;
     gameOverScreen.classList.remove('hidden');

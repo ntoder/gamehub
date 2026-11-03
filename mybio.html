@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bio · Noam's Game Hub</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -132,17 +132,17 @@
 </head>
 <body>
     <nav class="navbar">
-        <a class="logo" href="index.html">
-            <img src="favicon.png" alt="" onerror="this.style.display='none'">
+        <a class="logo" href="/">
+            <img src="/favicon.png" alt="" onerror="this.style.display='none'">
             Noam's <span>Game Hub</span>
         </a>
         <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
         <ul id="navLinks">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#games">Games</a></li>
-            <li><a href="Websites/index.html">Websites</a></li>
-            <li><a href="mybio.html" class="active">My Bio</a></li>
-            <li><a href="legal.html" class="danger">Do Not Click</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/#games">Games</a></li>
+            <li><a href="/Websites/">Websites</a></li>
+            <li><a href="/mybio" class="active">My Bio</a></li>
+            <li><a href="/premium" style="color:#ffc94d">★ Premium</a></li>
         </ul>
     </nav>
 
@@ -155,11 +155,11 @@
         </section>
 
         <div class="links">
-            <a class="link-card" href="index.html#games">
+            <a class="link-card" href="/#games">
                 <div class="icon">🕹️</div>
                 <div><strong>Play the games</strong><span>Arcade classics, puzzles and more</span></div>
             </a>
-            <a class="link-card" href="Websites/index.html">
+            <a class="link-card" href="/Websites/">
                 <div class="icon">🌐</div>
                 <div><strong>See my websites</strong><span>Other projects I've built</span></div>
             </a>
@@ -167,7 +167,7 @@
     </main>
 
     <footer>
-        Made with ❤️ by Noam · <a href="index.html">Back to the Game Hub</a>
+        Made with ❤️ by Noam · <a href="/">Back to the Game Hub</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a>
     </footer>
 
     <script>
@@ -180,5 +180,6 @@
             });
         })();
     </script>
+    <script type="module" src="/hub.js"></script>
 </body>
 </html>

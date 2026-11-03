@@ -364,6 +364,7 @@ function updateUI() {
 }
 
 function endGame(win) {
+    if (window.GameHub) window.GameHub.saveScore(score);
     gameActive = false;
     const modal = document.getElementById('modal');
     modal.style.display = 'flex';

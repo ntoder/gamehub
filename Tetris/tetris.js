@@ -112,23 +112,16 @@ function getRandomPiece() {
 }
 
 function rotate(piece) {
+    // Rotate clockwise: works for any shape size (the old version crashed on the I piece)
     const newPiece = JSON.parse(JSON.stringify(piece));
-    const shape = newPiece.shape;
-    
-    for (let i = 0; i < shape.length; i++) {
-        for (let j = 0; j < shape[i].length; j++) {
-            newPiece.shape[i][j] = shape[shape.length - 1 - j][i];
-        }
-    }
-    
+    const shape = piece.shape, rows = shape.length, cols = shape[0].length;
     const newShape = [];
-    for (let i = 0; i < shape[0].length; i++) {
-        newShape[i] = [];
-        for (let j = 0; j < shape.length; j++) {
-            newShape[i][j] = newPiece.shape[j][i];
+    for (let c = 0; c < cols; c++) {
+        newShape[c] = [];
+        for (let r = 0; r < rows; r++) {
+            newShape[c][r] = shape[rows - 1 - r][c];
         }
     }
-    
     newPiece.shape = newShape;
     return newPiece;
 }
@@ -469,6 +462,7 @@ function drawNextPiece() {
 }
 
 function endGame() {
+    if (window.GameHub) window.GameHub.saveScore(score);
     gameRunning = false;
     gamePaused = false;
     clearInterval(gameLoopId);

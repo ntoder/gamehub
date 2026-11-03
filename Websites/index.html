@@ -1,50 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8671583156732584"
-     crossorigin="anonymous"></script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RX7DB1FEWY"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RX7DB1FEWY');
-</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RX7DB1FEWY"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RX7DB1FEWY');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noam's Websites</title>
-    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
+    <title>My Websites · Noam's Game Hub</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/game-shell.css">
+    <style>
+        body { -webkit-user-select: auto; user-select: auto; }
+        nav.gbar ul { display: flex; list-style: none; gap: 4px; flex-wrap: wrap; }
+        nav.gbar ul a { display: block; padding: 8px 14px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 14px; color: var(--muted); }
+        nav.gbar ul a:hover { background: var(--card); color: var(--text); }
+        nav.gbar ul a.active { background: var(--accent); color: #fff; }
+        .logo { font-family: 'Press Start 2P', monospace; font-size: 14px; text-decoration: none; color: var(--text); }
+        .logo span { color: var(--accent-2); }
+        main { max-width: 1000px; margin: 0 auto; padding: clamp(40px, 8vw, 80px) 16px 64px; width: 100%; }
+        .head { text-align: center; margin-bottom: 40px; }
+        .head h2 { font-family: 'Press Start 2P', monospace; font-size: clamp(20px, 4vw, 32px); line-height: 1.4; margin-bottom: 14px;
+            background: linear-gradient(90deg, #fff, var(--accent-2) 55%, var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .head p { color: var(--muted); font-size: 17px; }
+        .grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+        .site {
+            display: flex; flex-direction: column; text-decoration: none; color: var(--text);
+            background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+            transition: transform .2s, border-color .2s, box-shadow .2s;
+        }
+        .site:hover { transform: translateY(-6px); border-color: var(--accent); box-shadow: 0 16px 40px rgba(0,0,0,.45); }
+        .banner { height: 150px; display: grid; place-items: center; font-size: 64px; }
+        .banner.archpal { background: linear-gradient(135deg, #1f6feb, #2ee6c9); }
+        .banner.gemara { background: linear-gradient(135deg, #7c5cff, #ff4d8d); }
+        .body { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .body h3 { font-size: 20px; font-weight: 800; }
+        .body p { color: var(--muted); font-size: 14px; line-height: 1.55; flex: 1; }
+        .tag { align-self: flex-start; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--bg-2); border: 1px solid var(--line); color: var(--accent-2); }
+        .open { margin-top: 8px; font-weight: 700; color: var(--accent-2); }
+        footer { border-top: 1px solid var(--line); text-align: center; padding: 28px 16px; color: var(--muted); font-size: 14px; }
+        footer a { color: var(--accent-2); text-decoration: none; }
+    </style>
 </head>
 <body>
-    <div class="navbar" id="navbar">
-        <h1>Welcome to Noam's Game Hub!</h1>
+    <nav class="gbar">
+        <a class="logo" href="/">Noam's <span>Game Hub</span></a>
         <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="index.html">Games</a></li>
-            <li><a href="websites.html">Websites</a></li>
-            <li><a href="mybio.html">My Bio</a></li>
-            <li><a href="legal.html">Legal</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/#games">Games</a></li>
+            <li><a href="/Websites/" class="active">Websites</a></li>
+            <li><a href="/mybio">My Bio</a></li>
+            <li><a href="/premium" style="color:#ffc94d">★ Premium</a></li>
         </ul>
-    </div>
-    <div class="wrap">
-        <div>
-        <h2>About This Hub</h2>
-        <p>This is a collection of my favorite games and websites that I have created or enjoy. Feel free to explore and have fun!</p>
-    </div>
-    <div class="card" id="website1">
-        <img src="" alt="Archpal" >
-        <h3>Archpal</h3>
-        <p>Archpal is the website I made with my robotics team Wings of Eagles 2026 FLL Unearthed</p>
-        <a href="https://archpal-production.up.railway.app/">Open Archpal</a>
-    </div>
-      <div class="card" id="website2">
-        <img src="" alt="Gemara Logo" >
-        <h3>Gemara Translater</h3>
-        <p>Analyze, explain, and translate any passage of the Talmud with English and Hebrew explanations, context, structure, and keyword breakdowns.</p>
-        <a href="Gemara/index.html">Open Gemara Translater</a>
-    </div>
+    </nav>
+
+    <main>
+        <div class="head">
+            <h2>My Websites</h2>
+            <p>Other projects I've built. Click one to open it.</p>
+        </div>
+        <div class="grid">
+            <a class="site" href="https://archpal-production.up.railway.app/" target="_blank" rel="noopener">
+                <div class="banner archpal">🏛️</div>
+                <div class="body">
+                    <span class="tag">Robotics · FLL</span>
+                    <h3>Archpal</h3>
+                    <p>The website I made with my robotics team, Wings of Eagles, for FLL 2026 "Unearthed".</p>
+                    <span class="open">Open Archpal ↗</span>
+                </div>
+            </a>
+            <a class="site" href="/Websites/Gemara/">
+                <div class="banner gemara">📜</div>
+                <div class="body">
+                    <span class="tag">Learning · Talmud</span>
+                    <h3>Gemara Translator</h3>
+                    <p>Analyze, explain and translate any passage of the Talmud, with English and Hebrew explanations, context, structure and keyword breakdowns.</p>
+                    <span class="open">Open Gemara Translator →</span>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        Made with ❤️ by Noam · <a href="/">Back to the Game Hub</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a>
+    </footer>
+    <script type="module" src="/hub.js"></script>
 </body>
 </html>

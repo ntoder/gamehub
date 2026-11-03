@@ -244,6 +244,7 @@ class GeometryDash {
     }
 
     gameOver() {
+    if (window.GameHub) window.GameHub.saveScore(this.score);
         this.gameActive = false;
         this.finalScoreDisplay.textContent = this.score;
         this.playGameOverSound();

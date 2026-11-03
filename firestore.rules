@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /users/{uid} {
+      // Users can read their own profile; admins can read everyone's (admin dashboard)
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+
+      // A new user can only create their OWN profile, and only as a free, non-admin user
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.role == 'user'
+        && request.resource.data.premium == false;
+
+      // Admins can change anything. Users can update their own profile
+      // (name, lastLogin) but can NEVER change role, premium, email or createdAt.
+      allow update: if isAdmin()
+        || (signedIn()
+            && request.auth.uid == uid
+            && !request.resource.data.diff(resource.data).affectedKeys()
+                 .hasAny(['role', 'premium', 'email', 'createdAt']));
+
+      allow delete: if isAdmin();
+
+      // Saved scores / progress: users/{uid}/games/{gameId}
+      // Players read & write only their own; admins can read everyone's.
+      match /games/{gameId} {
+        allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+        allow write: if signedIn()
+          && request.auth.uid == uid
+          && gameId.matches('^[a-z0-9_-]{1,40}$')
+          && (!('best' in request.resource.data) || request.resource.data.best is number);
+      }
+    }
+
+    // Site settings (which games are Premium): anyone can read, only admins can change
+    match /settings/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Everything else is locked by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

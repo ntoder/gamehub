@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex">
     <title>Admin · Noam's Game Hub</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -41,6 +41,22 @@
         .btn.danger:hover { border-color: var(--hot); color: var(--hot); }
         .btn:disabled { opacity: .4; cursor: not-allowed; }
 
+        .pill.req { background: rgba(46,230,201,.15); color: var(--accent-2); }
+        .section-title { font-size: 22px; font-weight: 800; margin: 36px 0 6px; }
+        .section-sub { color: var(--muted); font-size: 14px; margin-bottom: 14px; }
+        .games-pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+        .gp { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--line);
+              border-radius: 12px; padding: 10px 12px; cursor: pointer; transition: border-color .2s, background .2s; }
+        .gp:hover { border-color: var(--accent); }
+        .gp.on { border-color: var(--gold); background: rgba(255,201,77,.08); }
+        .gp img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; background: var(--bg-2); }
+        .gp .gname { font-weight: 700; flex: 1; }
+        .gp .gstate { font-size: 12px; font-weight: 800; color: var(--muted); }
+        .gp.on .gstate { color: var(--gold); }
+        .save-row { display: flex; gap: 10px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
+        .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .scores { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; }
+        .scores span { font-size: 11px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; color: var(--muted); }
         main { max-width: 1200px; margin: 0 auto; padding: 32px clamp(16px, 4vw, 40px) 64px; }
         h1 { font-size: 26px; font-weight: 800; margin-bottom: 20px; }
 
@@ -93,13 +109,14 @@
     <div id="denied" class="gate hidden">
         <h2>Admins only</h2>
         <p>Your account doesn't have admin access.</p>
-        <a class="btn" href="index.html">Back to games</a>
+        <a class="btn" href="/">Back to games</a>
     </div>
 
     <div id="app" class="hidden">
         <nav class="navbar">
-            <a class="logo" href="index.html">Noam's <span>Game Hub</span><em>admin</em></a>
+            <a class="logo" href="/">Noam's <span>Game Hub</span><em>admin</em></a>
             <div class="me">
+                <a class="btn" href="/">🎮 Site</a>
                 <span id="meName"></span>
                 <button class="btn" id="logout">Log out</button>
             </div>
@@ -113,6 +130,7 @@
                 <div class="stat"><div class="num" id="sPremium">0</div><div class="lbl">Premium</div></div>
                 <div class="stat"><div class="num" id="sAdmins">0</div><div class="lbl">Admins</div></div>
                 <div class="stat"><div class="num" id="sNew">0</div><div class="lbl">New this week</div></div>
+                <div class="stat"><div class="num" id="sReq" style="color:var(--accent-2)">0</div><div class="lbl">Waiting for Premium (₪10)</div></div>
             </section>
 
             <div class="toolbar">
@@ -122,6 +140,7 @@
                     <option value="premium">Premium</option>
                     <option value="free">Free</option>
                     <option value="admin">Admins</option>
+                    <option value="requested">Requested Premium</option>
                 </select>
                 <button class="btn" id="refresh">↻ Refresh</button>
             </div>
@@ -134,15 +153,24 @@
                     <tbody id="rows"></tbody>
                 </table>
             </div>
+
+            <h2 class="section-title">★ Premium games</h2>
+            <p class="section-sub">Click a game to switch it between Free and Premium, then save. Free players see a lock screen on Premium games.</p>
+            <div class="games-pick" id="gamesPick"></div>
+            <div class="save-row">
+                <button class="btn primary" id="saveGames">Save premium games</button>
+                <span class="email" id="gamesNote"></span>
+            </div>
         </main>
     </div>
 
     <div class="toast" id="toast"></div>
 
     <script type="module">
-        import { auth, db } from "./firebase-config.js";
+        import { auth, db } from "/firebase-config.js";
+        import { GAMES, ready as hubReady, state as hub, savePremiumGames } from "/hub.js";
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { doc, getDoc, getDocs, collection, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { doc, getDoc, getDocs, collection, updateDoc, deleteDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const $ = (id) => document.getElementById(id);
         let me = null;
@@ -164,7 +192,7 @@
 
         // ---- Access check ----
         onAuthStateChanged(auth, async (user) => {
-            if (!user) { location.href = "login.html?next=admin.html"; return; }
+            if (!user) { location.href = "/login?next=/admin"; return; }
             try {
                 const snap = await getDoc(doc(db, "users", user.uid));
                 if (!snap.exists() || snap.data().role !== "admin") throw new Error("not admin");
@@ -173,13 +201,14 @@
                 $("loading").classList.add("hidden");
                 $("app").classList.remove("hidden");
                 await load();
+                await setupGames();
             } catch {
                 $("loading").classList.add("hidden");
                 $("denied").classList.remove("hidden");
             }
         });
 
-        $("logout").addEventListener("click", async () => { await signOut(auth); location.href = "index.html"; });
+        $("logout").addEventListener("click", async () => { await signOut(auth); location.href = "/"; });
 
         // ---- Data ----
         async function load() {
@@ -195,6 +224,7 @@
             $("sTotal").textContent = users.length;
             $("sPremium").textContent = users.filter(u => u.premium).length;
             $("sAdmins").textContent = users.filter(u => u.role === "admin").length;
+            $("sReq").textContent = users.filter(u => u.premiumRequested && !u.premium).length;
             $("sNew").textContent = users.filter(u => (toDate(u.createdAt) || 0) > weekAgo).length;
         }
 
@@ -207,15 +237,16 @@
                 if (f === "premium") return u.premium;
                 if (f === "free") return !u.premium;
                 if (f === "admin") return u.role === "admin";
+                if (f === "requested") return u.premiumRequested && !u.premium;
                 return true;
             });
 
             $("rows").innerHTML = list.length ? list.map(u => {
                 const self = u.uid === me.uid;
                 return `<tr>
-                    <td><div class="name">${esc(u.name)}${self ? " (you)" : ""}</div><div class="email">${esc(u.email)}</div></td>
+                    <td><div class="name">${esc(u.name)}${self ? " (you)" : ""}</div><div class="email">${esc(u.email)}</div><div class="scores" id="sc-${u.uid}"><button class="btn" style="padding:2px 8px;font-size:11px" data-act="scores" data-uid="${u.uid}">Show scores</button></div></td>
                     <td><span class="pill ${u.role === "admin" ? "admin" : "user"}">${u.role === "admin" ? "Admin" : "User"}</span></td>
-                    <td>${u.premium ? '<span class="pill premium">★ Premium</span>' : '<span class="email">Free</span>'}</td>
+                    <td>${u.premium ? '<span class="pill premium">★ Premium</span>' : u.premiumRequested ? '<span class="pill req">⏳ Requested</span>' : '<span class="email">Free</span>'}</td>
                     <td>${fmt(u.createdAt)}</td>
                     <td>${fmt(u.lastLogin)}</td>
                     <td class="actions">
@@ -231,6 +262,34 @@
         $("filter").addEventListener("change", render);
         $("refresh").addEventListener("click", async () => { await load(); toast("Refreshed"); });
 
+        // ---- Premium games picker ----
+        let picked;
+        async function setupGames() {
+            await hubReady;
+            picked = new Set(hub.premiumGames);
+            const render = () => {
+                $("gamesPick").innerHTML = Object.entries(GAMES).map(([id, g]) => `
+                    <div class="gp ${picked.has(id) ? "on" : ""}" data-id="${id}">
+                        <img src="${g.img}" alt="" onerror="this.style.visibility='hidden'">
+                        <span class="gname">${esc(g.name)}</span>
+                        <span class="gstate">${picked.has(id) ? "★ PREMIUM" : "FREE"}</span>
+                    </div>`).join("");
+                $("gamesNote").textContent = `${picked.size} premium · ${Object.keys(GAMES).length - picked.size} free`;
+            };
+            render();
+            $("gamesPick").onclick = (e) => {
+                const el = e.target.closest(".gp"); if (!el) return;
+                picked.has(el.dataset.id) ? picked.delete(el.dataset.id) : picked.add(el.dataset.id);
+                render(); $("gamesNote").textContent += " · not saved yet";
+            };
+            $("saveGames").onclick = async () => {
+                $("saveGames").disabled = true;
+                try { await savePremiumGames([...picked]); toast("Premium games saved"); render(); }
+                catch (err) { toast("Failed: " + (err.code || err.message)); }
+                $("saveGames").disabled = false;
+            };
+        }
+
         // ---- Actions ----
         $("rows").addEventListener("click", async (e) => {
             const btn = e.target.closest("button[data-act]");
@@ -240,9 +299,17 @@
             const ref = doc(db, "users", u.uid);
             btn.disabled = true;
             try {
-                if (btn.dataset.act === "premium") {
-                    await updateDoc(ref, { premium: !u.premium });
-                    u.premium = !u.premium;
+                if (btn.dataset.act === "scores") {
+                    const snap = await getDocs(collection(db, "users", u.uid, "games"));
+                    const box = document.getElementById("sc-" + u.uid);
+                    box.innerHTML = snap.empty ? "<span>No games played yet</span>" : snap.docs.map(d => {
+                        const g = d.data();
+                        return `<span>${esc(GAMES[d.id]?.name || d.id)}: ${g.best !== undefined ? "🏆 " + esc(g.best) + " · " : ""}${g.plays || 0} plays</span>`;
+                    }).join("");
+                    return;
+                } else if (btn.dataset.act === "premium") {
+                    await updateDoc(ref, { premium: !u.premium, premiumRequested: deleteField() });
+                    u.premium = !u.premium; delete u.premiumRequested;
                     toast(`${u.name} is now ${u.premium ? "Premium" : "Free"}`);
                 } else if (btn.dataset.act === "role") {
                     const next = u.role === "admin" ? "user" : "admin";

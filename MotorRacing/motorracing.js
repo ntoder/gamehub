@@ -468,6 +468,7 @@ function drawTruck3D(x, y, width, height, scale) {
 }
 
 function endGame() {
+    if (window.GameHub) window.GameHub.saveScore(score);
     gameRunning = false;
     clearInterval(gameLoopId);
     playGameOverSound();

@@ -1,54 +1,180 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RX7DB1FEWY"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RX7DB1FEWY');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>משחק הדינוזאור</title>
-
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="dinogame.css">
+    <title>Dino Run · Noam's Game Hub</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/game-shell.css">
 </head>
-
-<body class="flex flex-col items-center justify-center min-h-screen p-4">
-
-    <div class="text-center mb-4">
-        <h1 class="text-3xl font-bold text-blue-600">דינוזאור וקקטוסים 🦖🌵</h1>
-        <p class="text-gray-500 text-sm">הקקטוסים מעוצבים עכשיו בסגנון הפיקסלים המקורי!</p>
-    </div>
-
-    <div id="game-container" class="cursor-pointer">
-        <div id="overlay" class="game-overlay">
-            <div id="game-over-text" class="hidden text-center">
-                <h2 class="text-4xl font-bold text-red-600 mb-2">נפסלת!</h2>
-                <p id="final-score-display" class="text-xl"></p>
-            </div>
-
-            <button id="start-btn" class="bg-blue-500 text-white px-10 py-4 rounded-full text-2xl font-bold">
-                שחק עכשיו
-            </button>
-        </div>
-
-        <canvas id="gameCanvas"></canvas>
-
-        <div class="absolute top-4 right-4 flex gap-4 score-panel">
-            <div>
-                HI <span id="high-score">00000</span>
-            </div>
-            <div>
-                <span id="current-score">00000</span>
-            </div>
+<body>
+    <div class="gbar">
+        <a class="back" href="/">← Games</a>
+        <h1>Dino <span>Run</span></h1>
+        <div class="stats">
+            <div class="stat"><b id="score">0</b><small>Score</small></div>
+            <div class="stat"><b id="best">0</b><small>Best</small></div>
         </div>
     </div>
-
-    <div class="flex gap-8 mt-4 sm:hidden">
-        <div id="mobile-jump" class="mobile-btn">⬆️</div>
-        <div id="mobile-duck" class="mobile-btn">⬇️</div>
+    <div class="stage">
+        <div class="frame">
+            <canvas id="c" width="860" height="300"></canvas>
+            <div class="overlay" id="start"><div>
+                <h2>Dino Run</h2>
+                <p>Space / ⬆ jump · ⬇ duck<br>Tap to jump on phones</p>
+                <button class="btn" id="startBtn">▶ Start</button>
+            </div></div>
+            <div class="overlay hidden" id="over"><div>
+                <h2>Game Over</h2>
+                <p id="final"></p>
+                <button class="btn" id="againBtn">↻ Again</button>
+            </div></div>
+        </div>
     </div>
+    <div class="touch"><button data-k="jump">⬆</button><button data-k="duck">⬇</button></div>
+    <p class="hint">The desert speeds up the longer you survive</p>
 
-    <!-- JS -->
-    <script src="dinogame.js"></script>
+    <script>
+    (() => {
+        const cv = document.getElementById("c"), ctx = cv.getContext("2d");
+        const W = cv.width, H = cv.height, GROUND = H - 50;
+        const $ = (id) => document.getElementById(id);
+        let best = +localStorage.getItem("dinoBest") || 0; $("best").textContent = best;
+        let dino, obs, speed, dist, running, last, spawnIn, ducking, clouds;
+
+        function reset() {
+            dino = { y: 0, vy: 0 }; obs = []; speed = 7; dist = 0; spawnIn = 60; ducking = false;
+            clouds = Array.from({ length: 5 }, (_, i) => ({ x: i * 200 + Math.random() * 100, y: 30 + Math.random() * 80 }));
+        }
+        const onGround = () => dino.y >= 0;
+        const box = () => ducking && onGround()
+            ? { x: 60, y: GROUND - 30, w: 58, h: 30 }
+            : { x: 60, y: GROUND - 54 + dino.y, w: 40, h: 54 };
+
+        function spawn() {
+            const s = Math.floor(dist / 10);
+            if (s > 300 && Math.random() < 0.3) {
+                const hy = [GROUND - 30, GROUND - 62, GROUND - 95][Math.floor(Math.random() * 3)];
+                obs.push({ type: "bird", x: W + 20, y: hy, w: 46, h: 30 });
+            } else {
+                const n = 1 + Math.floor(Math.random() * (s > 200 ? 3 : 2));
+                const big = Math.random() < 0.5;
+                obs.push({ type: "cactus", x: W + 20, y: GROUND - (big ? 56 : 38), w: n * (big ? 24 : 18), h: big ? 56 : 38, n, big });
+            }
+            spawnIn = 45 + Math.random() * 60 - Math.min(25, speed);
+        }
+
+        function hit(a, b) { return a.x + 6 < b.x + b.w && a.x + a.w - 6 > b.x && a.y + 6 < b.y + b.h && a.y + a.h > b.y + 4; }
+
+        function update(k) {
+            dist += speed * k; speed = Math.min(18, 7 + dist / 2500);
+            dino.vy += (ducking ? 1.6 : 0.85) * k; dino.y = Math.min(0, dino.y + dino.vy * k);
+            if (dino.y === 0) dino.vy = 0;
+            if ((spawnIn -= k) <= 0) spawn();
+            obs.forEach((o) => (o.x -= speed * k * (o.type === "bird" ? 1.15 : 1)));
+            obs = obs.filter((o) => o.x + o.w > -10);
+            clouds.forEach((c) => { c.x -= speed * 0.2 * k; if (c.x < -60) { c.x = W + 40; c.y = 30 + Math.random() * 80; } });
+            const b = box();
+            if (obs.some((o) => hit(b, o))) return end();
+            const s = Math.floor(dist / 10);
+            if (s > 0 && s % 100 === 0 && s !== update.lastMilestone) { update.lastMilestone = s; beep(990, 0.08); }
+            $("score").textContent = s;
+        }
+
+        function draw(t) {
+            const night = Math.floor(dist / 7000) % 2 === 1;
+            ctx.fillStyle = night ? "#0b0d1a" : "#171b36"; ctx.fillRect(0, 0, W, H);
+            ctx.fillStyle = night ? "#2a3060" : "#232a55";
+            clouds.forEach((c) => { ctx.fillRect(c.x, c.y, 46, 10); ctx.fillRect(c.x + 10, c.y - 8, 24, 8); });
+            if (night) { ctx.fillStyle = "#eef0ff"; ctx.beginPath(); ctx.arc(W - 90, 60, 18, 0, 7); ctx.fill(); }
+            // ground
+            ctx.fillStyle = "#2a3060"; ctx.fillRect(0, GROUND, W, 2);
+            ctx.fillStyle = "#3a4280";
+            for (let i = 0; i < 40; i++) { const x = (i * 53 - dist) % (W + 60); ctx.fillRect((x + W + 60) % (W + 60) - 30, GROUND + 8 + (i % 3) * 9, 8 + (i % 4) * 3, 2); }
+            // obstacles
+            obs.forEach((o) => {
+                if (o.type === "cactus") {
+                    ctx.fillStyle = "#2ee6a0";
+                    const cw = o.big ? 24 : 18;
+                    for (let i = 0; i < o.n; i++) {
+                        const x = o.x + i * cw;
+                        ctx.fillRect(x + cw * 0.35, o.y, cw * 0.3, o.h);
+                        ctx.fillRect(x, o.y + o.h * 0.3, cw * 0.18, o.h * 0.35); ctx.fillRect(x, o.y + o.h * 0.55, cw * 0.4, cw * 0.15);
+                        ctx.fillRect(x + cw * 0.82, o.y + o.h * 0.2, cw * 0.18, o.h * 0.35); ctx.fillRect(x + cw * 0.6, o.y + o.h * 0.45, cw * 0.4, cw * 0.15);
+                    }
+                } else {
+                    ctx.fillStyle = "#ff4d8d";
+                    const flap = Math.floor(t / 150) % 2;
+                    ctx.fillRect(o.x, o.y + 12, 46, 8); ctx.fillRect(o.x - 8, o.y + 10, 12, 6);
+                    ctx.fillRect(o.x + 14, flap ? o.y : o.y + 20, 14, 12);
+                }
+            });
+            // dino
+            const b = box();
+            ctx.fillStyle = "#eef0ff";
+            if (ducking && onGround()) {
+                ctx.fillRect(b.x, b.y + 6, 44, 18); ctx.fillRect(b.x + 36, b.y, 22, 16);
+            } else {
+                ctx.fillRect(b.x + 18, b.y, 24, 18); ctx.fillRect(b.x + 4, b.y + 14, 26, 26);
+                ctx.fillRect(b.x - 4, b.y + 18, 10, 6); ctx.fillRect(b.x + 28, b.y + 22, 8, 4);
+            }
+            ctx.fillStyle = "#0b0d1a"; ctx.fillRect(ducking && onGround() ? b.x + 48 : b.x + 32, b.y + 4, 4, 4);
+            ctx.fillStyle = "#eef0ff";
+            const leg = onGround() ? Math.floor(t / 90) % 2 : 0;
+            const ly = (ducking && onGround()) ? b.y + 24 : b.y + 40;
+            ctx.fillRect(b.x + 8, ly, 6, leg ? 8 : 14); ctx.fillRect(b.x + 20, ly, 6, leg ? 14 : 8);
+        }
+
+        function loop(now) {
+            if (!running) return;
+            const k = Math.min(3, (now - last) / 16.67); last = now;
+            update(k); if (running) { draw(now); requestAnimationFrame(loop); }
+        }
+
+        function end() {
+            running = false; beep(150, 0.3); draw(performance.now());
+            const s = Math.floor(dist / 10);
+            if (s > best) { best = s; localStorage.setItem("dinoBest", best); $("best").textContent = best; }
+            $("final").textContent = `Score ${s}`;
+            $("over").classList.remove("hidden");
+            window.GameHub && window.GameHub.saveScore(s);
+        }
+        function start() {
+            reset(); running = true; last = performance.now(); update.lastMilestone = 0;
+            $("start").classList.add("hidden"); $("over").classList.add("hidden");
+            requestAnimationFrame(loop);
+        }
+        function jump() {
+            if (!running) return start();
+            if (onGround()) { dino.vy = -15; beep(600, 0.05); }
+        }
+        addEventListener("keydown", (e) => {
+            if (["Space", "ArrowUp", "KeyW"].includes(e.code)) { e.preventDefault(); jump(); }
+            if (["ArrowDown", "KeyS"].includes(e.code)) { e.preventDefault(); ducking = true; }
+        });
+        addEventListener("keyup", (e) => { if (["ArrowDown", "KeyS"].includes(e.code)) ducking = false; });
+        cv.addEventListener("pointerdown", jump);
+        document.querySelectorAll(".touch button").forEach((b) => {
+            b.addEventListener("pointerdown", () => b.dataset.k === "jump" ? jump() : (ducking = true));
+            b.addEventListener("pointerup", () => { if (b.dataset.k === "duck") ducking = false; });
+        });
+        $("startBtn").onclick = start; $("againBtn").onclick = start;
+
+        let ac;
+        function beep(f, d) {
+            try {
+                ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+                const o = ac.createOscillator(), g = ac.createGain();
+                o.frequency.value = f; o.type = "square"; g.gain.value = 0.04;
+                g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + d);
+                o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + d);
+            } catch (e) {}
+        }
+        reset(); draw(0);
+    })();
+    </script>
+    <script type="module" src="/hub.js"></script>
 </body>
 </html>

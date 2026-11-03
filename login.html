@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In · Noam's Game Hub</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -68,11 +68,13 @@
         .msg { font-size: 14px; padding: 10px 12px; border-radius: 10px; margin-bottom: 14px; }
         .msg.err { background: rgba(255,77,141,.12); border: 1px solid rgba(255,77,141,.4); color: #ffb3cd; }
         .msg.ok { background: rgba(46,230,160,.12); border: 1px solid rgba(46,230,160,.4); color: #b6ffe2; }
+        .legal { text-align: center; color: var(--muted); font-size: 12px; margin-top: 16px; }
+        .legal a { color: var(--accent-2); }
         .back { display: block; text-align: center; margin-top: 20px; color: var(--muted); font-size: 14px; }
     </style>
 </head>
 <body>
-    <div class="top"><a class="logo" href="index.html">Noam's <span>Game Hub</span></a></div>
+    <div class="top"><a class="logo" href="/">Noam's <span>Game Hub</span></a></div>
 
     <main>
         <div class="panel">
@@ -106,12 +108,14 @@
                 Continue with Google
             </button>
 
-            <a class="back" href="index.html">← Back to games</a>
+            <p class="legal">By continuing you agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.</p>
+            <a class="back" href="/">← Back to games</a>
         </div>
     </main>
 
     <script type="module">
-        import { auth, db } from "./firebase-config.js";
+        import { auth, db } from "/firebase-config.js";
+        import "/hub.js";
         import {
             signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile,
             GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail
@@ -164,8 +168,8 @@
 
         function redirect(profile) {
             const next = new URLSearchParams(location.search).get("next");
-            if (next && /^[\w\-\/]+\.html$/.test(next)) location.href = next;   // only local pages
-            else location.href = profile.role === "admin" ? "admin.html" : "index.html";
+            if (next && /^\/[\w\-\/]*$/.test(next)) location.href = next;   // only pages on this site
+            else location.href = profile.role === "admin" ? "/admin" : "/";
         }
 
         const friendly = {

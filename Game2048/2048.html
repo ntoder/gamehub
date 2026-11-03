@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RX7DB1FEWY"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RX7DB1FEWY');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 · Noam's Game Hub</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/game-shell.css">
+    <style>
+        .board { --n: 4; --gap: 10px; --size: min(86vw, 440px); width: var(--size); height: var(--size);
+            position: relative; background: #1e2347; border-radius: 16px; padding: var(--gap); touch-action: none; }
+        .cell, .tile { position: absolute; width: calc((var(--size) - var(--gap) * 5) / 4); height: calc((var(--size) - var(--gap) * 5) / 4); border-radius: 10px; }
+        .cell { background: #12152b; }
+        .tile { z-index: 1; }
+        .board .overlay { z-index: 2; }
+        .tile { display: grid; place-items: center; font-weight: 800; font-size: clamp(18px, 6vw, 34px);
+            transition: transform .12s ease; color: #0b0d1a; }
+        .tile.new { animation: pop .18s ease; }
+        .tile.merged { animation: bump .18s ease; }
+        @keyframes pop { from { scale: 0; } }
+        @keyframes bump { 50% { scale: 1.15; } }
+        .controls { display: flex; gap: 10px; justify-content: center; margin-top: 14px; }
+        .wrap { display: flex; flex-direction: column; align-items: center; }
+        .board .overlay { border-radius: 16px; }
+    </style>
+</head>
+<body>
+    <div class="gbar">
+        <a class="back" href="/">← Games</a>
+        <h1><span>2048</span></h1>
+        <div class="stats">
+            <div class="stat"><b id="score">0</b><small>Score</small></div>
+            <div class="stat"><b id="best">0</b><small>Best</small></div>
+        </div>
+    </div>
+    <div class="stage">
+        <div class="wrap">
+            <div class="board" id="board">
+                <div class="overlay hidden" id="over"><div>
+                    <h2 id="overTitle">No moves!</h2>
+                    <p id="final"></p>
+                    <button class="btn" id="againBtn">↻ New game</button>
+                </div></div>
+            </div>
+            <div class="controls">
+                <button class="btn ghost" id="undoBtn">↶ Undo</button>
+                <button class="btn" id="newBtn">New game</button>
+            </div>
+        </div>
+    </div>
+    <p class="hint">Arrow keys or swipe to slide the tiles. Merge equal numbers to reach 2048!</p>
+
+    <script>
+    (() => {
+        const $ = (id) => document.getElementById(id);
+        const boardEl = $("board"), N = 4;
+        const colors = { 2: "#eef0ff", 4: "#d9dcff", 8: "#2ee6c9", 16: "#2ee6a0", 32: "#ffc94d", 64: "#ff9d4d",
+            128: "#ff4d8d", 256: "#e04dff", 512: "#a15cff", 1024: "#7c5cff", 2048: "#ffd700" };
+        let grid, score, best = +localStorage.getItem("best2048") || 0, history, won, saved, idSeq = 0;
+        $("best").textContent = best;
+
+        for (let i = 0; i < N * N; i++) {
+            const c = document.createElement("div"); c.className = "cell";
+            place(c, Math.floor(i / N), i % N); boardEl.appendChild(c);
+        }
+        function place(el, r, c) {
+            el.style.left = `calc(var(--gap) + ${c} * ((var(--size) - var(--gap) * 5) / 4 + var(--gap)))`;
+            el.style.top = `calc(var(--gap) + ${r} * ((var(--size) - var(--gap) * 5) / 4 + var(--gap)))`;
+        }
+
+        function empty() { const e = []; for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) if (!grid[r][c]) e.push([r, c]); return e; }
+        function addTile() {
+            const e = empty(); if (!e.length) return;
+            const [r, c] = e[Math.floor(Math.random() * e.length)];
+            grid[r][c] = { v: Math.random() < 0.9 ? 2 : 4, id: ++idSeq, isNew: true };
+        }
+
+        function newGame() {
+            grid = Array.from({ length: N }, () => Array(N).fill(null));
+            score = 0; history = []; won = false; saved = false;
+            addTile(); addTile(); render(); $("over").classList.add("hidden");
+        }
+
+        function render() {
+            boardEl.querySelectorAll(".tile").forEach((t) => t.remove());
+            for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+                const t = grid[r][c]; if (!t) continue;
+                const el = document.createElement("div");
+                el.className = "tile" + (t.isNew ? " new" : "") + (t.merged ? " merged" : "");
+                el.textContent = t.v;
+                el.style.background = colors[t.v] || "#ffffff";
+                if (t.v >= 1024) el.style.fontSize = "clamp(14px, 5vw, 26px)";
+                place(el, r, c); boardEl.insertBefore(el, $("over"));
+                t.isNew = false; t.merged = false;
+            }
+            $("score").textContent = score;
+            if (score > best) { best = score; localStorage.setItem("best2048", best); $("best").textContent = best; }
+        }
+
+        function slide(line) {
+            const tiles = line.filter(Boolean), out = [];
+            let gained = 0;
+            for (let i = 0; i < tiles.length; i++) {
+                if (tiles[i + 1] && tiles[i].v === tiles[i + 1].v) {
+                    const v = tiles[i].v * 2; gained += v;
+                    out.push({ v, id: ++idSeq, merged: true }); i++;
+                    if (v === 2048 && !won) { won = true; setTimeout(() => showOver(true), 200); }
+                } else out.push(tiles[i]);
+            }
+            while (out.length < N) out.push(null);
+            return { out, gained };
+        }
+
+        function move(dir) {
+            if (!$("over").classList.contains("hidden")) return;
+            const snapshot = JSON.stringify({ grid, score });
+            let moved = false;
+            for (let i = 0; i < N; i++) {
+                let line = [];
+                for (let j = 0; j < N; j++) {
+                    const [r, c] = dir === "left" ? [i, j] : dir === "right" ? [i, N - 1 - j] : dir === "up" ? [j, i] : [N - 1 - j, i];
+                    line.push(grid[r][c]);
+                }
+                const before = line.map((t) => t && t.v).join();
+                const { out, gained } = slide(line);
+                score += gained;
+                if (out.map((t) => t && t.v).join() !== before) moved = true;
+                for (let j = 0; j < N; j++) {
+                    const [r, c] = dir === "left" ? [i, j] : dir === "right" ? [i, N - 1 - j] : dir === "up" ? [j, i] : [N - 1 - j, i];
+                    grid[r][c] = out[j];
+                }
+            }
+            if (!moved) return;
+            history.push(snapshot); if (history.length > 20) history.shift();
+            addTile(); render();
+            if (!canMove()) showOver(false);
+        }
+
+        function canMove() {
+            if (empty().length) return true;
+            for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+                const v = grid[r][c].v;
+                if ((c < N - 1 && grid[r][c + 1].v === v) || (r < N - 1 && grid[r + 1][c].v === v)) return true;
+            }
+            return false;
+        }
+
+        function showOver(win) {
+            $("overTitle").textContent = win ? "2048! 🎉" : "No moves!";
+            $("final").textContent = `Score ${score}` + (win ? " · keep going if you like" : "");
+            $("over").classList.remove("hidden");
+            if (win) { $("againBtn").textContent = "Keep playing"; $("againBtn").onclick = () => $("over").classList.add("hidden"); }
+            else { $("againBtn").textContent = "↻ New game"; $("againBtn").onclick = newGame; }
+            if (!win && !saved) { saved = true; window.GameHub && window.GameHub.saveScore(score); }
+        }
+
+        $("undoBtn").onclick = () => {
+            const s = history.pop(); if (!s) return;
+            const o = JSON.parse(s); grid = o.grid; score = o.score; render(); $("over").classList.add("hidden");
+        };
+        $("newBtn").onclick = () => {
+            if (score > 0 && !saved) window.GameHub && window.GameHub.saveScore(score);
+            newGame();
+        };
+        addEventListener("keydown", (e) => {
+            const m = { ArrowLeft: "left", ArrowRight: "right", ArrowUp: "up", ArrowDown: "down", KeyA: "left", KeyD: "right", KeyW: "up", KeyS: "down" }[e.code];
+            if (m) { e.preventDefault(); move(m); }
+        });
+        let sx, sy;
+        boardEl.addEventListener("pointerdown", (e) => { sx = e.clientX; sy = e.clientY; });
+        boardEl.addEventListener("pointerup", (e) => {
+            const dx = e.clientX - sx, dy = e.clientY - sy;
+            if (Math.max(Math.abs(dx), Math.abs(dy)) < 25) return;
+            move(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up"));
+        });
+        newGame();
+    })();
+    </script>
+    <script type="module" src="/hub.js"></script>
+</body>
+</html>
