@@ -5,45 +5,108 @@ service cloud.firestore {
     function signedIn() {
       return request.auth != null;
     }
-
+    function me() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    function hasProfile() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
     function isAdmin() {
-      return signedIn()
-        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return hasProfile() && me().role == 'admin';
+    }
+    function notBanned() {
+      return hasProfile() && me().get('banned', false) != true;
+    }
+    function isPremiumUser() {
+      return hasProfile() && (me().get('premium', false) == true || me().role == 'admin');
+    }
+    // Fields only an admin may change on a user profile
+    function protectedKeys() {
+      return ['role', 'premium', 'premiumSince', 'email', 'createdAt', 'banned', 'redeemedCode'];
     }
 
     match /users/{uid} {
-      // Users can read their own profile; admins can read everyone's (admin dashboard)
+      // Users read their own profile; admins read everyone's
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
 
-      // A new user can only create their OWN profile, and only as a free, non-admin user
+      // New users create only their OWN profile, as a free, non-admin, non-banned user
       allow create: if signedIn()
         && request.auth.uid == uid
         && request.resource.data.role == 'user'
-        && request.resource.data.premium == false;
+        && request.resource.data.premium == false
+        && !('banned' in request.resource.data)
+        && !('premiumSince' in request.resource.data);
 
-      // Admins can change anything. Users can update their own profile
-      // (name, lastLogin) but can NEVER change role, premium, email or createdAt.
+      // Admins can change anything.
+      // Users can change their own name, frame, favorites, skins, daily challenges, lastLogin...
+      // but never the protected fields — EXCEPT turning on Premium with an unused redeem code
+      // in the same batch (see /codes below).
       allow update: if isAdmin()
-        || (signedIn()
-            && request.auth.uid == uid
-            && !request.resource.data.diff(resource.data).affectedKeys()
-                 .hasAny(['role', 'premium', 'email', 'createdAt']));
+        || (signedIn() && request.auth.uid == uid
+            && !request.resource.data.diff(resource.data).affectedKeys().hasAny(protectedKeys()))
+        || (signedIn() && request.auth.uid == uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+                 .hasOnly(['premium', 'premiumSince', 'redeemedCode'])
+            && request.resource.data.premium == true
+            && request.resource.data.premiumSince == request.time
+            && exists(/databases/$(database)/documents/codes/$(request.resource.data.redeemedCode))
+            && get(/databases/$(database)/documents/codes/$(request.resource.data.redeemedCode)).data.usedBy == null
+            && getAfter(/databases/$(database)/documents/codes/$(request.resource.data.redeemedCode)).data.usedBy == uid);
 
       allow delete: if isAdmin();
 
       // Saved scores / progress: users/{uid}/games/{gameId}
-      // Players read & write only their own; admins can read everyone's.
       match /games/{gameId} {
         allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
         allow write: if signedIn()
           && request.auth.uid == uid
+          && notBanned()
           && gameId.matches('^[a-z0-9_-]{1,40}$')
           && (!('best' in request.resource.data) || request.resource.data.best is number);
       }
     }
 
-    // Site settings (which games are Premium): anyone can read, only admins can change
+    // Admin stats: read every player's game data at once
+    match /{path=**}/games/{gameId} {
+      allow read: if isAdmin();
+    }
+
+    // Leaderboards: leaderboards/{game}/all/{uid}  and  leaderboards/{game}/weeks/{week}/scores/{uid}
+    // Anyone can read. Players write only their own entry, with their real profile name.
+    function validEntry(uid) {
+      return signedIn() && request.auth.uid == uid && notBanned()
+        && request.resource.data.keys().hasOnly(['name', 'best', 'premium', 'frame', 'updatedAt'])
+        && request.resource.data.best is number
+        && request.resource.data.best >= 0 && request.resource.data.best < 100000000
+        && request.resource.data.name == me().name
+        && request.resource.data.premium == isPremiumUser()
+        && request.resource.data.frame == me().get('frame', 'none')
+        && request.resource.data.updatedAt == request.time;
+    }
+    match /leaderboards/{game}/all/{uid} {
+      allow read: if true;
+      allow write: if validEntry(uid);
+      allow delete: if isAdmin();
+    }
+    match /leaderboards/{game}/weeks/{week}/scores/{uid} {
+      allow read: if true;
+      allow write: if validEntry(uid);
+      allow delete: if isAdmin();
+    }
+
+    // Premium redeem codes: only admins create or list them.
+    // A player may claim an unused code for themselves (together with turning on their Premium).
+    match /codes/{code} {
+      allow read, create, delete: if isAdmin();
+      allow update: if isAdmin()
+        || (signedIn() && notBanned()
+            && resource.data.usedBy == null
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['usedBy', 'usedAt', 'usedByName'])
+            && request.resource.data.usedBy == request.auth.uid
+            && request.resource.data.usedAt == request.time);
+    }
+
+    // Site settings (premium games, announcement): anyone can read, only admins can change
     match /settings/{doc} {
       allow read: if true;
       allow write: if isAdmin();

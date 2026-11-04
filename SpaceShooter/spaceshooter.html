@@ -152,7 +152,7 @@
         function drawShip() {
             if (ship.inv > 0 && Math.floor(ship.inv / 6) % 2) return;
             const { x, y } = ship;
-            ctx.fillStyle = "#2ee6c9";
+            ctx.fillStyle = ((window.GameHub && window.GameHub.skin && window.GameHub.skin("spaceshooter")) || "#2ee6c9");
             ctx.beginPath(); ctx.moveTo(x, y - 20); ctx.lineTo(x + 16, y + 14); ctx.lineTo(x + 5, y + 8); ctx.lineTo(x - 5, y + 8); ctx.lineTo(x - 16, y + 14); ctx.closePath(); ctx.fill();
             ctx.fillStyle = "#eef0ff"; ctx.beginPath(); ctx.ellipse(x, y - 2, 4, 8, 0, 0, 7); ctx.fill();
             ctx.fillStyle = Math.random() < 0.5 ? "#ffc94d" : "#ff4d8d"; ctx.fillRect(x - 3, y + 9, 6, 6 + Math.random() * 8);

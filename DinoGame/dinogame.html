@@ -113,8 +113,8 @@
                 }
             });
             // dino
-            const b = box();
-            ctx.fillStyle = "#eef0ff";
+            const b = box(), dinoColor = ((window.GameHub && window.GameHub.skin && window.GameHub.skin("dinogame")) || "#eef0ff");
+            ctx.fillStyle = dinoColor;
             if (ducking && onGround()) {
                 ctx.fillRect(b.x, b.y + 6, 44, 18); ctx.fillRect(b.x + 36, b.y, 22, 16);
             } else {
@@ -122,7 +122,7 @@
                 ctx.fillRect(b.x - 4, b.y + 18, 10, 6); ctx.fillRect(b.x + 28, b.y + 22, 8, 4);
             }
             ctx.fillStyle = "#0b0d1a"; ctx.fillRect(ducking && onGround() ? b.x + 48 : b.x + 32, b.y + 4, 4, 4);
-            ctx.fillStyle = "#eef0ff";
+            ctx.fillStyle = dinoColor;
             const leg = onGround() ? Math.floor(t / 90) % 2 : 0;
             const ly = (ducking && onGround()) ? b.y + 24 : b.y + 40;
             ctx.fillRect(b.x + 8, ly, 6, leg ? 8 : 14); ctx.fillRect(b.x + 20, ly, 6, leg ? 14 : 8);

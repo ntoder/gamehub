@@ -1,0 +1,152 @@
+// progress.js — XP, levels, achievements, daily challenge and the name filter.
+// Pure functions (no Firebase), so any page can use them.
+
+// ---------- Score targets per game (used by daily challenges & achievements) ----------
+// easy = a fair daily goal, hard = an achievement for really good players
+export const TARGETS = {
+    noametry:     { easy: 15,   hard: 60,    unit: "points" },
+    spaceshooter: { easy: 800,  hard: 5000,  unit: "points" },
+    game2048:     { easy: 1500, hard: 10000, unit: "points" },
+    breakout:     { easy: 400,  hard: 2500,  unit: "points" },
+    memory:       { easy: 400,  hard: 700,   unit: "points" },
+    subwaysurfer: { easy: 250,  hard: 1500,  unit: "points" },
+    dinogame:     { easy: 300,  hard: 1500,  unit: "points" },
+    flappybird:   { easy: 5,    hard: 30,    unit: "pipes" },
+    snake:        { easy: 100,  hard: 500,   unit: "points" },
+    pacman:       { easy: 500,  hard: 2500,  unit: "points" },
+    tetris:       { easy: 400,  hard: 4000,  unit: "points" },
+    mario:        { easy: 1000, hard: 5000,  unit: "points" },
+    bubblebobble: { easy: 1000, hard: 5000,  unit: "points" },
+    motorracing:  { easy: 300,  hard: 1500,  unit: "points" },
+    soccer:       { easy: 2,    hard: 6,     unit: "goals" }
+};
+
+// ---------- Dates ----------
+export function dayKey(d = new Date()) {
+    // local date, e.g. "2026-11-04"
+    const z = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}`;
+}
+export function weekKey(d = new Date()) {
+    // ISO week, e.g. "2026-W45" (weeks start on Monday)
+    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const day = t.getUTCDay() || 7;
+    t.setUTCDate(t.getUTCDate() + 4 - day);
+    const y = t.getUTCFullYear();
+    const w = Math.ceil(((t - Date.UTC(y, 0, 1)) / 864e5 + 1) / 7);
+    return `${y}-W${String(w).padStart(2, "0")}`;
+}
+
+// ---------- Daily challenge: same for everyone, changes every day ----------
+export function dailyChallenge(d = new Date(), premiumGames = []) {
+    // Only free games, so every player can do it
+    const pool = Object.keys(TARGETS).filter((id) => !premiumGames.includes(id));
+    const key = dayKey(d);
+    let h = 0;
+    for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    const game = pool[h % pool.length];
+    return { day: key, game, target: TARGETS[game].easy, unit: TARGETS[game].unit };
+}
+export function dailyStreak(daily = {}, d = new Date()) {
+    let streak = 0;
+    const t = new Date(d);
+    if (!daily[dayKey(t)]) t.setDate(t.getDate() - 1); // today not done yet: count from yesterday
+    while (daily[dayKey(t)]) { streak++; t.setDate(t.getDate() - 1); }
+    return streak;
+}
+
+// ---------- XP and levels ----------
+export function xpFor(games = {}, profile = {}) {
+    let xp = 0;
+    for (const [id, g] of Object.entries(games)) {
+        xp += (g.plays || 0) * 10;                                   // 10 XP per game played
+        const t = TARGETS[id];
+        if (t && (g.best || 0) >= t.easy) xp += 50;                  // bonus for a good score
+        if (t && (g.best || 0) >= t.hard) xp += 150;                 // big bonus for a great score
+    }
+    xp += Object.keys(profile.daily || {}).length * 40;              // 40 XP per daily challenge
+    return xp;
+}
+// Level n needs 50·n·(n−1) XP in total: level 2 = 100, level 3 = 300, level 4 = 600 …
+export function levelFor(xp) {
+    let lvl = 1;
+    while (50 * (lvl + 1) * lvl <= xp) lvl++;
+    const cur = 50 * lvl * (lvl - 1), next = 50 * (lvl + 1) * lvl;
+    return { level: lvl, xp, into: xp - cur, need: next - cur, pct: Math.floor(((xp - cur) / (next - cur)) * 100) };
+}
+
+// ---------- Achievements ----------
+const A = (id, icon, name, desc, test) => ({ id, icon, name, desc, test });
+export const ACHIEVEMENTS = [
+    A("first",    "🎮", "First game",       "Play any game",                       (g) => played(g) >= 1),
+    A("five",     "🖐️", "Explorer",         "Play 5 different games",              (g) => played(g) >= 5),
+    A("ten",      "🧭", "Adventurer",       "Play 10 different games",             (g) => played(g) >= 10),
+    A("all",      "🌍", "Tried them all",   "Play every game on the hub",          (g, p, n) => played(g) >= n),
+    A("plays50",  "🔥", "Keen player",      "Play 50 games in total",              (g) => plays(g) >= 50),
+    A("plays250", "💪", "Unstoppable",      "Play 250 games in total",             (g) => plays(g) >= 250),
+    A("good3",    "⭐", "Getting good",     "Reach a daily-challenge score in 3 games", (g) => over(g, "easy") >= 3),
+    A("pro",      "🏆", "Pro",              "Reach an expert score in any game",   (g) => over(g, "hard") >= 1),
+    A("legend",   "👑", "Legend",           "Reach expert scores in 5 games",      (g) => over(g, "hard") >= 5),
+    A("space",    "🚀", "Space ace",        "Score 5,000 in Space Shooter",        (g) => best(g, "spaceshooter") >= 5000),
+    A("bricks",   "🧱", "Brick breaker",    "Score 1,000 in Brick Smash",          (g) => best(g, "breakout") >= 1000),
+    A("tiles",    "🔢", "Number cruncher",  "Score 10,000 in 2048",                (g) => best(g, "game2048") >= 10000),
+    A("memory",   "🧠", "Sharp memory",     "Score 700 in Memory Match",           (g) => best(g, "memory") >= 700),
+    A("daily1",   "📅", "Daily player",     "Finish a daily challenge",            (g, p) => Object.keys(p.daily || {}).length >= 1),
+    A("streak3",  "📆", "On a roll",        "Finish daily challenges 3 days in a row", (g, p) => dailyStreak(p.daily) >= 3),
+    A("streak7",  "🗓️", "Week warrior",     "Finish daily challenges 7 days in a row", (g, p) => dailyStreak(p.daily) >= 7),
+    A("premium",  "★",  "Supporter",        "Get Premium",                         (g, p) => !!p.premium)
+];
+function played(g) { return Object.values(g).filter((x) => x.plays).length; }
+function plays(g) { return Object.values(g).reduce((n, x) => n + (x.plays || 0), 0); }
+function best(g, id) { return (g[id] && g[id].best) || 0; }
+function over(g, lvl) { return Object.keys(TARGETS).filter((id) => best(g, id) >= TARGETS[id][lvl]).length; }
+
+export function achievementsFor(games = {}, profile = {}, totalGames = 16) {
+    return ACHIEVEMENTS.map((a) => ({ ...a, done: !!a.test(games, profile, totalGames) }));
+}
+
+// ---------- Avatar frames (Premium) ----------
+export const FRAMES = {
+    none:    { name: "None",    premium: false, css: "" },
+    gold:    { name: "Gold",    premium: true,  css: "box-shadow:0 0 0 3px #ffc94d,0 0 14px #ffc94d88" },
+    neon:    { name: "Neon",    premium: true,  css: "box-shadow:0 0 0 3px #2ee6c9,0 0 16px #2ee6c9aa" },
+    fire:    { name: "Fire",    premium: true,  css: "box-shadow:0 0 0 3px #ff4d8d,0 0 0 6px #ff9d4d,0 0 18px #ff4d8d99" },
+    rainbow: { name: "Rainbow", premium: true,  css: "box-shadow:0 0 0 2px #ff4d8d,0 0 0 4px #ffc94d,0 0 0 6px #2ee6a0,0 0 0 8px #7c5cff" }
+};
+
+// ---------- Skins (Premium) ----------
+export const SKINS = {
+    spaceshooter: { label: "Ship", options: { classic: ["Classic", "#2ee6c9"], gold: ["Gold", "#ffc94d"], pink: ["Pink", "#ff4d8d"], violet: ["Violet", "#a15cff"], white: ["Ghost", "#eef0ff"] } },
+    subwaysurfer: { label: "Hoodie", options: { classic: ["Classic", "#7c5cff"], red: ["Red", "#ff4d4d"], green: ["Green", "#2ee6a0"], gold: ["Gold", "#ffc94d"], black: ["Shadow", "#2a2d3a"] } },
+    dinogame:     { label: "Dino", options: { classic: ["Classic", "#eef0ff"], green: ["Green", "#2ee6a0"], pink: ["Pink", "#ff4d8d"], gold: ["Gold", "#ffc94d"], blue: ["Blue", "#4da3ff"] } },
+    breakout:     { label: "Paddle", options: { classic: ["Classic", "#2ee6c9"], pink: ["Pink", "#ff4d8d"], gold: ["Gold", "#ffc94d"], violet: ["Violet", "#a15cff"], white: ["White", "#eef0ff"] } }
+};
+
+// ---------- Name filter ----------
+// Blocks rude words in display names (English + Hebrew), including common tricks like "sh1t" or "s.h.i.t".
+const BAD = [
+    "fuck", "fuk", "fck", "shit", "bitch", "btch", "cunt", "dick", "cock", "pussy", "penis", "vagina", "sex", "porn",
+    "nude", "naked", "boob", "tits", "ass", "arse", "bastard", "slut", "whore", "hoe", "fag", "gay", "nigg", "nigr", "retard",
+    "rape", "kill", "nazi", "hitler", "isis", "pedo", "piss", "wank", "crap", "damn", "hell", "stupid", "idiot", "dumb", "loser", "suck",
+    "זין", "כוס", "זונה", "שרמוטה", "מניאק", "חרא", "מזדיין", "לזיין", "הומו", "קוקסינל", "מפגר", "דביל", "אידיוט", "סקס", "פורנו", "ערבי מסריח", "נאצי", "היטלר"
+];
+// Short words that are only bad on their own (so "Glass", "Hello", "Shell" are fine)
+const WHOLE_ONLY = ["ass", "arse", "hoe", "hell", "sex", "gay", "dumb", "crap", "damn", "kill", "suck", "piss", "tits"];
+const LEET = { "0": "o", "1": "i", "3": "e", "4": "a", "5": "s", "7": "t", "8": "b", "@": "a", "$": "s", "!": "i", "|": "i" };
+
+export function nameProblem(name) {
+    const raw = String(name || "").trim();
+    if (raw.length < 2) return "Your name needs at least 2 characters.";
+    if (raw.length > 20) return "Please keep your name to 20 characters or less.";
+    if (/https?:|www\.|\.com|@/i.test(raw)) return "Names can't have links or emails in them.";
+    if (/\d{6,}/.test(raw)) return "Names can't have phone numbers in them.";
+    const lower = raw.toLowerCase();
+    const words = lower.split(/[^a-z0-9֐-׿@$!|]+/).map(deleet).filter(Boolean);
+    const squashed = deleet(lower).replace(/[^a-z֐-׿]/g, "").replace(/(.)\1+/g, "$1");
+    for (const w of BAD) {
+        if (WHOLE_ONLY.includes(w)) { if (words.includes(w)) return "Please choose a friendlier name."; }
+        else if (squashed.includes(deleet(w).replace(/[^a-z\u0590-\u05ff]/g, "").replace(/(.)\1+/g, "$1")) || words.some((x) => x.includes(w))) return "Please choose a friendlier name.";
+    }
+    return null;
+}
+function deleet(s) { return s.replace(/[0134578@$!|]/g, (c) => LEET[c] || c); }

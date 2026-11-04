@@ -14,6 +14,9 @@
     <meta name="description" content="Noam's Game Hub — 16 free browser games made by Noam: Noametry, Space Shooter, 2048, Block Drop, Snake and more. No downloads, scores saved to your free account.">
     <title>Noam's Game Hub</title>
     <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#0b0d1a">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -234,6 +237,28 @@
         .featured p { color: var(--muted); }
         .featured .btn { align-self: flex-start; }
 
+        /* ---------- Today ---------- */
+        .today { display: grid; gap: 16px; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); margin-bottom: 40px; }
+        .daily-card { display: flex; gap: 16px; align-items: center; background: linear-gradient(135deg, rgba(255,201,77,.16), rgba(124,92,255,.12));
+            border: 1px solid rgba(255,201,77,.45); border-radius: 18px; padding: 20px; flex-wrap: wrap; }
+        .dc-icon { font-size: 40px; }
+        .dc-body { flex: 1; min-width: 180px; display: grid; gap: 4px; }
+        .dc-body small { color: var(--gold); font-weight: 800; letter-spacing: 1px; font-size: 11px; }
+        .dc-body b { font-size: 17px; } .dc-body span { color: var(--muted); font-size: 14px; }
+        .rows { display: grid; gap: 12px; align-content: start; }
+        .mini h3 { font-size: 15px; margin-bottom: 8px; }
+        .mini-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+        .mini-card { flex: none; width: 110px; text-decoration: none; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+        .mini-card:hover { border-color: var(--accent); }
+        .mini-card img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: var(--bg-2); }
+        .mini-card span { display: block; padding: 6px 8px; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .heart { position: absolute; bottom: 8px; right: 8px; z-index: 2; width: 34px; height: 34px; border-radius: 50%; border: 0;
+            background: rgba(11,13,26,.75); cursor: pointer; font-size: 16px; display: grid; place-items: center; transition: transform .15s; }
+        .heart:hover { transform: scale(1.15); }
+        .lvl-pill { background: var(--accent); color: #fff; border-radius: 999px; padding: 1px 8px; font-size: 11px; margin-left: 4px; }
+        .lvl-pill:empty { display: none; }
+        @media (max-width: 760px) { .today { grid-template-columns: 1fr; } }
+
         /* ---------- About ---------- */
         .about { margin-top: 56px; display: grid; gap: 16px; }
         .about-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 22px 24px; }
@@ -278,8 +303,11 @@
         <ul id="navLinks">
             <li><a href="/" class="active">Home</a></li>
             <li><a href="#games">Games</a></li>
+            <li><a href="/leaderboard">🏆 Leaderboards</a></li>
+            <li><a href="/articles/">Articles</a></li>
             <li><a href="/Websites/">Websites</a></li>
             <li><a href="/mybio">My Bio</a></li>
+            <li class="hidden" id="installLi"><a href="#" id="installBtn">📲 Install app</a></li>
             <li><a href="/premium" class="prem-link">★ Premium</a></li>
             <li class="account" id="account">
                 <a href="/login" class="login-btn" id="loginBtn">Log in</a>
@@ -291,7 +319,8 @@
                         <span aria-hidden="true">▾</span>
                     </button>
                     <div class="dropdown" id="dropdown" role="menu">
-                        <a href="/profile" role="menuitem">👤 My profile</a>
+                        <a href="/profile" role="menuitem">👤 My profile <span class="lvl-pill" id="lvlPill"></span></a>
+                        <a href="/leaderboard" role="menuitem">🏆 Leaderboards</a>
                         <a href="/admin" class="hidden" id="adminLink" role="menuitem">🛠️ Admin dashboard</a>
                         <button id="logoutBtn" role="menuitem">Log out</button>
                     </div>
@@ -312,6 +341,14 @@
 
     <main class="section">
         <!-- Featured -->
+        <section class="today" id="today">
+            <div class="daily-card" id="dailyCard"></div>
+            <div class="rows">
+                <div class="mini hidden" id="recentWrap"><h3>🕹️ Continue playing</h3><div class="mini-row" id="recentRow"></div></div>
+                <div class="mini hidden" id="favWrap"><h3>❤️ Your favorites</h3><div class="mini-row" id="favRow"></div></div>
+            </div>
+        </section>
+
         <div data-ad="banner"></div>
 
         <section class="featured" aria-label="Featured game">
@@ -341,6 +378,7 @@
             <button class="chip" data-filter="platformer">Platformer</button>
             <button class="chip" data-filter="sports">Sports</button>
             <button class="chip" data-filter="premium">★ Premium</button>
+            <button class="chip" data-filter="fav">❤️ Favorites</button>
         </div>
 
         <div class="grid" id="grid"></div>
@@ -384,13 +422,22 @@
     </main>
 
     <footer>
-        Made with ❤️ by Noam · <a href="/mybio">About me</a> · <a href="/Websites/">More websites</a> · <a href="/premium">Premium</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:noam@rbscode.com">Contact</a>
+        Made with ❤️ by Noam · <a href="/mybio">About me</a> · <a href="/Websites/">More websites</a> · <a href="/articles/">Articles</a> · <a href="/leaderboard">Leaderboards</a> · <a href="/premium">Premium</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:noam@rbscode.com">Contact</a>
     </footer>
 
     <script type="module">
         import { GAMES, DEFAULT_PREMIUM } from "/games.js";
+        import { dailyChallenge, xpFor, levelFor } from "/progress.js";
         // Firebase-powered parts load afterwards; the game list works even if they're blocked
-        let isPremiumGame = (id) => DEFAULT_PREMIUM.includes(id), isLockedGame = isPremiumGame;
+        const early = (id) => GAMES[id].earlyUntil && Date.now() < Date.parse(GAMES[id].earlyUntil);
+        let isPremiumGame = (id) => DEFAULT_PREMIUM.includes(id) || early(id), isLockedGame = isPremiumGame;
+        const lsGet = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } };
+        let getFavs = () => lsGet("gh_favs", []), toggleFav = async (id) => {
+            const f = new Set(getFavs()); f.has(id) ? f.delete(id) : f.add(id);
+            try { localStorage.setItem("gh_favs", JSON.stringify([...f])); } catch (e) {}
+            return f.has(id);
+        };
+        let todayChallenge = () => dailyChallenge(new Date(), DEFAULT_PREMIUM), dailyDone = () => false;
 
         const $ = (id) => document.getElementById(id);
         const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -405,8 +452,10 @@
                 const tag = g.original ? '<span class="tag original">Original</span>'
                           : g.isNew ? '<span class="tag new">New</span>'
                           : `<span class="tag">${esc(g.tags[0])}</span>`;
-                return `<a class="card${locked ? " locked" : ""}" href="${g.path}" data-tags="${g.tags.join(" ")}${prem ? " premium" : ""}">
-                    <div class="thumb">${tag}${prem ? '<span class="tag prem">★ Premium</span>' : ""}
+                const fav = getFavs().includes(id);
+                return `<a class="card${locked ? " locked" : ""}" href="${g.path}" data-id="${id}" data-tags="${g.tags.join(" ")}${prem ? " premium" : ""}${fav ? " fav" : ""}">
+                    <div class="thumb">${tag}${early(id) ? '<span class="tag prem">🚀 Early access</span>' : prem ? '<span class="tag prem">★ Premium</span>' : ""}
+                        <button class="heart${fav ? " on" : ""}" data-fav="${id}" aria-label="${fav ? "Remove from" : "Add to"} favorites" title="Favorite">${fav ? "❤️" : "🤍"}</button>
                         <img src="${g.img}" alt="${esc(g.name)}" loading="lazy" onerror="this.style.display='none'"></div>
                     <div class="card-body"><h3>${esc(g.name)}</h3><p>${esc(g.desc)}</p></div>
                 </a>`;
@@ -430,6 +479,44 @@
         }));
         renderGrid();
 
+        // Install as an app (shows only when the browser supports it)
+        let installEvt;
+        addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); installEvt = e; $("installLi").classList.remove("hidden"); });
+        $("installBtn").addEventListener("click", async (e) => {
+            e.preventDefault(); if (!installEvt) return;
+            installEvt.prompt(); await installEvt.userChoice; installEvt = null; $("installLi").classList.add("hidden");
+        });
+
+        // Favorite hearts
+        $("grid").addEventListener("click", async (e) => {
+            const b = e.target.closest("[data-fav]");
+            if (!b) return;
+            e.preventDefault(); e.stopPropagation();
+            await toggleFav(b.dataset.fav);
+            renderGrid(); renderToday();
+        });
+
+        // Daily challenge + continue playing + favorites
+        function miniCard(id) {
+            const g = GAMES[id];
+            return `<a class="mini-card" href="${g.path}"><img src="${g.img}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>${esc(g.name)}</span></a>`;
+        }
+        function renderToday() {
+            const c = todayChallenge(), done = dailyDone(c.day);
+            $("dailyCard").innerHTML = `<div class="dc-icon">📅</div>
+                <div class="dc-body"><small>DAILY CHALLENGE</small>
+                    <b>Score ${c.target.toLocaleString()} ${c.unit} in ${esc(GAMES[c.game].name)}</b>
+                    <span>${done ? "✅ Done for today! A new challenge comes tomorrow." : "Finish it today for +40 XP and keep your streak going."}</span></div>
+                ${done ? "" : `<a class="btn btn-primary" href="${GAMES[c.game].path}">▶ Play</a>`}`;
+            const recent = lsGet("gh_recent", []).filter((id) => GAMES[id]).slice(0, 6);
+            $("recentWrap").classList.toggle("hidden", !recent.length);
+            $("recentRow").innerHTML = recent.map(miniCard).join("");
+            const favs = getFavs().filter((id) => GAMES[id]).slice(0, 6);
+            $("favWrap").classList.toggle("hidden", !favs.length);
+            $("favRow").innerHTML = favs.map(miniCard).join("");
+        }
+        renderToday();
+
         // ---------- Mobile menu ----------
         $("menuBtn").addEventListener("click", () => {
             const open = $("navLinks").classList.toggle("open");
@@ -447,8 +534,13 @@
         if (hubMod) {
         const { onAccount, isPremium } = hubMod;
         isPremiumGame = hubMod.isPremiumGame; isLockedGame = hubMod.isLockedGame;
+        getFavs = hubMod.getFavorites; toggleFav = hubMod.toggleFavorite;
+        todayChallenge = hubMod.todaysChallenge; dailyDone = (day) => !!hubMod.state.profile?.daily?.[day];
         onAccount(({ user, profile }) => {
-            renderGrid();
+            renderGrid(); renderToday();
+            if (user && profile) hubMod.getMyGames(user.uid).then((g) => {
+                $("lvlPill").textContent = "Lv " + levelFor(xpFor(g, profile)).level;
+            }).catch(() => {});
             if (!user) { $("loginBtn").classList.remove("hidden"); menu.classList.add("hidden"); return; }
             profile = profile || {};
             const name = profile.name || user.displayName || user.email.split("@")[0];

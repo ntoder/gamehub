@@ -178,7 +178,7 @@
             ctx.beginPath(); ctx.moveTo(px - 6, y - 26); ctx.lineTo(px - 6 + swing, y - 4);
             ctx.moveTo(px + 6, y - 26); ctx.lineTo(px + 6 - swing, y - 4); ctx.stroke();
             // body + head + cap
-            ctx.fillStyle = "#7c5cff"; ctx.fillRect(px - 14, y - 58, 28, 34);
+            ctx.fillStyle = ((window.GameHub && window.GameHub.skin && window.GameHub.skin("subwaysurfer")) || "#7c5cff"); ctx.fillRect(px - 14, y - 58, 28, 34);
             ctx.fillStyle = "#ffd7b0"; ctx.beginPath(); ctx.arc(px, y - 68, 11, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = "#ff4d8d"; ctx.fillRect(px - 12, y - 80, 24, 7); ctx.fillRect(px, y - 76, 16, 4);
         }

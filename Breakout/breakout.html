@@ -139,7 +139,7 @@
                 ctx.fillStyle = "rgba(255,255,255,.18)"; ctx.fillRect(b.x + 3, b.y + 3, b.w - 6, 4);
             }
             powers.forEach((p) => { ctx.fillStyle = "#ffc94d"; ctx.font = "20px sans-serif"; ctx.textAlign = "center"; ctx.fillText("★", p.x, p.y); });
-            ctx.fillStyle = paddle.wide > 0 ? "#ffc94d" : "#2ee6c9";
+            ctx.fillStyle = paddle.wide > 0 ? "#ffc94d" : ((window.GameHub && window.GameHub.skin && window.GameHub.skin("breakout")) || "#2ee6c9");
             roundRect(paddle.x - paddle.w / 2, paddle.y, paddle.w, 12, 6);
             ctx.fillStyle = "#eef0ff"; ctx.shadowColor = "#7c5cff"; ctx.shadowBlur = 14;
             ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
