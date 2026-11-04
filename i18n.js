@@ -91,7 +91,7 @@ const TEXT = {
     "Jump the cacti and duck under the birds.": "קופצים מעל קקטוסים ומתכופפים מתחת לציפורים.", "Tap to flap and fly through the gaps.": "נוגעים כדי לנפנף ועפים בין הרווחים.",
     "The classic — eat and grow longer.": "הקלאסיקה: אוכלים וגדלים.", "Eat all the dots and avoid the ghosts.": "אוכלים את כל הנקודות ובורחים מהרוחות.",
     "Arrange falling blocks to clear lines.": "מסדרים בלוקים נופלים ומעלימים שורות.", "Run, jump and stomp across new levels.": "רצים, קופצים ומועכים אויבים בשלבים חדשים.",
-    "Blow bubbles to trap the monsters.": "מנפחים בועות ולוכדים מפלצות.", "Full chess for two players on one screen.": "שחמט מלא לשני שחקנים על מסך אחד.",
+    "Blow bubbles to trap the monsters.": "מנפחים בועות ולוכדים מפלצות.", "Play chess against the computer or a friend.": "משחקים שחמט נגד המחשב או נגד חבר.",
     "Race and dodge the traffic.": "דוהרים ומתחמקים מהתנועה.", "Score more goals than the computer in 90 seconds.": "מבקיעים יותר גולים מהמחשב ב־90 שניות.",
     "No games match your search 😕": "לא נמצאו משחקים 😕", "About Noam's Game Hub": "על המשחקים של נועם", "💾 Save your scores": "💾 שומרים שיאים",
     "👨‍👩‍👧 Made for kids": "👨‍👩‍👧 מתאים לילדים", "Every game is safe for all ages. There's no chat, no violence and no in-game shop. Ads are set to child-safe mode.": "כל המשחקים מתאימים לכל הגילים. אין צ'אט, אין אלימות ואין חנות בתוך המשחק. הפרסומות מוגדרות למצב בטוח לילדים.",
