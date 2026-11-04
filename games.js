@@ -14,7 +14,7 @@ export const GAMES = {
     snake:        { name: "Snake",         path: "/Snake/snake",               img: "/thumbs/snake.png",              tags: ["arcade"],           desc: "The classic — eat and grow longer." },
     pacman:       { name: "Maze Muncher",        path: "/Pacman/pacman",             img: "/thumbs/pacman.png",             tags: ["arcade"],           desc: "Eat all the dots and avoid the ghosts." },
     tetris:       { name: "Block Drop",        path: "/Tetris/tetris",             img: "/thumbs/tetris.png",             tags: ["puzzle"],           desc: "Arrange falling blocks to clear lines." },
-    mario:        { name: "Pixel Jumper",         path: "/Mario/mario",               img: "/thumbs/mario.png",              tags: ["platformer"],       desc: "Stomp enemies and collect coins in 3D." },
+    mario:        { name: "Pixel Jumper",         path: "/Mario/mario",               img: "/thumbs/mario.png",              tags: ["platformer"],       desc: "Run, jump and stomp across new levels." },
     bubblebobble: { name: "Bubble Blaster", path: "/BubbleBobble/bubblebobble", img: "/thumbs/bubblebobble.png",       tags: ["arcade", "platformer"], desc: "Blow bubbles to trap the monsters." },
     chess:        { name: "Chess",         path: "/Chess/chess",               img: "/thumbs/chess.png",              tags: ["puzzle"],           desc: "Full chess for two players on one screen." },
     motorracing:  { name: "Motor Racing",  path: "/MotorRacing/motorracing",   img: "/thumbs/motorracing.png",        tags: ["sports"],           desc: "Race and dodge the traffic." },
