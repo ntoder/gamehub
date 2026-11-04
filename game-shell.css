@@ -58,3 +58,14 @@ canvas { display: block; max-width: 100%; touch-action: none; }
 .seg button { padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--muted); font: 600 13px Inter, sans-serif; cursor: pointer; }
 .seg button.active { background: var(--text); color: var(--bg); border-color: var(--text); }
 .touch button:active { background: var(--accent); }
+/* bigger top bar and buttons */
+.gbar { padding: 14px clamp(12px, 3vw, 36px); }
+.gbar a.back { font-size: 16px; }
+.gbar h1 { font-size: clamp(13px, 2.4vw, 19px); }
+.stat { padding: 7px 14px; min-width: 78px; border-radius: 12px; }
+.stat b { font-size: 21px; }
+.stat small { font-size: 12px; }
+.btn { font-size: 17px; padding: 14px 26px; }
+.overlay p { font-size: 17px; }
+.hint { font-size: 14.5px; }
+.seg button { font-size: 15px; padding: 9px 16px; }

@@ -113,6 +113,38 @@
         hit: (a, b) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
     };
 
+    // ---- big, sharp game screen ----
+    // The main canvas (#c) grows to fill the window, and draws at a higher resolution so it stays crisp.
+    // Games keep using their normal sizes (cv.width / cv.height stay the same for them).
+    (function bigScreen() {
+        const cv = $("c");
+        if (!cv || !cv.closest(".frame") || cv.dataset.fixed !== undefined) return;
+        const w = cv.width, h = cv.height;
+        const fit = () => {
+            const wrap = cv.closest(".playwrap");
+            let side = 0;
+            if (wrap && innerWidth > 760) wrap.querySelectorAll(":scope > .side").forEach((s) => { side += s.getBoundingClientRect().width + 14; });
+            const bar = document.querySelector(".gbar"), touch = document.querySelector(".touch");
+            const used = (bar ? bar.offsetHeight : 60) + 70 + (touch && getComputedStyle(touch).display !== "none" ? touch.offsetHeight + 10 : 0);
+            const availW = Math.min(innerWidth - 32, 1700) - side, availH = Math.max(260, innerHeight - used);
+            return Math.max(0.3, Math.min(availW / w, availH / h, 1.9));
+        };
+        const s0 = fit();
+        let k = Math.min(2, (window.devicePixelRatio || 1) * Math.max(1, s0));
+        if (w * h * k * k > 3.2e6) k = Math.sqrt(3.2e6 / (w * h));
+        k = Math.max(1, k);
+        const proto = HTMLCanvasElement.prototype, dw = Object.getOwnPropertyDescriptor(proto, "width"), dh = Object.getOwnPropertyDescriptor(proto, "height");
+        dw.set.call(cv, Math.round(w * k)); dh.set.call(cv, Math.round(h * k));
+        Object.defineProperty(cv, "width", { get: () => w, set() {} });
+        Object.defineProperty(cv, "height", { get: () => h, set() {} });
+        const orig = cv.getContext.bind(cv);
+        cv.getContext = (type, opts) => { const c = orig(type, opts); if (type === "2d" && c && !c.__big) { c.__big = true; c.setTransform(k, 0, 0, k, 0, 0); } return c; };
+        const apply = () => { cv.style.width = Math.round(w * fit()) + "px"; cv.style.height = "auto"; };
+        apply();
+        addEventListener("resize", apply);
+        document.addEventListener("DOMContentLoaded", apply);
+    })();
+
     // mute button in the top bar
     document.addEventListener("DOMContentLoaded", () => {
         const bar = document.querySelector(".gbar .stats");
