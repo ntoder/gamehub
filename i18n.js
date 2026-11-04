@@ -21,6 +21,8 @@ const NAMES = {
     "Noametry": "נועמטרי", "Space Shooter": "יורה החלל", "2048": "2048", "Brick Smash": "מנפץ הלבנים", "Memory Match": "משחק הזיכרון",
     "Subway Runner": "רץ הרכבת", "Dino Run": "ריצת הדינו", "Sky Hopper": "קופץ השמיים", "Snake": "נחש", "Maze Muncher": "זולל המבוך",
     "Block Drop": "נפילת הבלוקים", "Pixel Jumper": "קופץ הפיקסלים", "Bubble Blaster": "מפוצץ הבועות", "Chess": "שחמט",
+    "Paddle Battle": "קרב המחבטים", "Four in a Row": "ארבע בשורה", "Tic-Tac-Toe": "איקס עיגול", "Mine Finder": "מוצא המוקשים", "Mole Mash": "הכה את החפרפרת",
+    "Color Echo": "הד הצבעים", "Stack Tower": "מגדל הבלוקים", "Space Rocks": "סלעי החלל", "Math Blitz": "בליץ חשבון", "Typing Rain": "גשם של מילים",
     "Motor Racing": "מרוץ אופנועים", "Soccer": "כדורגל"
 };
 const gn = (n) => NAMES[n] || n;
@@ -83,7 +85,7 @@ const TEXT = {
     "▶ Browse games": "▶ לכל המשחקים", "Try Noametry": "לנסות את נועמטרי", "DAILY CHALLENGE": "האתגר היומי", "▶ Play": "▶ לשחק", "🕹️ Continue playing": "🕹️ להמשיך לשחק",
     "❤️ Your favorites": "❤️ המועדפים שלך", "A fun and challenging puzzle game where you solve geometric puzzles to progress through levels.": "משחק מאתגר וכיפי שבו פותרים חידות גאומטריות כדי לעבור שלבים.",
     "▶ Play Noametry": "▶ לשחק בנועמטרי", "All Games": "כל המשחקים", "All": "הכול", "Arcade": "ארקייד", "Puzzle": "חשיבה", "Runner": "ריצה", "Platformer": "פלטפורמה",
-    "Sports": "ספורט", "❤️ Favorites": "❤️ מועדפים", "Original": "מקורי", "New": "חדש", "runner": "ריצה", "arcade": "ארקייד", "puzzle": "חשיבה", "platformer": "פלטפורמה", "sports": "ספורט",
+    "Sports": "ספורט", "❤️ Favorites": "❤️ מועדפים", "Original": "מקורי", "New": "חדש", "runner": "ריצה", "arcade": "ארקייד", "puzzle": "חשיבה", "platformer": "פלטפורמה", "sports": "ספורט", "🧠 Brain": "🧠 מוח", "brain": "מוח",
     "🚀 Early access": "🚀 גישה מוקדמת",
     "Jump and dodge your way through geometric levels.": "קופצים ומתחמקים בשלבים גאומטריים.", "Blast alien waves, grab power-ups, beat the boss.": "יורים בגלי חייזרים, אוספים שדרוגים ומביסים את הבוס.",
     "Slide and merge the tiles to reach 2048.": "מחליקים ומחברים אריחים עד 2048.", "Smash every brick — level after level.": "מנפצים כל לבנה, שלב אחרי שלב.",
@@ -93,6 +95,11 @@ const TEXT = {
     "Arrange falling blocks to clear lines.": "מסדרים בלוקים נופלים ומעלימים שורות.", "Run, jump and stomp across new levels.": "רצים, קופצים ומועכים אויבים בשלבים חדשים.",
     "Blow bubbles to trap the monsters.": "מנפחים בועות ולוכדים מפלצות.", "Play chess against the computer or a friend.": "משחקים שחמט נגד המחשב או נגד חבר.",
     "Race and dodge the traffic.": "דוהרים ומתחמקים מהתנועה.", "Score more goals than the computer in 90 seconds.": "מבקיעים יותר גולים מהמחשב ב־90 שניות.",
+    "Bounce the ball past the computer. First to 7 wins.": "מקפיצים את הכדור אל מעבר למחשב. הראשון ל־7 מנצח.", "Drop discs and line up four before the computer.": "מפילים דיסקיות ומסדרים ארבע בשורה לפני המחשב.",
+    "X and O against the computer or a friend.": "איקס ועיגול נגד המחשב או נגד חבר.", "Use the numbers to find every hidden mine.": "משתמשים במספרים כדי למצוא כל מוקש מוסתר.",
+    "Bop the moles, skip the bombs, beat the clock.": "מכים בחפרפרות, נזהרים מהפצצות ומנצחים את השעון.", "Remember the colour pattern and play it back.": "זוכרים את סדר הצבעים ומנגנים אותו בחזרה.",
+    "Drop the blocks and build the tallest tower.": "מפילים בלוקים ובונים את המגדל הגבוה ביותר.", "Fly, shoot and break the space rocks apart.": "טסים, יורים ומנפצים את סלעי החלל.",
+    "Solve as many sums as you can in 60 seconds.": "פותרים כמה שיותר תרגילים ב־60 שניות.", "Type the falling words before they land.": "מקלידים את המילים הנופלות לפני שהן נוחתות.",
     "No games match your search 😕": "לא נמצאו משחקים 😕", "About Noam's Game Hub": "על המשחקים של נועם", "💾 Save your scores": "💾 שומרים שיאים",
     "👨‍👩‍👧 Made for kids": "👨‍👩‍👧 מתאים לילדים", "Every game is safe for all ages. There's no chat, no violence and no in-game shop. Ads are set to child-safe mode.": "כל המשחקים מתאימים לכל הגילים. אין צ'אט, אין אלימות ואין חנות בתוך המשחק. הפרסומות מוגדרות למצב בטוח לילדים.",
     "Questions": "שאלות", "Is it really free?": "זה באמת בחינם?", "Yes. Almost every game is free to play without an account. Premium is optional.": "כן. כמעט כל המשחקים חינמיים גם בלי חשבון. פרימיום הוא רשות.",

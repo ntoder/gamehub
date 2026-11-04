@@ -18,7 +18,16 @@ export const TARGETS = {
     mario:        { easy: 1000, hard: 5000,  unit: "points" },
     bubblebobble: { easy: 1000, hard: 5000,  unit: "points" },
     motorracing:  { easy: 300,  hard: 1500,  unit: "points" },
-    soccer:       { easy: 2,    hard: 6,     unit: "goals" }
+    soccer:       { easy: 2,    hard: 6,     unit: "goals" },
+    paddlebattle: { easy: 300,  hard: 1200,  unit: "points" },
+    fourinarow:   { easy: 1,    hard: 5,     unit: "wins in a row" },
+    minefinder:   { easy: 300,  hard: 2500,  unit: "points" },
+    molemash:     { easy: 300,  hard: 1200,  unit: "points" },
+    colorecho:    { easy: 6,    hard: 15,    unit: "rounds" },
+    stacktower:   { easy: 15,   hard: 50,    unit: "blocks" },
+    spacerocks:   { easy: 2000, hard: 10000, unit: "points" },
+    mathblitz:    { easy: 300,  hard: 1500,  unit: "points" },
+    typingrain:   { easy: 400,  hard: 2500,  unit: "points" }
 };
 
 // ---------- Dates ----------
