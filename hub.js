@@ -74,6 +74,16 @@ export async function savePremiumGames(list) {
 }
 
 // ---------- Ads: only for visitors who aren't premium ----------
+// 1. In AdSense → Ads → By ad unit → Display ads, create one unit called "Game Hub banner".
+// 2. Paste its data-ad-slot number below. Until then the ad boxes stay hidden.
+const AD_CLIENT = "ca-pub-8671583156732584";
+const AD_SLOTS = {
+    banner: ""          // e.g. "1234567890"
+};
+// The hub's players are mostly kids, so ad requests are tagged for child treatment
+// (Google then shows only non-personalised ads). 1 = child, 2 = teen, 0 = no tag.
+const AD_AGE_TREATMENT = "1";
+
 function loadAds() {
     if (document.querySelector('script[src*="adsbygoogle.js"]')) return;
     const s = document.createElement("script");
@@ -82,7 +92,40 @@ function loadAds() {
     s.src = ADSENSE_SRC;
     document.head.appendChild(s);
 }
-ready.then(() => { if (!isPremium()) loadAds(); });
+
+function placeAds() {
+    let spots = [...document.querySelectorAll("[data-ad]")];
+    // Game pages don't have their own spot: add one under the game
+    if (!spots.length && CURRENT_GAME) {
+        const div = document.createElement("div");
+        div.dataset.ad = "banner";
+        document.body.appendChild(div);
+        spots = [div];
+    }
+    for (const spot of spots) {
+        const slot = AD_SLOTS[spot.dataset.ad];
+        if (!slot) { spot.remove(); continue; }
+        spot.className = "gh-ad";
+        spot.innerHTML = `<div class="gh-ad-label">Advertisement</div>
+            <ins class="adsbygoogle" style="display:block" data-ad-client="${AD_CLIENT}" data-ad-slot="${slot}"
+                 data-ad-format="auto" data-full-width-responsive="true" data-tag-for-age-treatment="${AD_AGE_TREATMENT}"></ins>
+            <a class="gh-ad-remove" href="/premium">★ Remove ads · ₪10 for life</a>`;
+        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
+    }
+    if (spots.length) {
+        const st = document.createElement("style");
+        st.textContent = `.gh-ad{max-width:970px;margin:24px auto;padding:0 16px;text-align:center;font-family:Inter,system-ui,sans-serif}
+          .gh-ad-label{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#9aa0c8;margin-bottom:6px}
+          .gh-ad-remove{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;color:#ffc94d;text-decoration:none}`;
+        document.head.appendChild(st);
+    }
+}
+
+ready.then(() => {
+    if (isPremium()) { document.querySelectorAll("[data-ad]").forEach((el) => el.remove()); return; }
+    loadAds();
+    if (document.readyState === "loading") addEventListener("DOMContentLoaded", placeAds); else placeAds();
+});
 
 // ---------- Saving scores & progress ----------
 const gameRef = (uid, id) => doc(db, "users", uid, "games", id);
