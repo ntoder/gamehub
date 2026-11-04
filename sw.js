@@ -1,8 +1,8 @@
 // sw.js — lets the Game Hub be installed as an app and keeps games playable offline.
 // Pages: try the network first (so updates show up straight away), fall back to the saved copy.
 // Firebase / ads / analytics are never cached.
-const CACHE = "gamehub-v1";
-const CORE = ["/", "/game-shell.css", "/games.js", "/progress.js", "/hub.js", "/firebase-config.js", "/favicon.png", "/icons/icon-192.png"];
+const CACHE = "gamehub-v2";
+const CORE = ["/", "/game-shell.css", "/games.js", "/progress.js", "/hub.js", "/i18n.js", "/firebase-config.js", "/favicon.png", "/icons/icon-192.png"];
 
 self.addEventListener("install", (e) => {
     e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));

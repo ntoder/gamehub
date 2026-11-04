@@ -14,6 +14,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { GAMES, PLAY_ONLY, DEFAULT_PREMIUM } from "./games.js";
 import { TARGETS, SKINS, FRAMES, dayKey, weekKey, dailyChallenge, nameProblem } from "./progress.js";
+import { getLang, startHebrew, addLangButton } from "./i18n.js";
 export { GAMES };
 
 // ---------- Clean URLs: /login instead of /login.html, / instead of /index.html ----------
@@ -35,6 +36,16 @@ export { GAMES };
         }
     }, true);
     addEventListener("dragstart", (e) => { if (e.target.tagName === "IMG") e.preventDefault(); });
+})();
+
+// ---------- Hebrew / English ----------
+export const LANG = getLang();
+(async () => {
+    if (location.pathname.startsWith("/admin")) return;           // admin page stays in English
+    await new Promise((r) => (document.readyState === "loading" ? addEventListener("DOMContentLoaded", r) : r()));
+    const game = !!gameIdFromPath(decodeURIComponent(location.pathname));
+    addLangButton(LANG);
+    if (LANG === "he") startHebrew({ gamePage: game });
 })();
 
 const ADSENSE_SRC = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8671583156732584";
