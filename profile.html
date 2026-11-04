@@ -78,6 +78,8 @@
             border-radius: 16px; padding: 16px 20px; margin-bottom: 24px; color: var(--muted); font-size: 14px;
         }
         .upsell strong { color: var(--gold); }
+        .noamlink { border-color: rgba(124,92,255,.55); background: rgba(124,92,255,.08); }
+        .noamlink strong { color: #cfc4ff; }
 
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 32px; }
         .stat { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
@@ -185,6 +187,7 @@
             <a class="btn primary" id="upsellBtn" href="/premium" style="text-decoration:none">★ Get Premium · ₪10</a>
         </div>
 
+        <div class="upsell noamlink" id="noamLink"></div>
         <section class="stats">
             <div class="stat"><div class="num" id="sGames">0</div><div class="lbl">Games played</div></div>
             <div class="stat"><div class="num" id="sPlays">0</div><div class="lbl">Total plays</div></div>
@@ -233,6 +236,14 @@
         const user = state.user;
         const profile = state.profile || {};
         let name = profile.name || user.displayName || user.email.split("@")[0];
+
+        // NoamBrowser account (NoamChat, Music, Focus, Bookmarks): linked when you sign in to both on /account
+        (() => {
+            const el = $("noamLink"), u = profile.noamAccount;
+            el.innerHTML = u
+                ? `<span>💬 Your NoamBrowser account: <strong>@${String(u).replace(/[^a-z0-9_.-]/g, "")}</strong>. Friends can add you in NoamChat by this username.</span><a class="btn primary" href="/chat/" style="text-decoration:none">Open NoamChat</a>`
+                : `<span>💬 <strong>NoamChat, music, focus timer and bookmarks</strong> with your NoamBrowser account. Link it to this profile.</span><a class="btn primary" href="/account/" style="text-decoration:none">Link my NoamBrowser account</a>`;
+        })();
 
         // Header
         function renderName() {
