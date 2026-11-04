@@ -5,14 +5,15 @@
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RX7DB1FEWY');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Breakout · Noam's Game Hub</title>
+    <meta name="description" content="Bounce the ball off your paddle and break every brick on the screen. Free to play in your browser on Noam's Game Hub.">
+    <title>Brick Smash · Noam's Game Hub</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="stylesheet" href="/game-shell.css">
 </head>
 <body>
     <div class="gbar">
         <a class="back" href="/">← Games</a>
-        <h1><span>Breakout</span></h1>
+        <h1>Brick <span>Smash</span></h1>
         <div class="stats">
             <div class="stat"><b id="score">0</b><small>Score</small></div>
             <div class="stat"><b id="lives">3</b><small>Lives</small></div>
@@ -23,7 +24,7 @@
         <div class="frame">
             <canvas id="c" width="640" height="560"></canvas>
             <div class="overlay" id="start"><div>
-                <h2>Breakout</h2>
+                <h2>Brick Smash</h2>
                 <p>Move with the mouse, ⬅ ➡ or your finger.<br>Click / Space to launch. Smash every brick!</p>
                 <button class="btn" id="startBtn">▶ Play</button>
             </div></div>
@@ -192,6 +193,39 @@
         }
         newGame(); draw();
     })();
+    </script>
+
+    <!-- Game info -->
+    <style>
+body{flex-direction:column;flex-wrap:nowrap;overflow-y:auto!important;height:auto}
+.gh-info{direction:ltr;max-width:860px;margin:32px auto 8px;padding:0 16px;font-family:Inter,system-ui,sans-serif;color:#cfd3f5;line-height:1.65;text-align:left}
+.gh-info section{background:#171b36;border:1px solid #2a3060;border-radius:16px;padding:20px 22px;margin-bottom:14px}
+.gh-info h2{font-size:20px;font-weight:800;color:#eef0ff;margin:0 0 8px}
+.gh-info h3{font-size:16px;font-weight:800;color:#2ee6c9;margin:0 0 8px}
+.gh-info p{margin:0}
+.gh-info ul{margin:0;padding-left:20px}
+.gh-info li{margin:4px 0}
+.gh-info table{border-collapse:collapse;width:100%}
+.gh-info td{padding:6px 8px;border-top:1px solid #2a3060;vertical-align:top}
+.gh-info td:first-child{font-weight:700;color:#eef0ff;white-space:nowrap;width:1%}
+.gh-info .gh-more{display:flex;gap:10px;flex-wrap:wrap}
+.gh-info .gh-more a{color:#2ee6c9;text-decoration:none;font-weight:700;background:#12152b;border:1px solid #2a3060;border-radius:999px;padding:6px 14px}
+.gh-info .gh-more a:hover{border-color:#7c5cff}
+</style>
+    <div class="gh-info">
+        <section><h2>About Brick Smash</h2><p>Bounce the ball off your paddle and break every brick on the screen. Where the ball hits the paddle decides its angle, so you can aim. Gold bricks need two hits, and a falling star makes your paddle extra wide for a while. Clear the wall to move to a harder level with a faster ball.</p></section>
+        <section><h3>How to play</h3><table><tr><td>Mouse / finger</td><td>Move the paddle</td></tr><tr><td>Arrow keys</td><td>Move the paddle</td></tr><tr><td>Click / Space</td><td>Launch the ball</td></tr></table></section>
+        <section><h3>Tips</h3><ul><li>Hit the ball with the edge of the paddle to send it sideways.</li><li>Break a hole through to the top and let the ball bounce around up there.</li><li>Catch the star power-up: a wider paddle makes the fast levels much easier.</li></ul></section>
+        <section><h3>More games</h3><div class="gh-more"><a href="/Memory/memory">Memory Match</a><a href="/DinoGame/dinogame">Dino Run</a><a href="/Pacman/pacman">Maze Muncher</a><a href="/">All games →</a></div></section>
+    </div>
+    <div data-ad="banner"></div>
+    <script>
+    // game keys shouldn't scroll the page now that it has text below the game
+    addEventListener("keydown", function (e) {
+        var t = e.target && e.target.tagName;
+        if (t === "INPUT" || t === "TEXTAREA") return;
+        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space"].indexOf(e.code) !== -1) e.preventDefault();
+    }, { passive: false, capture: true });
     </script>
     <script type="module" src="/hub.js"></script>
 </body>

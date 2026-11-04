@@ -12,9 +12,10 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappy Bird</title>
+    <meta name="description" content="Guide a little bird through a sky full of pipes. Free to play in your browser on Noam's Game Hub.">
+    <title>Sky Hopper · Noam's Game Hub</title>
     <link rel="stylesheet" href="flappybird.css">
-      <link rel="icon" type="image/png" href="FlappyBird.jpeg">
+      <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
     <div class="container">
@@ -33,13 +34,46 @@
                 <button id="restartBtn">Play Again</button>
             </div>
             <div id="startScreen" class="start-screen">
-                <h1>Flappy Bird</h1>
+                <h1>Sky Hopper</h1>
                 <p>Click or Press Space to start</p>
             </div>
         </div>
     </div>
 
     <script src="flappybird.js"></script>
+
+    <!-- Game info -->
+    <style>
+body{flex-direction:column;flex-wrap:nowrap;overflow-y:auto!important;height:auto}
+.gh-info{direction:ltr;max-width:860px;margin:32px auto 8px;padding:0 16px;font-family:Inter,system-ui,sans-serif;color:#cfd3f5;line-height:1.65;text-align:left}
+.gh-info section{background:#171b36;border:1px solid #2a3060;border-radius:16px;padding:20px 22px;margin-bottom:14px}
+.gh-info h2{font-size:20px;font-weight:800;color:#eef0ff;margin:0 0 8px}
+.gh-info h3{font-size:16px;font-weight:800;color:#2ee6c9;margin:0 0 8px}
+.gh-info p{margin:0}
+.gh-info ul{margin:0;padding-left:20px}
+.gh-info li{margin:4px 0}
+.gh-info table{border-collapse:collapse;width:100%}
+.gh-info td{padding:6px 8px;border-top:1px solid #2a3060;vertical-align:top}
+.gh-info td:first-child{font-weight:700;color:#eef0ff;white-space:nowrap;width:1%}
+.gh-info .gh-more{display:flex;gap:10px;flex-wrap:wrap}
+.gh-info .gh-more a{color:#2ee6c9;text-decoration:none;font-weight:700;background:#12152b;border:1px solid #2a3060;border-radius:999px;padding:6px 14px}
+.gh-info .gh-more a:hover{border-color:#7c5cff}
+</style>
+    <div class="gh-info">
+        <section><h2>About Sky Hopper</h2><p>Guide a little bird through a sky full of pipes. Each tap gives it a small hop upward, and gravity pulls it back down. Fly through the gap between each pair of pipes to score a point. It's simple to learn and very hard to master.</p></section>
+        <section><h3>How to play</h3><table><tr><td>Space / click / tap</td><td>Flap</td></tr></table></section>
+        <section><h3>Tips</h3><ul><li>Tap gently and often instead of big jumps.</li><li>Aim for the middle of each gap, not the edges.</li><li>Stay calm after a high score. Rushing is what usually ends a run.</li></ul></section>
+        <section><h3>More games</h3><div class="gh-more"><a href="/Snake/snake">Snake</a><a href="/Tetris/tetris">Block Drop</a><a href="/Chess/chess">Chess</a><a href="/">All games →</a></div></section>
+    </div>
+    <div data-ad="banner"></div>
+    <script>
+    // game keys shouldn't scroll the page now that it has text below the game
+    addEventListener("keydown", function (e) {
+        var t = e.target && e.target.tagName;
+        if (t === "INPUT" || t === "TEXTAREA") return;
+        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space"].indexOf(e.code) !== -1) e.preventDefault();
+    }, { passive: false, capture: true });
+    </script>
     <script type="module" src="/hub.js"></script>
 </body>
 </html>

@@ -11,7 +11,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Noam's Game Hub — free browser games: Noametry, Tetris, Snake, Flappy Bird and more.">
+    <meta name="description" content="Noam's Game Hub — 16 free browser games made by Noam: Noametry, Space Shooter, 2048, Block Drop, Snake and more. No downloads, scores saved to your free account.">
     <title>Noam's Game Hub</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -234,6 +234,19 @@
         .featured p { color: var(--muted); }
         .featured .btn { align-self: flex-start; }
 
+        /* ---------- About ---------- */
+        .about { margin-top: 56px; display: grid; gap: 16px; }
+        .about-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 22px 24px; }
+        .about-card h2 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+        .about-card h3 { font-size: 17px; font-weight: 800; margin-bottom: 8px; }
+        .about-card p { color: var(--muted); margin-bottom: 10px; }
+        .about-card p:last-child { margin-bottom: 0; }
+        .about-card a { color: var(--accent-2); text-decoration: none; }
+        .about-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+        .faq details { border-top: 1px solid var(--line); padding: 10px 0; }
+        .faq summary { cursor: pointer; font-weight: 700; }
+        .faq details p { margin: 8px 0 0; }
+
         /* ---------- Footer ---------- */
         footer {
             border-top: 1px solid var(--line); text-align: center;
@@ -332,11 +345,46 @@
 
         <div class="grid" id="grid"></div>
         <p class="empty" id="empty">No games match your search 😕</p>
+
+        <!-- About -->
+        <section class="about" aria-label="About the Game Hub">
+            <div class="about-card">
+                <h2>About Noam's Game Hub</h2>
+                <p>Noam's Game Hub is a free collection of browser games that Noam built himself using HTML, CSS and JavaScript.
+                Every game runs right in your browser on a computer, tablet or phone. There's nothing to download or install,
+                and no app store needed.</p>
+                <p>The hub started as a coding project and keeps growing. New games are added and old ones are improved
+                all the time. Some games are quick arcade challenges like <a href="/DinoGame/dinogame">Dino Run</a> and
+                <a href="/SpaceShooter/spaceshooter">Space Shooter</a>, and others make you think, like
+                <a href="/Game2048/2048">2048</a>, <a href="/Memory/memory">Memory Match</a> and <a href="/Chess/chess">Chess</a>.</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3>💾 Save your scores</h3>
+                    <p>Make a free account and your best score in every game is saved to your <a href="/profile">profile</a>,
+                    so you can see how much you've improved.</p>
+                </div>
+                <div class="about-card">
+                    <h3>👨‍👩‍👧 Made for kids</h3>
+                    <p>Every game is safe for all ages. There's no chat, no violence and no in-game shop. Ads are set to child-safe mode.</p>
+                </div>
+                <div class="about-card">
+                    <h3>★ Premium</h3>
+                    <p>For ₪10, once, you get no ads and a few extra games. <a href="/premium">See what's included</a>.</p>
+                </div>
+            </div>
+            <div class="about-card faq">
+                <h3>Questions</h3>
+                <details><summary>Is it really free?</summary><p>Yes. Almost every game is free to play without an account. Premium is optional.</p></details>
+                <details><summary>Do the games work on phones?</summary><p>Yes, most games have touch controls: tap, swipe or use the on-screen buttons.</p></details>
+                <details><summary>How do I report a bug or suggest a game?</summary><p>Email <a href="mailto:noam@rbscode.com">noam@rbscode.com</a>. Ideas for new games are always welcome!</p></details>
+            </div>
+        </section>
         <div data-ad="banner"></div>
     </main>
 
     <footer>
-        Made with ❤️ by Noam · <a href="/mybio">About me</a> · <a href="/Websites/">More websites</a> · <a href="/premium">Premium</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a>
+        Made with ❤️ by Noam · <a href="/mybio">About me</a> · <a href="/Websites/">More websites</a> · <a href="/premium">Premium</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:noam@rbscode.com">Contact</a>
     </footer>
 
     <script type="module">

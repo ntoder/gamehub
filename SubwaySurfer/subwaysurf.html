@@ -5,6 +5,7 @@
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RX7DB1FEWY');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Run down a three-lane railway as fast as you can. Free to play in your browser on Noam's Game Hub.">
     <title>Subway Runner · Noam's Game Hub</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="stylesheet" href="/game-shell.css">
@@ -244,6 +245,39 @@
         }
         reset(); drawTrack(); drawPlayer(0);
     })();
+    </script>
+
+    <!-- Game info -->
+    <style>
+body{flex-direction:column;flex-wrap:nowrap;overflow-y:auto!important;height:auto}
+.gh-info{direction:ltr;max-width:860px;margin:32px auto 8px;padding:0 16px;font-family:Inter,system-ui,sans-serif;color:#cfd3f5;line-height:1.65;text-align:left}
+.gh-info section{background:#171b36;border:1px solid #2a3060;border-radius:16px;padding:20px 22px;margin-bottom:14px}
+.gh-info h2{font-size:20px;font-weight:800;color:#eef0ff;margin:0 0 8px}
+.gh-info h3{font-size:16px;font-weight:800;color:#2ee6c9;margin:0 0 8px}
+.gh-info p{margin:0}
+.gh-info ul{margin:0;padding-left:20px}
+.gh-info li{margin:4px 0}
+.gh-info table{border-collapse:collapse;width:100%}
+.gh-info td{padding:6px 8px;border-top:1px solid #2a3060;vertical-align:top}
+.gh-info td:first-child{font-weight:700;color:#eef0ff;white-space:nowrap;width:1%}
+.gh-info .gh-more{display:flex;gap:10px;flex-wrap:wrap}
+.gh-info .gh-more a{color:#2ee6c9;text-decoration:none;font-weight:700;background:#12152b;border:1px solid #2a3060;border-radius:999px;padding:6px 14px}
+.gh-info .gh-more a:hover{border-color:#7c5cff}
+</style>
+    <div class="gh-info">
+        <section><h2>About Subway Runner</h2><p>Run down a three-lane railway as fast as you can. Trains come straight at you, so switch lanes to get out of the way, and jump over the red and white barriers. Grab coins for extra points. The longer you survive, the faster the trains come.</p></section>
+        <section><h3>How to play</h3><table><tr><td>Left / right arrows</td><td>Change lane</td></tr><tr><td>Up / Space</td><td>Jump</td></tr><tr><td>Phone</td><td>Swipe left, right or up</td></tr></table></section>
+        <section><h3>Tips</h3><ul><li>Look at the far end of the track, not at your runner.</li><li>Barriers can be jumped, trains cannot. Change lanes for those.</li><li>A line of coins is often the safest path.</li></ul></section>
+        <section><h3>More games</h3><div class="gh-more"><a href="/DinoGame/dinogame">Dino Run</a><a href="/Snake/snake">Snake</a><a href="/Mario/mario">Pixel Jumper</a><a href="/">All games →</a></div></section>
+    </div>
+    <div data-ad="banner"></div>
+    <script>
+    // game keys shouldn't scroll the page now that it has text below the game
+    addEventListener("keydown", function (e) {
+        var t = e.target && e.target.tagName;
+        if (t === "INPUT" || t === "TEXTAREA") return;
+        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space"].indexOf(e.code) !== -1) e.preventDefault();
+    }, { passive: false, capture: true });
     </script>
     <script type="module" src="/hub.js"></script>
 </body>
