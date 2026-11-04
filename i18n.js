@@ -76,7 +76,7 @@ const BLOCKS = {
 // ---------- Single pieces of text ----------
 const TEXT = {
     "Noam's": "המשחקים", "Game Hub": "של נועם", "Noam's Game Hub": "המשחקים של נועם", "Home": "בית", "Games": "משחקים", "🏆 Leaderboards": "🏆 טבלאות שיאים",
-    "Leaderboards": "טבלאות שיאים", "Articles": "כתבות", "Websites": "אתרים", "My Bio": "עליי", "📲 Install app": "📲 התקנת האפליקציה", "★ Premium": "★ פרימיום",
+    "Leaderboards": "טבלאות שיאים", "Articles": "כתבות", "Websites": "אתרים", "My Bio": "עליי", "📲 Install app": "📲 התקנת האפליקציה", "More ▾": "עוד ▾", "📚 Articles": "📚 כתבות", "🌐 Websites": "🌐 אתרים", "👋 My Bio": "👋 עליי", "★ Premium": "★ פרימיום",
     "Premium": "פרימיום", "Log in": "התחברות", "Log out": "התנתקות", "👤 My profile": "👤 הפרופיל שלי", "🛠️ Admin dashboard": "🛠️ ניהול",
     "A collection of my favorite games and websites that I've created or enjoy. Pick a game, hit play, and have fun!": "אוסף של המשחקים והאתרים שבניתי ושאני אוהב. בחרו משחק, לחצו על שחק ותהנו!",
     "★ Featured · Original": "★ מומלץ · מקורי",
@@ -390,6 +390,7 @@ export function startHebrew({ gamePage = false } = {}) {
       html.he .heart{right:auto;left:8px}
       html.he .gh-announce button{right:auto;left:10px}
       html.he .dropdown{right:auto;left:0}
+      html.he .more-drop{left:auto;right:0}
       html.he .user-menu .dropdown a,html.he .user-menu .dropdown button{text-align:right!important}`;
     document.head.appendChild(st);
     const f = document.createElement("link");
@@ -427,7 +428,7 @@ export function startHebrew({ gamePage = false } = {}) {
 
 // ---------- Language button ----------
 export function addLangButton(lang) {
-    const label = lang === "he" ? "🌐 English" : "🌐 עברית";
+    const label = lang === "he" ? "🌐 EN" : "🌐 עב";
     const make = (tag = "button") => {
         const b = document.createElement(tag);
         b.textContent = label; b.className = "gh-lang"; b.dataset.noi18n = "1";

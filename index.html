@@ -65,7 +65,19 @@
         }
         .logo img { width: 30px; height: 30px; border-radius: 8px; }
         .logo span { color: var(--accent-2); }
-        .navbar ul { display: flex; list-style: none; gap: 4px; flex-wrap: wrap; }
+        .navbar ul { display: flex; list-style: none; gap: 2px; flex-wrap: nowrap; }
+        .navbar ul a, .more-btn { white-space: nowrap; }
+        .logo { white-space: nowrap; flex: none; }
+        .more { position: relative; }
+        .more-btn { display: block; padding: 8px 14px; border-radius: 999px; border: 0; background: none; cursor: pointer;
+            font: 600 14px 'Inter', sans-serif; color: var(--muted); }
+        .more-btn:hover, .more.open .more-btn { background: var(--card); color: var(--text); }
+        .more-drop { display: none; position: absolute; top: calc(100% + 8px); left: 0; min-width: 180px; z-index: 60;
+            background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 6px; box-shadow: 0 16px 40px rgba(0,0,0,.5); }
+        .more.open .more-drop { display: block; }
+        .navbar .more-drop a { border-radius: 8px; color: var(--text); }
+        .navbar .more-drop a:hover { background: var(--card-hover); }
+        .navbar .gh-lang { padding: 6px 10px; margin: 0 4px; }
         .navbar ul a {
             display: block; padding: 8px 14px; border-radius: 999px;
             text-decoration: none; font-weight: 600; font-size: 14px; color: var(--muted);
@@ -117,7 +129,9 @@
             color: var(--text); font: 600 14px 'Inter', sans-serif; text-decoration: none; cursor: pointer;
         }
         .navbar .dropdown a:hover, .navbar .dropdown button:hover { background: var(--card-hover); }
-        @media (max-width: 760px) {
+        @media (max-width: 1080px) {
+            .more-drop { position: static; display: block; border: 0; box-shadow: none; background: none; padding: 0 0 0 12px; }
+            .more-btn { display: none; }
             .user-menu, .navbar ul a.login-btn { margin: 8px 0 0; }
             .dropdown { position: static; margin-top: 6px; }
         }
@@ -280,7 +294,7 @@
         footer a { color: var(--accent-2); text-decoration: none; }
 
         /* ---------- Responsive ---------- */
-        @media (max-width: 760px) {
+        @media (max-width: 1080px) {
             .menu-btn { display: block; }
             .navbar { flex-wrap: wrap; }
             .navbar ul { display: none; width: 100%; flex-direction: column; padding-top: 8px; }
@@ -304,11 +318,16 @@
             <li><a href="/" class="active">Home</a></li>
             <li><a href="#games">Games</a></li>
             <li><a href="/leaderboard">🏆 Leaderboards</a></li>
-            <li><a href="/articles/">Articles</a></li>
-            <li><a href="/Websites/">Websites</a></li>
-            <li><a href="/mybio">My Bio</a></li>
-            <li class="hidden" id="installLi"><a href="#" id="installBtn">📲 Install app</a></li>
             <li><a href="/premium" class="prem-link">★ Premium</a></li>
+            <li class="more" id="moreMenu">
+                <button class="more-btn" id="moreBtn" aria-haspopup="true" aria-expanded="false">More ▾</button>
+                <div class="more-drop">
+                    <a href="/articles/">📚 Articles</a>
+                    <a href="/Websites/">🌐 Websites</a>
+                    <a href="/mybio">👋 My Bio</a>
+                    <a href="#" class="hidden" id="installBtn">📲 Install app</a>
+                </div>
+            </li>
             <li class="account" id="account">
                 <a href="/login" class="login-btn" id="loginBtn">Log in</a>
                 <div class="user-menu hidden" id="userMenu">
@@ -481,10 +500,15 @@
 
         // Install as an app (shows only when the browser supports it)
         let installEvt;
-        addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); installEvt = e; $("installLi").classList.remove("hidden"); });
+        addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); installEvt = e; $("installBtn").classList.remove("hidden"); });
+        $("moreBtn").addEventListener("click", (e) => {
+            e.stopPropagation();
+            $("moreBtn").setAttribute("aria-expanded", $("moreMenu").classList.toggle("open"));
+        });
+        document.addEventListener("click", () => $("moreMenu").classList.remove("open"));
         $("installBtn").addEventListener("click", async (e) => {
             e.preventDefault(); if (!installEvt) return;
-            installEvt.prompt(); await installEvt.userChoice; installEvt = null; $("installLi").classList.add("hidden");
+            installEvt.prompt(); await installEvt.userChoice; installEvt = null; $("installBtn").classList.add("hidden");
         });
 
         // Favorite hearts
