@@ -23,7 +23,9 @@ const NAMES = {
     "Block Drop": "נפילת הבלוקים", "Pixel Jumper": "קופץ הפיקסלים", "Bubble Blaster": "מפוצץ הבועות", "Chess": "שחמט",
     "Paddle Battle": "קרב המחבטים", "Four in a Row": "ארבע בשורה", "Tic-Tac-Toe": "איקס עיגול", "Mine Finder": "מוצא המוקשים", "Mole Mash": "הכה את החפרפרת",
     "Color Echo": "הד הצבעים", "Stack Tower": "מגדל הבלוקים", "Space Rocks": "סלעי החלל", "Math Blitz": "בליץ חשבון", "Typing Rain": "גשם של מילים",
-    "Motor Racing": "מרוץ אופנועים", "Soccer": "כדורגל"
+    "Motor Racing": "מרוץ אופנועים", "Soccer": "כדורגל",
+    "Penalty Shootout": "דו־קרב פנדלים", "Keepy Uppy": "ג'אגלינג", "Mini Golf": "מיני גולף", "Bowling": "באולינג", "Tennis": "טניס",
+    "Air Hockey": "הוקי אוויר", "Hoop Shot": "קליעה לסל", "Gem Swap": "החלפת יהלומים", "Sky Climber": "מטפס השמיים", "Fruit Slash": "חיתוך פירות"
 };
 const gn = (n) => NAMES[n] || n;
 const UNITS = { points: "נקודות", pipes: "צינורות", goals: "גולים" };
@@ -100,6 +102,11 @@ const TEXT = {
     "Bop the moles, skip the bombs, beat the clock.": "מכים בחפרפרות, נזהרים מהפצצות ומנצחים את השעון.", "Remember the colour pattern and play it back.": "זוכרים את סדר הצבעים ומנגנים אותו בחזרה.",
     "Drop the blocks and build the tallest tower.": "מפילים בלוקים ובונים את המגדל הגבוה ביותר.", "Fly, shoot and break the space rocks apart.": "טסים, יורים ומנפצים את סלעי החלל.",
     "Solve as many sums as you can in 60 seconds.": "פותרים כמה שיותר תרגילים ב־60 שניות.", "Type the falling words before they land.": "מקלידים את המילים הנופלות לפני שהן נוחתות.",
+    "Shoot penalties, then dive to save them.": "בועטים פנדלים, ואז קופצים להציל אותם.", "Keep the football in the air as long as you can.": "שומרים על הכדור באוויר כמה שיותר זמן.",
+    "Nine holes of putting, walls, water and sand.": "תשעה גומות עם קירות, מים וחול.", "Swipe to bowl, add spin and go for a strike.": "מחליקים כדי לגלגל, מוסיפים סיבוב והולכים על סטרייק.",
+    "Rally against the computer and win the match.": "חילופי מכות נגד המחשב, ומנצחים במשחק.", "Smash the puck into the computer's goal.": "מטיחים את הדיסקית לשער של המחשב.",
+    "Shoot as many baskets as you can in 60 seconds.": "קולעים כמה שיותר סלים ב־60 שניות.", "Swap gems to match three and set off chains.": "מחליפים יהלומים, מסדרים שלושה ויוצרים תגובות שרשרת.",
+    "Bounce up from cloud to cloud into space.": "קופצים מענן לענן עד החלל.", "Swipe to slice the fruit. Never the bombs!": "מחליקים כדי לחתוך פירות. אף פעם לא פצצות!",
     "No games match your search 😕": "לא נמצאו משחקים 😕", "About Noam's Game Hub": "על המשחקים של נועם", "💾 Save your scores": "💾 שומרים שיאים",
     "👨‍👩‍👧 Made for kids": "👨‍👩‍👧 מתאים לילדים", "Every game is safe for all ages. There's no chat, no violence and no in-game shop. Ads are set to child-safe mode.": "כל המשחקים מתאימים לכל הגילים. אין צ'אט, אין אלימות ואין חנות בתוך המשחק. הפרסומות מוגדרות למצב בטוח לילדים.",
     "Questions": "שאלות", "Is it really free?": "זה באמת בחינם?", "Yes. Almost every game is free to play without an account. Premium is optional.": "כן. כמעט כל המשחקים חינמיים גם בלי חשבון. פרימיום הוא רשות.",
@@ -310,6 +317,7 @@ const PATTERNS = [
 
 // Whole-element sentences that contain numbers
 const BLOCK_PATTERNS = [
+    [/^🎮 (\d+) games · no downloads · free account saves your scores$/, (m, n) => `🎮 <span id="gameCount">${n}</span> משחקים · בלי הורדות · חשבון חינמי שומר את השיאים שלך`],
     [/^Score ([\d,]+) (points|pipes|goals) in this game today to complete it and earn 40 XP\.( Log in to take part\.)?$/,
         (m, n, u, login) => `השיגו היום <b>${n} ${UNITS[u]}</b> במשחק הזה כדי להשלים את האתגר ולקבל 40 XP.${login ? ' <a href="/login" style="color:#2ee6c9">התחברו</a> כדי להשתתף.' : ""}`],
     [/^Best: ([\d,]+) · Power-ups: ◆ double shot · ♥ extra life · ◎ shield$/, (m, n) => `שיא: <b id="best">${n}</b> · שדרוגים: <span style="color:#2ee6c9">◆ ירייה כפולה</span> · <span style="color:#ff4d8d">♥ חיים נוספים</span> · <span style="color:#ffc94d">◎ מגן</span>`],

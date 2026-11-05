@@ -27,7 +27,17 @@ export const TARGETS = {
     stacktower:   { easy: 15,   hard: 50,    unit: "blocks" },
     spacerocks:   { easy: 2000, hard: 10000, unit: "points" },
     mathblitz:    { easy: 300,  hard: 1500,  unit: "points" },
-    typingrain:   { easy: 400,  hard: 2500,  unit: "points" }
+    typingrain:   { easy: 400,  hard: 2500,  unit: "points" },
+    penalty:      { easy: 300,  hard: 1200,  unit: "points" },
+    keepyuppy:    { easy: 15,   hard: 80,    unit: "points" },
+    minigolf:     { easy: 1500, hard: 3500,  unit: "points" },
+    bowling:      { easy: 80,   hard: 180,   unit: "points" },
+    tennis:       { easy: 100,  hard: 500,   unit: "points" },
+    airhockey:    { easy: 300,  hard: 1200,  unit: "points" },
+    hoopshot:     { easy: 15,   hard: 60,    unit: "points" },
+    gemswap:      { easy: 800,  hard: 3000,  unit: "points" },
+    skyclimber:   { easy: 300,  hard: 2000,  unit: "points" },
+    fruitslash:   { easy: 150,  hard: 600,   unit: "points" }
 };
 
 // ---------- Dates ----------

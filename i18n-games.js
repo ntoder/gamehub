@@ -207,7 +207,130 @@ export const TEXT = {
     "Type letters": "מקלידים אותיות", "Shoot the falling words": "יורים במילים הנופלות", "Backspace / Esc": "Backspace / Esc", "Let go of the word you're typing": "משחררים את המילה שמקלידים",
     "Type the lowest words first. They are the most dangerous.": "הקלידו קודם את המילים הכי נמוכות. הן הכי מסוכנות.",
     "Keep your fingers on the home row: A S D F and J K L.": "השאירו את האצבעות בשורת הבית: A S D F ו־J K L.",
-    "Accuracy matters more than speed. Wrong letters waste time.": "דיוק חשוב יותר ממהירות. אותיות שגויות מבזבזות זמן."
+    "Accuracy matters more than speed. Wrong letters waste time.": "דיוק חשוב יותר ממהירות. אותיות שגויות מבזבזות זמן.",
+    // ---- shared (new games) ----
+    "Moves": "מהלכים", "Kicks": "בעיטות", "Hole": "גומה", "Strokes": "חבטות", "Par": "פאר", "Frame": "פריים", "Games": "משחקונים", "You": "אתם", "Computer": "מחשב",
+    "Card": "כרטיס", "Score card": "כרטיס ניקוד", "▶ Play": "▶ לשחק", "▶ Climb": "▶ לטפס", "▶ Slice": "▶ לחתוך", "▶ Shoot": "▶ לזרוק", "▶ Tee off": "▶ להתחיל", "▶ Bowl": "▶ לגלגל",
+    "Out of Moves": "נגמרו המהלכים", "You Fell!": "נפלתם!", "Game Over": "המשחק נגמר", "Shootout Over": "הדו־קרב נגמר", "Ball Dropped!": "הכדור נפל!", "Round Complete": "הסיבוב הסתיים",
+    "↻ Play again": "↻ לשחק שוב", "↻ Climb again": "↻ לטפס שוב",
+    // canvas text
+    "Shuffle!": "ערבוב!", "FRENZY!": "טירוף!", "Your kick: click where to shoot": "הבעיטה שלכם: לחצו לאן לבעוט", "Your save: click where to dive!": "אתם בשער: לחצו לאן לקפוץ!",
+    "Saved!": "נעצר!", "Missed!": "החטאה!", "They scored": "הם הבקיעו", "GREAT SAVE!": "הצלה מדהימה!", "Sudden death!": "מוות פתאומי!",
+    "PERFECT +2": "מושלם +2", "Drag back from the ball and let go": "גררו אחורה מהכדור ושחררו", "Swipe up from the ball to bowl": "החליקו למעלה מהכדור כדי לגלגל",
+    "Gutter!": "תעלה!", "STRIKE!": "סטרייק!", "SPARE!": "ספייר!", "Miss": "פספוס", "HOLE IN ONE!": "הול אין וואן!", "Eagle!": "איגל!", "Birdie!": "בירדי!", "Bogey": "בוגי",
+    "Splash! +1 stroke": "שפלאש! חבטה נוספת", "Max strokes": "מקסימום חבטות", "Click or press Space to serve": "לחצו או הקישו רווח כדי להגיש", "Out!": "אאוט!", "Too slow!": "איטי מדי!",
+    "Winner!": "ווינר!", "Game, you!": "המשחקון שלכם!", "Game, computer": "המשחקון של המחשב", "💥 You sliced a bomb!": "💥 חתכתם פצצה!", "You dropped 3 fruits.": "הפלתם 3 פירות.",
+    // ---- Gem Swap ----
+    "Swap two gems next to each other to make a line of 3 or more.": "החליפו שני יהלומים שכנים כדי ליצור שורה של 3 או יותר.",
+    "Match 4 for a ⚡ striped gem and 5 for a 🌈 star gem!": "4 בשורה נותנים ⚡ יהלום פסים, ו־5 נותנים 🌈 יהלום כוכב!",
+    "You have 30 moves. Chain reactions score extra.": "יש לכם 30 מהלכים. תגובות שרשרת שוות יותר.",
+    "Click a gem then a neighbour, or drag a gem to swap it. Stuck? A hint glows after a few seconds.": "לחצו על יהלום ואז על שכן שלו, או גררו יהלום כדי להחליף. תקועים? רמז נדלק אחרי כמה שניות.",
+    "A colourful match-three puzzle. Swap two gems that sit next to each other to line up three or more of the same colour, and they burst into sparkles. New gems fall from the top, and if they make new lines you get a chain reaction worth extra points. Match four for a striped gem that clears a whole row, or five for a rainbow star that clears every gem of one colour. You have thirty moves to score as much as you can.":
+        "חידת התאמה צבעונית. החליפו שני יהלומים שכנים כדי לסדר שלושה או יותר באותו צבע, והם מתפוצצים בניצוצות. יהלומים חדשים נופלים מלמעלה, ואם הם יוצרים שורות חדשות מקבלים תגובת שרשרת ששווה עוד נקודות. ארבעה בשורה נותנים יהלום פסים שמנקה שורה שלמה, וחמישה נותנים כוכב קשת שמנקה את כל היהלומים בצבע אחד. יש לכם שלושים מהלכים.",
+    "Click two gems": "לחיצה על שני יהלומים", "Swap them": "מחליפים ביניהם", "Drag a gem": "גוררים יהלום", "Swap it with its neighbour": "מחליפים אותו עם השכן",
+    "Make matches near the bottom. Falling gems often make free chain reactions.": "עשו התאמות למטה. יהלומים שנופלים יוצרים הרבה פעמים שרשראות בחינם.",
+    "Save the star gem and swap it with the colour there is most of.": "שמרו את יהלום הכוכב והחליפו אותו עם הצבע שיש ממנו הכי הרבה.",
+    "Always look for a move that makes a line of four or five.": "תמיד חפשו מהלך שיוצר שורה של ארבעה או חמישה.",
+    // ---- Sky Climber ----
+    "Bounce from cloud to cloud and climb as high as you can!": "קפצו מענן לענן וטפסו הכי גבוה שאפשר!",
+    "⬅ ➡ / A D to move, or hold your finger where you want to go.": "⬅ ➡ / A D לתזוזה, או החזיקו את האצבע איפה שרוצים להגיע.",
+    "Springs launch you high. Brown platforms break! Stomp the bats from above.": "קפיצים מעיפים אתכם גבוה. פלטפורמות חומות נשברות! דרכו על העטלפים מלמעלה.",
+    "Go off one side of the screen and you come back on the other. On a phone you can also tilt to move.": "יוצאים מצד אחד של המסך וחוזרים מהצד השני. בטלפון אפשר גם להטות כדי לזוז.",
+    "Help a bouncy little alien climb into the sky. It jumps by itself every time it lands, so you only steer left and right from platform to platform. Springs launch you extra high, blue platforms slide sideways, brown ones crumble and white clouds vanish after one bounce. Higher up the sky turns to space and bats start flying around. Stomp them from above, collect coins and see how high you can go.":
+        "עזרו לחייזר קטן וקפצני לטפס לשמיים. הוא קופץ לבד בכל נחיתה, אז אתם רק מכוונים ימינה ושמאלה מפלטפורמה לפלטפורמה. קפיצים מעיפים גבוה במיוחד, פלטפורמות כחולות זזות לצדדים, חומות מתפוררות ועננים לבנים נעלמים אחרי קפיצה אחת. למעלה השמיים הופכים לחלל ועטלפים מתחילים לעוף. דרכו עליהם מלמעלה, אספו מטבעות ובדקו כמה גבוה תגיעו.",
+    "⬅ ➡ / A D": "⬅ ➡ / A D", "Move left and right": "זזים ימינה ושמאלה", "Mouse / finger": "עכבר / אצבע", "Hold where you want to go": "מחזיקים איפה שרוצים להגיע", "Tilt (phone)": "הטיה (טלפון)", "Lean to move": "מטים כדי לזוז",
+    "Move off one edge of the screen to come back on the other side.": "צאו מקצה אחד של המסך כדי לחזור מהצד השני.",
+    "Land in the middle of a spring for a super jump.": "נחתו באמצע הקפיץ לקפיצת־על.",
+    "Never land on a brown platform. It breaks right away.": "אל תנחתו על פלטפורמה חומה. היא נשברת מיד.",
+    // ---- Fruit Slash ----
+    "Swipe across the fruit to slice it!": "החליקו על הפירות כדי לחתוך אותם!",
+    "Slice 3 or more in one swipe for a combo bonus. A golden fruit starts a FRENZY.": "חתכו 3 או יותר בהחלקה אחת לבונוס קומבו. פרי זהב מתחיל טירוף.",
+    "Don't let 3 fruits drop, and never slice a ✖ bomb!": "אל תתנו ל־3 פירות ליפול, ולעולם אל תחתכו פצצה ✖!",
+    "With a mouse, just move it over the fruit. On a phone or tablet, swipe with your finger.": "עם עכבר פשוט מעבירים אותו מעל הפירות. בטלפון או בטאבלט מחליקים עם האצבע.",
+    "Fruit is flying through the air, so grab your blade and slice it! Swipe across the screen to cut fruit in half with a burst of juice. Slicing three or more fruits in one swipe gives a combo bonus, and a glowing golden fruit starts a frenzy where fruit rains down and nothing counts as a miss. Watch out for bombs: slicing one ends the game. Drop three fruits and the game is over too.":
+        "פירות עפים באוויר, אז קחו את הלהב וחתכו! החליקו על המסך כדי לחצות פירות עם פיצוץ של מיץ. חיתוך של שלושה פירות או יותר בהחלקה אחת נותן בונוס קומבו, ופרי זהב זוהר מתחיל טירוף שבו פירות יורדים כמו גשם ואין פספוסים. היזהרו מפצצות: חיתוך של פצצה מסיים את המשחק. גם אם שלושה פירות נופלים, המשחק נגמר.",
+    "Move the mouse": "מזיזים את העכבר", "Slice": "חיתוך", "Swipe (touch)": "החלקה (מגע)",
+    "Wait for fruit to reach the top of its jump, then slice several at once.": "חכו שהפירות יגיעו לשיא הגובה, ואז חתכו כמה בבת אחת.",
+    "Keep an eye out for bombs before every swipe.": "בדקו שאין פצצות לפני כל החלקה.",
+    "Golden fruit is rare. Slice it right away for a frenzy.": "פרי זהב נדיר. חתכו אותו מיד בשביל טירוף.",
+    // ---- Air Hockey ----
+    "Move your paddle with the mouse or your finger (or arrow keys).": "הזיזו את המחבט עם העכבר או האצבע (או החצים).",
+    "Hit the puck into the computer's goal at the top.": "הכניסו את הדיסקית לשער של המחשב למעלה.",
+    "First to 7 goals wins!": "הראשון ל־7 גולים מנצח!",
+    "Hit the puck while your paddle is moving to smash it harder. Bounce it off the walls to trick the computer.": "פגעו בדיסקית תוך כדי תנועה כדי להכות חזק יותר. הקפיצו אותה מהקירות כדי להטעות את המחשב.",
+    "A fast air hockey match against the computer on a glowing table. Move your paddle in the bottom half of the table and smash the puck into the computer's goal at the top. The puck bounces off the walls and slides with very little friction, so matches move quickly. Pick easy, normal or hard. The first player to seven goals wins.":
+        "משחק הוקי אוויר מהיר נגד המחשב על שולחן זוהר. הזיזו את המחבט בחצי התחתון של השולחן והטיחו את הדיסקית לשער של המחשב למעלה. הדיסקית קופצת מהקירות ומחליקה כמעט בלי חיכוך, אז המשחק מהיר. בחרו קל, רגיל או קשה. הראשון לשבעה גולים מנצח.",
+    "Arrow keys / WASD": "חצים / WASD", "Move with the keyboard": "תזוזה עם המקלדת",
+    "Hit the puck while your paddle is moving for a much faster shot.": "פגעו בדיסקית תוך כדי תנועה לזריקה הרבה יותר מהירה.",
+    "Bank shots off the side walls are hard for the computer to stop.": "זריקות מהקירות בצדדים קשות למחשב לעצור.",
+    "Stay between the puck and your goal when the computer has it.": "כשהדיסקית אצל המחשב, עמדו בינה לבין השער שלכם.",
+    // ---- Hoop Shot ----
+    "Drag back from the ball and let go to shoot, like a slingshot.": "גררו אחורה מהכדור ושחררו כדי לזרוק, כמו קלע.",
+    "A clean SWISH is 3 points and +2 seconds. 3 in a row doubles your points!": "סוויש נקי שווה 3 נקודות ו־2+ שניות. 3 ברצף מכפילים את הנקודות!",
+    "After 8 baskets the hoop starts to move.": "אחרי 8 סלים הסל מתחיל לזוז.",
+    "Pull further back for a stronger shot. The dotted line shows where the ball will go.": "משכו יותר אחורה לזריקה חזקה יותר. הקו המנוקד מראה לאן הכדור יטוס.",
+    "A basketball shooting challenge. Drag back from the ball like a slingshot and let go to shoot it toward the hoop. A shot that touches nothing is a swish, worth three points and extra time on the clock, and three baskets in a row doubles your points. Every basket moves the hoop somewhere new, and after eight baskets it starts sliding back and forth. Score as many points as you can in sixty seconds.":
+        "אתגר קליעה לסל. גררו אחורה מהכדור כמו קלע ושחררו כדי לזרוק לסל. זריקה שלא נוגעת בכלום היא סוויש, ששווה שלוש נקודות וזמן נוסף, ושלושה סלים ברצף מכפילים את הנקודות. אחרי כל סל הסל זז למקום חדש, ואחרי שמונה סלים הוא מתחיל לזוז הלוך ושוב. קלעו כמה שיותר נקודות בשישים שניות.",
+    "Drag and let go": "גוררים ומשחררים", "Aim and shoot": "מכוונים וזורקים",
+    "Follow the dotted line to see where your shot will go.": "עקבו אחרי הקו המנוקד כדי לראות לאן הזריקה תטוס.",
+    "High, soft arcs fall into the hoop more often than flat shots.": "קשתות גבוהות ורכות נכנסות לסל יותר מזריקות שטוחות.",
+    "Don't rush. A missed shot breaks your streak.": "אל תמהרו. החטאה שוברת את הרצף.",
+    // ---- Penalty Shootout ----
+    "Take turns: you shoot, then you're the goalkeeper.": "בתורות: אתם בועטים, ואז אתם השוער.",
+    "Shooting: move the target and click to kick. Corners are hardest to save!": "בעיטה: הזיזו את הכוונת ולחצו כדי לבעוט. הכי קשה להציל בפינות!",
+    "Saving: click where you think the ball is going to dive.": "הצלה: לחצו לאן אתם חושבים שהכדור יטוס כדי לקפוץ.",
+    "5 penalties each. If it's a draw, it goes to sudden death!": "5 פנדלים לכל צד. אם יש תיקו, ממשיכים למוות פתאומי!",
+    "A tense football penalty shootout against the computer. First you step up to the spot: move the target over the goal and click to shoot, trying to beat the keeper. Then you swap roles and go in goal, where you have to guess where the computer will shoot and dive to make the save. Each side takes five penalties, and if it's still level it goes to sudden death.":
+        "דו־קרב פנדלים מותח נגד המחשב. קודם אתם ניגשים לנקודה: הזיזו את הכוונת מעל השער ולחצו כדי לבעוט ולנסות לעבור את השוער. אחר כך מתחלפים ואתם בשער: צריך לנחש לאן המחשב יבעט ולקפוץ להציל. כל צד בועט חמישה פנדלים, ואם עדיין יש תיקו ממשיכים למוות פתאומי.",
+    "Move the mouse": "מזיזים את העכבר", "Aim your shot": "מכוונים את הבעיטה", "Shoot, or dive when you're in goal": "בועטים, או קופצים כשאתם בשער",
+    "Shots near the corners are hardest for the keeper to reach.": "לשוער הכי קשה להגיע לבעיטות לפינות.",
+    "The target wobbles a little, so don't aim right at the post.": "הכוונת זזה קצת, אז אל תכוונו בדיוק לקורה.",
+    "Watch the shooter closely when you're in goal. On easier levels you get a hint of where the ball is going.": "כשאתם בשער, הסתכלו טוב על הבועט. ברמות הקלות יש רמז לאן הכדור הולך.",
+    // ---- Keepy Uppy ----
+    "Tap the football to kick it up. Don't let it touch the grass!": "געו בכדור כדי לבעוט אותו למעלה. אל תתנו לו לגעת בדשא!",
+    "Hit it right in the middle for a PERFECT kick (+2).": "פגעו בדיוק באמצע לבעיטה מושלמת (+2).",
+    "Grab ★ stars for bonus points. Watch out for the wind!": "אספו כוכבים ★ בשביל בונוס. היזהרו מהרוח!",
+    "Tap the side of the ball to send it the other way. The ball gets faster as you go.": "געו בצד של הכדור כדי לשלוח אותו לכיוון השני. הכדור נהיה מהיר יותר עם הזמן.",
+    "How many times can you keep the football in the air? Tap the ball to kick it back up before it hits the grass. Kick it right in the middle for a perfect kick worth double points, or tap the side to send it the other way. The ball falls faster as your count goes up, the wind starts to blow, and bonus stars appear for you to collect.":
+        "כמה פעמים תצליחו להשאיר את הכדור באוויר? געו בכדור כדי לבעוט אותו למעלה לפני שהוא נוגע בדשא. בעיטה בדיוק באמצע שווה כפול, ונגיעה בצד שולחת אותו לכיוון השני. ככל שסופרים יותר, הכדור נופל מהר יותר, הרוח מתחילה לנשוב ומופיעים כוכבי בונוס לאסוף.",
+    "Click / tap the ball": "לחיצה / נגיעה בכדור", "Kick it up": "בועטים למעלה",
+    "Tap the middle of the ball for perfect kicks.": "געו באמצע הכדור לבעיטות מושלמות.",
+    "Tapping the left side sends the ball right, and the other way round.": "נגיעה בצד שמאל שולחת את הכדור ימינה, וההפך.",
+    "Watch for the wind arrow and kick against it.": "שימו לב לחץ הרוח ובעטו נגדו.",
+    // ---- Mini Golf ----
+    "Drag back from the ball and let go to putt, like a slingshot.": "גררו אחורה מהכדור ושחררו כדי לחבוט, כמו קלע.",
+    "Pull further for a harder shot. Avoid the water and sand!": "משכו יותר לחבטה חזקה יותר. התרחקו מהמים והחול!",
+    "9 holes. Fewer strokes means more points.": "9 גומות. פחות חבטות = יותר נקודות.",
+    "A ball that's moving too fast skips over the hole, so a gentle putt is best near the cup.": "כדור מהיר מדי קופץ מעל הגומה, אז ליד הגומה עדיף לחבוט בעדינות.",
+    "Nine fun holes of mini golf. Drag back from the ball and let go to putt, like pulling back a slingshot: the further you pull, the harder you hit. Bank shots off the walls, steer around sand traps that slow the ball down, and avoid the water or you'll get a penalty stroke. Some holes have moving walls you need to time just right. Get each hole in as few strokes as you can.":
+        "תשע גומות כיפיות של מיני גולף. גררו אחורה מהכדור ושחררו כדי לחבוט, כמו למתוח קלע: ככל שמושכים יותר, החבטה חזקה יותר. הקפיצו מהקירות, עקפו מלכודות חול שמאטות את הכדור, והתרחקו מהמים כדי לא לקבל חבטת עונש. בחלק מהגומות יש קירות זזים שצריך לתזמן. הכניסו כל גומה בכמה שפחות חבטות.",
+    "Drag back and let go": "גוררים אחורה ומשחררים", "Aim and putt": "מכוונים וחובטים",
+    "Use the walls. A bank shot is often the shortest way to the hole.": "השתמשו בקירות. חבטה מהקיר היא הרבה פעמים הדרך הקצרה לגומה.",
+    "A fast ball can skip over the cup, so slow down near the hole.": "כדור מהיר יכול לקפוץ מעל הגומה, אז האטו לידה.",
+    "Wait for moving walls to open before you putt.": "חכו שהקירות הזזים ייפתחו לפני החבטה.",
+    // ---- Bowling ----
+    "Swipe up from the ball to bowl. Swipe faster for more speed.": "החליקו למעלה מהכדור כדי לגלגל. החלקה מהירה = יותר מהירות.",
+    "Curve your swipe to add spin and hook the ball!": "עקמו את ההחלקה כדי להוסיף סיבוב ולסובב את הכדור!",
+    "Keyboard: ⬅ ➡ to move, A D to aim, Space to bowl.": "מקלדת: ⬅ ➡ לתזוזה, A D לכיוון, רווח לגלגול.",
+    "Aim slightly off the head pin for the best chance of a strike. 10 frames, just like real bowling.": "כוונו קצת לצד הפין הקדמי בשביל הסיכוי הכי טוב לסטרייק. 10 פריימים, בדיוק כמו בבאולינג אמיתי.",
+    "Ten-pin bowling right in your browser. Swipe up from the ball to send it down the lane. Swipe faster for more power, and curve your swipe to put spin on the ball so it hooks into the pins. Knock all ten pins down with the first ball for a strike, or clear the rest with your second ball for a spare. Real bowling scoring adds bonus points for strikes and spares over ten frames.":
+        "באולינג של עשרה פינים ישר בדפדפן. החליקו למעלה מהכדור כדי לשלוח אותו במסלול. החלקה מהירה נותנת יותר כוח, והחלקה מעוקלת מוסיפה סיבוב כך שהכדור מתעקל לתוך הפינים. הפילו את כל עשרת הפינים בכדור הראשון לסטרייק, או את השאר בכדור השני לספייר. הניקוד כמו בבאולינג אמיתי, עם בונוס על סטרייק וספייר לאורך עשרה פריימים.",
+    "Swipe up": "החלקה למעלה", "Bowl (curve it for spin)": "גלגול (מעקמים בשביל סיבוב)", "⬅ ➡": "⬅ ➡", "Move the ball": "מזיזים את הכדור", "A D": "A D", "Aim": "כיוון",
+    "Space": "רווח", "Bowl with the keyboard": "גלגול עם המקלדת",
+    "Hit the pins just to one side of the front pin for the best chance of a strike.": "פגעו בפינים קצת לצד הפין הקדמי בשביל הסיכוי הכי טוב לסטרייק.",
+    "A little spin makes the ball hook into the middle of the pins.": "קצת סיבוב גורם לכדור להתעקל לאמצע הפינים.",
+    "On a spare, aim straight at the pins that are left.": "בספייר, כוונו ישר לפינים שנשארו.",
+    // ---- Tennis ----
+    "Move with the arrow keys / WASD, or hold your finger where you want to run.": "זוזו עם החצים / WASD, או החזיקו את האצבע איפה שרוצים לרוץ.",
+    "You swing by yourself when the ball comes close.": "כשהכדור מתקרב, אתם מניפים את המחבט לבד.",
+    "Hold ⬅ or ➡ as you hit to aim. First to 3 games wins!": "החזיקו ⬅ או ➡ בזמן המכה כדי לכוון. הראשון ל־3 משחקונים מנצח!",
+    "Hitting the ball before it bounces (a volley) makes it go faster.": "מכה לפני שהכדור קופץ (וולה) שולחת אותו מהר יותר.",
+    "A quick game of tennis against the computer, seen from above. Run around your side of the court and your player swings by itself when the ball comes close. Hold left or right as you hit to aim your shot, and try to make the computer run. The ball must land inside the lines on the other side, and it can only bounce once. Real tennis scoring is used, and the first to win three games takes the match.":
+        "משחק טניס מהיר נגד המחשב, במבט מלמעלה. רוצו בצד שלכם של המגרש, והשחקן מניף לבד כשהכדור מתקרב. החזיקו ימינה או שמאלה בזמן המכה כדי לכוון, ונסו לגרום למחשב לרוץ. הכדור חייב לנחות בתוך הקווים בצד השני, ומותר לו לקפוץ רק פעם אחת. הניקוד כמו בטניס אמיתי, והראשון לשלושה משחקונים מנצח.",
+    "Run": "ריצה", "Hold ⬅ or ➡ while hitting": "מחזיקים ⬅ או ➡ בזמן המכה", "Aim your shot": "מכוונים את המכה", "Space / click": "רווח / לחיצה", "Serve": "הגשה",
+    "Stay near the middle of the baseline so you can reach both sides.": "הישארו קרוב לאמצע הקו האחורי כדי להגיע לשני הצדדים.",
+    "Aim away from the computer to make it run.": "כוונו רחוק מהמחשב כדי לגרום לו לרוץ.",
+    "Volleys before the bounce are faster, but harder to control.": "וולה לפני הקפיצה מהירה יותר, אבל קשה יותר לשליטה."
 };
 
 const MEDAL = { "🏆 Platinum": "🏆 פלטינה", "🥇 Gold": "🥇 זהב", "🥈 Silver": "🥈 כסף", "🥉 Bronze": "🥉 ארד" };
@@ -253,5 +376,19 @@ export const PATTERNS = [
     [/^ROUND (\d+)$/, (m, a) => `סיבוב ${a}`],
     [/^Rally (\d+)!$/, (m, a) => `${a} חילופים!`],
     [/^WAVE (\d+)$/, (m, a) => `גל ${a}`],
-    [/^CHECKPOINT \+(\d+)s$/, (m, a) => `נקודת ביקורת +${a} שניות`]
+    [/^CHECKPOINT \+(\d+)s$/, (m, a) => `נקודת ביקורת +${a} שניות`],
+    [/^(\d+) fruit combo \+(\d+)$/, (m, a, b) => `קומבו ${a} פירות +${b}`],
+    [/^FRENZY (\d+)$/, (m, a) => `טירוף ${a}`],
+    [/^SWISH! \+(\d+)(.*)$/, (m, a, r) => `סוויש! +${a}${r}`],
+    [/^(\d+) points · (\d+) baskets from (\d+) shots$/, (m, a, b, c) => `${a} נקודות · ${b} סלים מתוך ${c} זריקות`],
+    [/^(\d+) kicks!$/, (m, a) => `${a} בעיטות!`],
+    [/^Wind (.)$/, (m, a) => `רוח ${a}`],
+    [/^(\d+) kicks · (\d+) points$/, (m, a, b) => `${a} בעיטות · ${b} נקודות`],
+    [/^Hole (\d+) · Par (\d+)$/, (m, a, b) => `גומה ${a} · פאר ${b}`],
+    [/^(\d+) strokes \((.+?) \) · (\d+) points$/, (m, a, d, b) => `${a} חבטות (${d === "even par" ? "פאר" : d}) · ${b} נקודות`],
+    [/^(\d+) pins?$/, (m, a) => `${a} פינים`],
+    [/^Final score: (\d+)$/, (m, a) => `ניקוד סופי: ${a}`],
+    [/^🏆 A PERFECT GAME!$/, () => "🏆 משחק מושלם!"],
+    [/^(🏆 You win the shootout!|😢 The computer wins the shootout) (\d+) - (\d+)$/, (m, r, a, b) => `${r.startsWith("🏆") ? "🏆 ניצחתם בדו־קרב!" : "😢 המחשב ניצח בדו־קרב"} ${a} - ${b}`],
+    [/^(🏆 You win the match|😢 The computer wins the match) (\d+) - (\d+)$/, (m, r, a, b) => `${r.startsWith("🏆") ? "🏆 ניצחתם במשחק" : "😢 המחשב ניצח במשחק"} ${a} - ${b}`]
 ];
