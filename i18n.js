@@ -417,6 +417,22 @@ export function startHebrew({ gamePage = false } = {}) {
         }
     };
     run();
+    if (gamePage) {
+        // extra Hebrew for the games, plus text the games draw on their canvas
+        const memo = new Map();
+        const canvasTr = (x) => {
+            if (typeof x !== "string" || !/[A-Za-z]/.test(x)) return x;
+            if (!memo.has(x)) { const o = tr(norm(x)); memo.set(x, o == null ? x : o); }
+            return memo.get(x);
+        };
+        import("./i18n-games.js").then((m) => {
+            Object.assign(TEXT, m.TEXT); PATTERNS.push(...m.PATTERNS); memo.clear();
+            if (window.Kit) window.Kit.tr = canvasTr;
+            observer && observer.disconnect();
+            run();
+            observer && observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+        }).catch(() => {});
+    }
     observer = new MutationObserver((muts) => {
         observer.disconnect();
         for (const m of muts) {

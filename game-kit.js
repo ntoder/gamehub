@@ -92,6 +92,7 @@
         // ---- drawing helpers ----
         rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); },
         text(ctx, s, x, y, size = 16, color = "#eef0ff", align = "center", font = "Inter, Rubik, system-ui, sans-serif", weight = 800) {
+            if (window.Kit && window.Kit.tr) s = window.Kit.tr(s);
             ctx.fillStyle = color; ctx.font = `${weight} ${size}px ${font}`; ctx.textAlign = align; ctx.textBaseline = "middle"; ctx.fillText(s, x, y);
         },
         particles() {

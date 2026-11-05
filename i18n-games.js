@@ -1,0 +1,257 @@
+// Hebrew for the game pages (loaded only on game pages when Hebrew is on)
+export const TEXT = {
+    // ---- shared ----
+    "Points": "נקודות", "Time": "זמן", "Round": "סיבוב", "Combo": "קומבו", "Streak": "רצף", "Height": "גובה", "Mines": "מוקשים", "Status": "מצב",
+    "Length": "אורך", "Pipes": "צינורות", "Most goals": "הכי הרבה גולים", "Win streak": "רצף ניצחונות", "Best streak": "הרצף הכי טוב", "Draws": "תיקו",
+    "Captured": "נאכלו", "Keys": "מקשים", "Hold (C)": "שמירה (C)",
+    "↻ Try again": "↻ לנסות שוב", "Time Up!": "נגמר הזמן!", "Time's Up!": "נגמר הזמן!", "Match Over": "המשחק נגמר", "Full Time": "סיום המשחק",
+    "↻ Rematch": "↻ משחק חוזר", "↻ Race again": "↻ מרוץ נוסף", "↻ Build again": "↻ לבנות שוב", "↻ New board": "↻ לוח חדש",
+    "▶ Fly": "▶ לטוס", "▶ Race": "▶ למרוץ", "▶ Kick off": "▶ פתיחה", "▶ Build": "▶ לבנות", "▶ Start game": "▶ להתחיל משחק", "▶ Launch": "▶ להמריא",
+    "Ouch!": "אאוץ'!", "Crashed!": "התרסקתם!", "Cleared!": "ניקיתם!", "Boom!": "בום!", "Tower Fell!": "המגדל נפל!", "City Flooded!": "העיר הוצפה!",
+    "🤖 Easy": "🤖 קל", "🤖 Normal": "🤖 רגיל", "🤖 Medium": "🤖 בינוני", "🤖 Hard": "🤖 קשה", "🤖 Unbeatable": "🤖 בלתי מנוצח", "👥 2 Players": "👥 2 שחקנים",
+    "Easy": "קל", "Normal": "רגיל", "Hard": "קשה",
+    // canvas text
+    "PAUSED": "הפסקה", "ROUND CLEAR!": "הסיבוב הושלם!", "Tap to play again": "לחצו כדי לשחק שוב", "km/h": "קמ\"ש", "next checkpoint": "נקודת הביקורת הבאה",
+    "Computer scores": "המחשב הבקיע", "GO!": "צאו!", "GOAL!": "גול!", "KICK OFF": "פתיחה", "Nice!": "יפה!", "Oops!": "אופס!", "Watch…": "הסתכלו…",
+    "Your turn!": "תורכם!", "READY!": "מוכנים!", "CLANG!": "קלאנג!",
+
+    // ---- Snake ----
+    "Arrow keys / WASD or swipe to steer.": "חצים / WASD או החלקה כדי לנווט.",
+    "Eat 🍎 to grow. Golden ★ apples are worth 50!": "אכלו 🍎 כדי לגדול. תפוחי זהב ★ שווים 50!",
+    "Space or tap to pause.": "רווח או נגיעה להפסקה.",
+    "The snake speeds up with every apple. Don't hit the walls or your tail!": "הנחש מאיץ עם כל תפוח. אל תתנגשו בקירות או בזנב!",
+    // ---- Sky Hopper ----
+    "Space, ⬆ or tap to flap.": "רווח, ⬆ או נגיעה כדי לנפנף.",
+    "Fly through the gaps. Win a 🥉 at 5 pipes, 🥈 at 12, 🥇 at 25!": "עופו דרך הרווחים. 🥉 ב־5 צינורות, 🥈 ב־12, 🥇 ב־25!",
+    "The gaps get smaller and some pipes start to move as your score climbs.": "ככל שהניקוד עולה, הרווחים קטנים וחלק מהצינורות מתחילים לזוז.",
+    // ---- Block Drop ----
+    "⬅ ➡ move": "⬅ ➡ תזוזה", "⬆ / X rotate": "⬆ / X סיבוב", "Z rotate back": "Z סיבוב אחורה", "⬇ soft drop": "⬇ הורדה איטית",
+    "Space hard drop": "רווח הפלה מהירה", "C hold · P pause": "C שמירה · P הפסקה",
+    "Fit the falling blocks together to clear lines.": "התאימו את הבלוקים הנופלים כדי למחוק שורות.",
+    "Clear 4 at once for a big bonus!": "מחקו 4 בבת אחת לבונוס גדול!",
+    "On phones: swipe ⬅ ➡ to move, tap to rotate, swipe ⬇ to drop, swipe ⬆ to hold.": "בטלפון: החליקו ⬅ ➡ להזזה, נגיעה לסיבוב, החלקה ⬇ להפלה, החלקה ⬆ לשמירה.",
+    // ---- Maze Muncher ----
+    "Arrow keys / WASD or swipe to move.": "חצים / WASD או החלקה כדי לזוז.",
+    "Eat every dot. Grab a big ⚪ to turn the ghosts blue, then eat them!": "אכלו כל נקודה. קחו ⚪ גדול כדי שהרוחות יהפכו לכחולות, ואז אכלו אותן!",
+    "Each ghost hunts you in its own way. Use the side tunnels to escape!": "כל רוח רודפת אחריכם בדרך משלה. השתמשו במנהרות הצד כדי לברוח!",
+    // ---- Noametry ----
+    "Space, ⬆, click or tap to jump. Hold to keep jumping.": "רווח, ⬆, לחיצה או נגיעה כדי לקפוץ. החזיקו כדי להמשיך לקפוץ.",
+    "Dodge the spikes, land on the blocks, and hit the yellow pads for a super jump.": "התחמקו מהקוצים, נחתו על הבלוקים, ודרכו על המשטחים הצהובים לקפיצת־על.",
+    "Every 15 points is a new level, and the track gets faster!": "כל 15 נקודות זה שלב חדש, והמסלול נהיה מהיר יותר!",
+    "Press Space right after you crash to retry instantly.": "לחצו על רווח מיד אחרי ההתרסקות כדי לנסות שוב מיד.",
+    "Space / ⬆ / click / tap": "רווח / ⬆ / לחיצה / נגיעה", "Jump (hold to keep jumping)": "קפיצה (מחזיקים כדי להמשיך לקפוץ)",
+    // ---- Pixel Jumper ----
+    "⬅ ➡ / A D to run, Space / ⬆ to jump (hold for higher). Shift to sprint.": "⬅ ➡ / A D לריצה, רווח / ⬆ לקפיצה (מחזיקים לקפיצה גבוהה). Shift לספרינט.",
+    "Stomp the green slimes, but never touch the pink spiky ones!": "דרכו על הסליימים הירוקים, אבל לעולם אל תיגעו בקוצניים הוורודים!",
+    "Hit ★ boxes from below, grab coins and reach the flag.": "פגעו בקופסאות ★ מלמטה, אספו מטבעות והגיעו לדגל.",
+    "Every level is new and a bit harder. Time left on the clock becomes bonus points!": "כל שלב חדש וקצת יותר קשה. הזמן שנשאר בשעון הופך לנקודות בונוס!",
+    "A colourful side-scrolling platform adventure starring a brave little robot. Run and jump across grassy hills, stomp the green slimes, avoid the pink spiky ones, hit star boxes for points and reach the flag at the end. Every level is a new course that is a little harder than the last, and time left on the clock turns into bonus points.":
+        "הרפתקת פלטפורמות צבעונית בכיכובו של רובוט קטן ואמיץ. רוצו וקפצו על גבעות דשא, דרכו על הסליימים הירוקים, התחמקו מהקוצניים הוורודים, פגעו בקופסאות הכוכב בשביל נקודות והגיעו לדגל בסוף. כל שלב הוא מסלול חדש שקצת יותר קשה מהקודם, והזמן שנשאר בשעון הופך לנקודות בונוס.",
+    "Run": "ריצה", "Space / ⬆": "רווח / ⬆", "Jump (hold for higher)": "קפיצה (מחזיקים לקפיצה גבוהה)", "Shift": "Shift", "Sprint": "ספרינט",
+    "Jump on slimes from above to defeat them. Never touch the spiky ones.": "קפצו על הסליימים מלמעלה כדי לנצח אותם. לעולם אל תיגעו בקוצניים.",
+    "Hold jump for a higher jump and tap it for a small hop.": "החזיקו את הקפיצה לקפיצה גבוהה, ולחיצה קצרה לקפיצה קטנה.",
+    "Bounce off an enemy while holding jump to fly extra high.": "הקפצו מעל אויב תוך כדי החזקת הקפיצה כדי לעוף גבוה במיוחד.",
+    // ---- Bubble Blaster ----
+    "⬅ ➡ to move, ⬆ to jump, Space to blow a bubble.": "⬅ ➡ לתזוזה, ⬆ לקפיצה, רווח לנשיפת בועה.",
+    "Trap a monster in a bubble, then touch it to pop it.": "לכדו מפלצת בבועה, ואז געו בה כדי לפוצץ אותה.",
+    "Pop several at once for a combo! Hold ⬆ to bounce on bubbles.": "פוצצו כמה בבת אחת לקומבו! החזיקו ⬆ כדי לקפוץ על בועות.",
+    "Be quick! A monster that escapes from its bubble turns red and angry.": "מהר! מפלצת שבורחת מהבועה הופכת לאדומה וכועסת.",
+    "Trapped monsters float up. Pop several close together for a combo bonus.": "מפלצות לכודות צפות למעלה. פוצצו כמה קרובות זו לזו לבונוס קומבו.",
+    "Pop trapped monsters quickly before they escape and get angry.": "פוצצו מפלצות לכודות מהר לפני שהן בורחות ומתעצבנות.",
+    "Collect the fruit that drops for extra points.": "אספו את הפירות שנופלים בשביל נקודות נוספות.",
+    // ---- Motor Racing ----
+    "⬆ or Space to speed up, ⬅ ➡ to steer, ⬇ to brake.": "⬆ או רווח להאצה, ⬅ ➡ להיגוי, ⬇ לבלימה.",
+    "Weave through the traffic and reach each checkpoint before the clock hits zero.": "השתחלו בין המכוניות והגיעו לכל נקודת ביקורת לפני שהשעון מגיע לאפס.",
+    "Driving on the grass slows you down!": "נסיעה על הדשא מאטה אתכם!",
+    "Curves push you to the outside, so steer into them. Each checkpoint gives you a little less extra time.": "פניות דוחפות אתכם החוצה, אז הטו פנימה. כל נקודת ביקורת נותנת קצת פחות זמן.",
+    "Race a motorbike along a winding road at sunset. Speed through curves and over hills, weave between cars and trucks, and reach each checkpoint before the clock runs out. The faster you ride, the more points you earn, but crashing or riding on the grass slows you right down.":
+        "דהרו על אופנוע בכביש מתפתל בשקיעה. עברו מהר פניות וגבעות, השתחלו בין מכוניות ומשאיות, והגיעו לכל נקודת ביקורת לפני שהזמן נגמר. ככל שנוסעים מהר יותר מקבלים יותר נקודות, אבל התנגשות או נסיעה על הדשא מאטות אתכם מאוד.",
+    "⬆ / Space": "⬆ / רווח", "Speed up": "האצה", "Brake": "בלימה",
+    "Curves push you outwards, so steer into every bend.": "פניות דוחפות אתכם החוצה, אז הטו פנימה בכל סיבוב.",
+    "Stay on the road. The grass slows you down a lot.": "הישארו על הכביש. הדשא מאט אתכם מאוד.",
+    "Each checkpoint gives a little less extra time, so keep your speed up.": "כל נקודת ביקורת נותנת קצת פחות זמן, אז שמרו על מהירות.",
+    // ---- Soccer ----
+    "Arrow keys / WASD to run, Shift to sprint.": "חצים / WASD לריצה, Shift לספרינט.",
+    "Hold Space to power up a shot, let go to kick.": "החזיקו רווח כדי לטעון בעיטה, ושחררו כדי לבעוט.",
+    "Score in the goal on the right. 90 seconds!": "הבקיעו לשער הימני. 90 שניות!",
+    "Run into the ball to dribble it. A fully charged shot is very hard to stop!": "רוצו אל הכדור כדי לכדרר. בעיטה טעונה עד הסוף מאוד קשה לעצור!",
+    "A fast top-down football match against the computer, with a goalkeeper on each side. Dribble the ball by running into it, hold Space to charge a powerful shot, and score in the goal on the right. Pick easy, normal or hard, and whoever has more goals when the 90 seconds run out wins.":
+        "משחק כדורגל מהיר במבט מלמעלה נגד המחשב, עם שוער בכל צד. כדררו את הכדור בריצה אליו, החזיקו רווח כדי לטעון בעיטה חזקה, והבקיעו לשער הימני. בחרו קל, רגיל או קשה, ומי שיש לו יותר גולים כשנגמרות 90 השניות מנצח.",
+    "Arrow keys / WASD": "חצים / WASD", "Hold and release Space": "מחזיקים ומשחררים רווח", "Charge and shoot": "טעינה ובעיטה",
+    "Get behind the ball before you shoot so it goes toward the goal.": "עמדו מאחורי הכדור לפני הבעיטה כדי שיטוס לכיוון השער.",
+    "A fully charged shot aimed at a corner is very hard to save.": "בעיטה טעונה לפינה של השער כמעט בלתי אפשרי לעצור.",
+    "Fall back to defend after you shoot. The computer is quick on the break.": "חזרו להגנה אחרי הבעיטה. המחשב מהיר בהתקפות נגד.",
+    // ---- Chess ----
+    "Play White": "לשחק בלבן", "Play Black": "לשחק בשחור", "Random": "אקראי",
+    "Click a piece to see its moves, then click where to go.": "לחצו על כלי כדי לראות את המהלכים שלו, ואז לחצו לאן ללכת.",
+    "Promote to": "הכתרה ל־", "Your move": "המהלך שלכם", "Computer's move": "המהלך של המחשב", "🤔 Computer is thinking…": "🤔 המחשב חושב…",
+    "Game over": "המשחק נגמר", "No moves yet": "עדיין אין מהלכים", "White to move": "תור הלבן", "Black to move": "תור השחור",
+    "↶ Undo": "↶ ביטול", "⇅ Flip": "⇅ היפוך", "＋ New": "＋ חדש",
+    "Castling, en passant and promotion are all included. Undo takes back your last move.": "יש הצרחה, הכאה דרך הילוכו והכתרה. ביטול מחזיר את המהלך האחרון שלכם.",
+    "Play a full game of chess against the computer on easy, medium or hard, or against a friend on the same screen. Click a piece to see every move it can make, then click a square to move it. Castling, en passant and pawn promotion are all included, the move list records the game, and you can undo a move if you slip.":
+        "שחקו משחק שחמט מלא נגד המחשב ברמה קלה, בינונית או קשה, או נגד חבר על אותו מסך. לחצו על כלי כדי לראות כל מהלך אפשרי, ואז לחצו על משבצת כדי להזיז אותו. יש הצרחה, הכאה דרך הילוכו והכתרת רגלי, רשימת המהלכים שומרת את המשחק, ואפשר לבטל מהלך אם טעיתם.",
+    "Click": "לחיצה", "Select a piece, then click where to move": "בוחרים כלי ואז לוחצים לאן להזיז",
+    "Undo": "ביטול", "Take back your last move": "מבטלים את המהלך האחרון שלכם", "Flip": "היפוך", "Turn the board around": "מסובבים את הלוח",
+    "Stalemate: it's a draw.": "פת: תיקו.", "Draw by the 50-move rule.": "תיקו לפי חוק 50 המהלכים.", "Draw: not enough pieces to checkmate.": "תיקו: אין מספיק כלים למט.",
+    // ---- Paddle Battle ----
+    "Move your paddle with the mouse, your finger, or ⬆ ⬇ / W S.": "הזיזו את המחבט עם העכבר, האצבע או ⬆ ⬇ / W S.",
+    "Hit the ball with the edge of your paddle to send it at an angle.": "פגעו בכדור עם קצה המחבט כדי לשלוח אותו באלכסון.",
+    "First to 7 points wins!": "הראשון ל־7 נקודות מנצח!",
+    "The ball gets faster with every hit. Winning on Hard gives the most points.": "הכדור מאיץ עם כל פגיעה. ניצחון ברמה קשה נותן הכי הרבה נקודות.",
+    "A fast table-tennis style duel against the computer. Move your paddle up and down to bounce the ball back, and aim with the edge of the paddle to send it flying at sharp angles. The ball speeds up with every hit, so long rallies get very intense. The first player to reach 7 points wins the match.":
+        "דו־קרב מהיר בסגנון טניס שולחן נגד המחשב. הזיזו את המחבט למעלה ולמטה כדי להחזיר את הכדור, וכוונו עם קצה המחבט כדי לשלוח אותו בזוויות חדות. הכדור מאיץ עם כל פגיעה, כך שחילופים ארוכים נהיים מותחים מאוד. הראשון שמגיע ל־7 נקודות מנצח.",
+    "Mouse / finger": "עכבר / אצבע", "Move your paddle": "מזיזים את המחבט", "⬆ ⬇ / W S": "⬆ ⬇ / W S", "Move with the keyboard": "תזוזה עם המקלדת",
+    "Hitting the ball near the end of your paddle makes a steep angle that is hard to return.": "פגיעה ליד קצה המחבט יוצרת זווית חדה שקשה להחזיר.",
+    "Move back toward the middle after each hit.": "חזרו לאמצע אחרי כל פגיעה.",
+    "Watch where the ball will bounce off the wall, not just where it is now.": "הסתכלו לאן הכדור יקפוץ מהקיר, לא רק איפה הוא עכשיו.",
+    // ---- Four in a Row ----
+    "Click a column (or use ⬅ ➡ and Space) to drop a disc.": "לחצו על עמודה (או ⬅ ➡ ורווח) כדי להפיל דיסקית.",
+    "Get four in a row before the computer does!": "סדרו ארבע בשורה לפני המחשב!",
+    "Your turn": "תורכם", "Computer's turn": "תור המחשב", "🟡 Yellow's turn": "🟡 תור הצהוב", "🔴 Red's turn": "🔴 תור האדום",
+    "🟡 Yellow wins!": "🟡 הצהוב ניצח!", "🔴 Red wins!": "🔴 האדום ניצח!", "It's a draw!": "תיקו!", "It's a draw! Your streak is safe.": "תיקו! הרצף שלכם נשמר.",
+    "How to win": "איך מנצחים", "Line up 4 of your discs in a row: across, down or diagonally.": "סדרו 4 דיסקיות שלכם בשורה: לרוחב, לאורך או באלכסון.",
+    "⚙ Change mode": "⚙ שינוי מצב",
+    "Every win against the computer adds to your streak. Your best streak goes on the leaderboard.": "כל ניצחון נגד המחשב מוסיף לרצף. הרצף הכי טוב שלכם נכנס לטבלת השיאים.",
+    "Drop your yellow discs into the board and try to line up four in a row: across, down or diagonally. The computer plays red and thinks several moves ahead, so you will need a plan. Pick easy, normal or hard, or play against a friend on the same screen. Each win against the computer adds to your win streak.":
+        "הפילו את הדיסקיות הצהובות ללוח ונסו לסדר ארבע בשורה: לרוחב, לאורך או באלכסון. המחשב משחק באדום וחושב כמה מהלכים קדימה, אז תצטרכו תוכנית. בחרו קל, רגיל או קשה, או שחקו נגד חבר על אותו מסך. כל ניצחון נגד המחשב מוסיף לרצף הניצחונות שלכם.",
+    "Click a column": "לחיצה על עמודה", "Drop a disc": "מפילים דיסקית", "⬅ ➡ then Space": "⬅ ➡ ואז רווח", "Choose a column and drop": "בוחרים עמודה ומפילים",
+    "1 to 7": "1 עד 7", "Drop in that column": "מפילים בעמודה הזאת",
+    "The middle column is the most powerful. Try to take it early.": "העמודה האמצעית הכי חזקה. נסו לתפוס אותה מוקדם.",
+    "Look for moves that make two threats at once.": "חפשו מהלכים שיוצרים שני איומים בבת אחת.",
+    "Always check whether the computer is one disc away from winning.": "תמיד בדקו אם למחשב חסרה רק דיסקית אחת לניצחון.",
+    // ---- Tic-Tac-Toe ----
+    "Your turn (X)": "תורכם (X)", "Computer is thinking…": "המחשב חושב…", "🏆 You win!": "🏆 ניצחתם!", "The computer wins": "המחשב ניצח",
+    "X wins!": "X ניצח!", "O wins!": "O ניצח!", "X's turn": "התור של X", "O's turn": "התור של O",
+    "Click a square, or press 1–9. Can you beat the Unbeatable computer? (Spoiler: a draw is the best you can do!)": "לחצו על משבצת או על 1–9. תצליחו לנצח את המחשב הבלתי מנוצח? (ספוילר: תיקו זה הכי טוב שאפשר!)",
+    "The classic game of noughts and crosses. Take turns placing X and O on a three by three grid, and the first to get three in a line wins. Play the easy computer to warm up, try the unbeatable computer that never makes a mistake, or challenge a friend on the same screen. The score board keeps track of wins and draws.":
+        "משחק האיקס עיגול הקלאסי. מניחים בתורות X ו־O על לוח של שלוש על שלוש, והראשון שמסדר שלושה בשורה מנצח. שחקו נגד המחשב הקל כדי להתחמם, נסו את המחשב הבלתי מנוצח שאף פעם לא טועה, או אתגרו חבר על אותו מסך. לוח התוצאות סופר ניצחונות ותיקו.",
+    "Click / tap": "לחיצה / נגיעה", "Place your mark": "מניחים סימן", "1 to 9": "1 עד 9", "Place a mark with the keyboard": "מניחים סימן עם המקלדת",
+    "Starting in a corner gives you the most chances to win.": "התחלה בפינה נותנת הכי הרבה סיכויים לנצח.",
+    "If you can't win, block your opponent's line.": "אם אי אפשר לנצח, חסמו את השורה של היריב.",
+    "Try to make two lines at once so your opponent can only block one.": "נסו ליצור שתי שורות בבת אחת, כך שהיריב יוכל לחסום רק אחת.",
+    // ---- Mine Finder ----
+    "Easy 9×9": "קל 9×9", "Medium 16×16": "בינוני 16×16", "Hard 24×16": "קשה 24×16", "🚩 Flag mode: OFF": "🚩 מצב דגל: כבוי", "🚩 Flag mode: ON": "🚩 מצב דגל: פועל",
+    "Tip: start in a corner and look for safe 1s.": "טיפ: התחילו בפינה וחפשו אחדות בטוחות.",
+    "Click to open a square. Right-click (or long-press on a phone) to place a flag. Click a number to open everything around it.": "לחיצה פותחת משבצת. לחיצה ימנית (או לחיצה ארוכה בטלפון) מניחה דגל. לחיצה על מספר פותחת את כל מה שמסביבו.",
+    "A logic puzzle where every number tells you how many hidden mines touch that square. Use the numbers to work out which squares are safe, open them, and put flags on the mines. Your first click is always safe. Clear the whole board as fast as you can: the quicker you finish, the more points you get.":
+        "חידת היגיון שבה כל מספר אומר כמה מוקשים מוסתרים נוגעים במשבצת. השתמשו במספרים כדי להבין אילו משבצות בטוחות, פתחו אותן ושימו דגלים על המוקשים. הלחיצה הראשונה תמיד בטוחה. נקו את כל הלוח הכי מהר שאפשר: ככל שמסיימים מהר יותר, מקבלים יותר נקודות.",
+    "Open a square": "פותחים משבצת", "Right-click / long-press": "לחיצה ימנית / לחיצה ארוכה", "Place or remove a flag": "מניחים או מורידים דגל",
+    "Click a number": "לחיצה על מספר", "Open all its unflagged neighbours": "פותחים את כל השכנים בלי דגל",
+    "Start by looking at the 1s near the edges. They are the easiest to solve.": "התחילו מהאחדות ליד הקצוות. הכי קל לפתור אותן.",
+    "If a number already has all its mines flagged, every other square around it is safe.": "אם לכל המוקשים של מספר כבר יש דגל, כל שאר המשבצות סביבו בטוחות.",
+    "Use flag mode on a phone so a tap places a flag.": "בטלפון השתמשו במצב דגל, כך שנגיעה מניחה דגל.",
+    // ---- Mole Mash ----
+    "Click or tap the moles as they pop up!": "לחצו או געו בחפרפרות כשהן קופצות!",
+    "🟡 Golden moles = 50 points and +3 seconds. ⛑ Helmet moles need two hits.": "🟡 חפרפרות זהב = 50 נקודות ו־3+ שניות. ⛑ חפרפרות עם קסדה צריכות שתי מכות.",
+    "💣 Never hit a bomb: it costs 5 seconds!": "💣 לעולם אל תכו בפצצה: היא עולה 5 שניות!",
+    "Hit 5 in a row to raise your combo. On a keyboard use Q W E / A S D / Z X C.": "פגעו 5 פעמים ברצף כדי להעלות את הקומבו. במקלדת: Q W E / A S D / Z X C.",
+    "The moles are digging up the garden! Bop each one on the head as it pops out of its hole before it hides again. Golden moles give bonus points and extra time, helmet moles need two hits, and bombs must be left alone. You have 60 seconds, and the moles get faster as the clock runs down.":
+        "החפרפרות חופרות בגינה! תנו לכל אחת מכה על הראש כשהיא יוצאת מהחור, לפני שהיא מתחבאת שוב. חפרפרות זהב נותנות בונוס וזמן נוסף, חפרפרות עם קסדה צריכות שתי מכות, ובפצצות אסור לגעת. יש לכם 60 שניות, והחפרפרות נהיות מהירות יותר ככל שהזמן אוזל.",
+    "Bop a mole": "מכים בחפרפרת", "Q W E / A S D / Z X C": "Q W E / A S D / Z X C", "Bop with the keyboard": "מכים עם המקלדת",
+    "Keep your eyes on the middle so you can see every hole.": "הסתכלו על האמצע כדי לראות את כל החורים.",
+    "Never rush into a hole without checking for a bomb.": "אל תמהרו ללחוץ על חור בלי לבדוק שאין שם פצצה.",
+    "Five hits in a row raise your combo multiplier.": "חמש פגיעות ברצף מעלות את מכפיל הקומבו.",
+    // ---- Color Echo ----
+    "Watch the colours light up, then repeat the pattern.": "הסתכלו על הצבעים שנדלקים, ואז חזרו על הסדר.",
+    "Each round adds one more step. How far can you go?": "כל סיבוב מוסיף עוד צעד. עד כמה תגיעו?",
+    "▶ Start": "▶ להתחיל",
+    "Keys: Q W (top) and A S (bottom). The pattern speeds up as it grows!": "מקשים: Q W (למעלה) ו־A S (למטה). הסדר מאיץ ככל שהוא גדל!",
+    "A memory game of colours and sounds. Watch the four coloured pads light up in a pattern, then repeat it in the same order. Every round adds one more step to the pattern and plays it a little faster. See how long a pattern you can remember.":
+        "משחק זיכרון של צבעים וצלילים. הסתכלו על ארבעת הכפתורים הצבעוניים שנדלקים בסדר מסוים, ואז חזרו עליו באותו סדר. כל סיבוב מוסיף עוד צעד ומנגן קצת יותר מהר. בדקו כמה ארוך סדר אתם מסוגלים לזכור.",
+    "Click / tap a colour": "לחיצה / נגיעה בצבע", "Repeat the pattern": "חוזרים על הסדר", "Q W A S": "Q W A S", "Press a colour with the keyboard": "לוחצים על צבע עם המקלדת",
+    "Say the colours out loud in your head as they light up.": "אמרו את הצבעים בראש כשהם נדלקים.",
+    "Each pad has its own sound, so listen as well as watch.": "לכל כפתור יש צליל משלו, אז הקשיבו וגם הסתכלו.",
+    "Group the pattern into small chunks of three or four.": "חלקו את הסדר לקבוצות קטנות של שלושה או ארבעה.",
+    // ---- Stack Tower ----
+    "Tap, click or press Space to drop the sliding block.": "געו, לחצו או הקישו רווח כדי להפיל את הבלוק הזז.",
+    "Anything hanging over the edge gets cut off.": "כל מה שבולט מעבר לקצה נחתך.",
+    "Land it perfectly to keep your block big!": "הנחיתו בדיוק כדי שהבלוק יישאר גדול!",
+    "Three perfect drops in a row make your block grow back a little.": "שלוש נחיתות מושלמות ברצף מגדילות את הבלוק בחזרה קצת.",
+    "Build the tallest tower you can. A block slides back and forth above your tower: tap to drop it. Any part that hangs over the edge is cut off, so your blocks get smaller with each mistake. Land a block perfectly and it keeps its full size, and three perfect drops in a row make it grow back a little.":
+        "בנו את המגדל הכי גבוה שאפשר. בלוק זז הלוך ושוב מעל המגדל: געו כדי להפיל אותו. כל חלק שבולט מעבר לקצה נחתך, כך שהבלוקים קטנים עם כל טעות. נחיתה מושלמת שומרת על הגודל המלא, ושלוש נחיתות מושלמות ברצף מגדילות את הבלוק בחזרה קצת.",
+    "Click / tap / Space": "לחיצה / נגיעה / רווח", "Drop the block": "מפילים את הבלוק",
+    "Watch the edge of the block, not the middle.": "הסתכלו על הקצה של הבלוק, לא על האמצע.",
+    "The blocks speed up as the tower grows, so find a steady rhythm.": "הבלוקים מאיצים ככל שהמגדל גדל, אז מצאו קצב קבוע.",
+    "A small block is harder to place, so aim for perfect drops early.": "קשה יותר להניח בלוק קטן, אז נסו לנחיתות מושלמות כבר בהתחלה.",
+    // ---- Space Rocks ----
+    "⬅ ➡ to turn, ⬆ to thrust, Space to shoot.": "⬅ ➡ לסיבוב, ⬆ לדחף, רווח לירייה.",
+    "Big rocks break into smaller, faster ones.": "סלעים גדולים מתפרקים לקטנים ומהירים יותר.",
+    "Grab ⚡ for triple shots and 🛡 for a shield. Watch out for the saucer!": "קחו ⚡ לירייה משולשת ו־🛡 למגן. היזהרו מהצלחת המעופפת!",
+    "The edges wrap around: fly off one side and you come back on the other. Extra life every 10,000 points.": "הקצוות מחוברים: עפים מצד אחד וחוזרים מהצד השני. חיים נוספים כל 10,000 נקודות.",
+    "Fly a small spaceship through a field of floating space rocks. Shoot a big rock and it breaks into smaller, faster pieces, so keep moving and watch every direction. Collect power-ups for triple shots or a shield, and look out for the flying saucer that shoots back. Clear every rock to start the next wave.":
+        "הטיסו חללית קטנה בשדה של סלעי חלל צפים. ירייה בסלע גדול מפרקת אותו לחתיכות קטנות ומהירות יותר, אז תמשיכו לזוז ותסתכלו לכל הכיוונים. אספו שדרוגים לירייה משולשת או למגן, והיזהרו מהצלחת המעופפת שיורה בחזרה. נקו את כל הסלעים כדי להתחיל את הגל הבא.",
+    "Turn": "סיבוב", "Thrust": "דחף", "Shoot": "ירייה",
+    "Stay near the middle so rocks can't surprise you from the edges.": "הישארו קרוב לאמצע כדי שסלעים לא יפתיעו אתכם מהקצוות.",
+    "Small rocks give the most points but move the fastest.": "סלעים קטנים נותנים הכי הרבה נקודות אבל זזים הכי מהר.",
+    "Use short bursts of thrust. Your ship keeps drifting.": "השתמשו בדחף בפרצים קצרים. החללית ממשיכה להחליק.",
+    // ---- Math Blitz ----
+    "🎲 Mix": "🎲 מעורב",
+    "Answer as many sums as you can in 60 seconds.": "פתרו כמה שיותר תרגילים ב־60 שניות.",
+    "Each right answer gives +1 second, and a wrong one costs 3.": "כל תשובה נכונה נותנת שנייה נוספת, ותשובה שגויה עולה 3.",
+    "Get a streak going for up to x5 points!": "צברו רצף לעד פי 5 נקודות!",
+    "Press 1–4 to pick an answer, or type it in the box.": "לחצו 1–4 כדי לבחור תשובה, או הקלידו אותה בתיבה.",
+    "…or type the answer": "…או הקלידו את התשובה",
+    "A quick-fire maths challenge. Answer as many sums as you can in 60 seconds by picking the right answer or typing it in. Every correct answer adds a second to the clock and a wrong one takes three away. Start with adding and taking away, then times tables and division join in as you level up. Practise one kind of sum or try the mix.":
+        "אתגר חשבון מהיר. פתרו כמה שיותר תרגילים ב־60 שניות, בבחירת התשובה הנכונה או בהקלדה. כל תשובה נכונה מוסיפה שנייה לשעון, ושגויה מורידה שלוש. מתחילים בחיבור וחיסור, ואז כפל וחילוק מצטרפים כשעולים שלב. אפשר להתאמן על סוג אחד של תרגיל או לנסות את המעורב.",
+    "Pick an answer": "בוחרים תשובה", "1 to 4": "1 עד 4", "Pick an answer with the keyboard": "בוחרים תשובה עם המקלדת", "Type + Enter": "הקלדה + Enter", "Type the answer": "מקלידים את התשובה",
+    "Speed matters, but a wrong answer costs three seconds.": "מהירות חשובה, אבל תשובה שגויה עולה שלוש שניות.",
+    "Keep a streak going for up to five times the points.": "שמרו על רצף כדי לקבל עד פי חמש נקודות.",
+    "Use the single-operation modes to practise your times tables.": "השתמשו במצבים של פעולה אחת כדי להתאמן על לוח הכפל.",
+    // ---- Typing Rain ----
+    "Words are falling on the city! Type each word before it lands.": "מילים נופלות על העיר! הקלידו כל מילה לפני שהיא נוחתת.",
+    "Just start typing, and the word that begins with your letter is picked.": "פשוט תתחילו להקליד, והמילה שמתחילה באות שלכם נבחרת.",
+    "⭐ Gold words clear the whole sky. Backspace drops your current word.": "⭐ מילים מזהב מנקות את כל השמיים. Backspace משחרר את המילה הנוכחית.",
+    "On a phone, tap the game to open the keyboard. Every 10 words is a new level with longer, faster words.": "בטלפון, געו במשחק כדי לפתוח את המקלדת. כל 10 מילים זה שלב חדש עם מילים ארוכות ומהירות יותר.",
+    "Words are raining down on a little city. Type each word before it reaches the ground to blast it out of the sky. Just start typing: the word that begins with your first letter is chosen for you. Gold words clear every word on the screen. Each level brings longer words that fall faster. At the end you'll see your typing speed and accuracy.":
+        "מילים יורדות כמו גשם על עיר קטנה. הקלידו כל מילה לפני שהיא מגיעה לקרקע כדי לפוצץ אותה בשמיים. פשוט תתחילו להקליד: המילה שמתחילה באות הראשונה שלכם נבחרת. מילים מזהב מנקות את כל המילים מהמסך. כל שלב מביא מילים ארוכות יותר שנופלות מהר יותר. בסוף תראו את מהירות ההקלדה והדיוק שלכם. (המילים באנגלית, זה גם תרגול אנגלית!)",
+    "Type letters": "מקלידים אותיות", "Shoot the falling words": "יורים במילים הנופלות", "Backspace / Esc": "Backspace / Esc", "Let go of the word you're typing": "משחררים את המילה שמקלידים",
+    "Type the lowest words first. They are the most dangerous.": "הקלידו קודם את המילים הכי נמוכות. הן הכי מסוכנות.",
+    "Keep your fingers on the home row: A S D F and J K L.": "השאירו את האצבעות בשורת הבית: A S D F ו־J K L.",
+    "Accuracy matters more than speed. Wrong letters waste time.": "דיוק חשוב יותר ממהירות. אותיות שגויות מבזבזות זמן."
+};
+
+const MEDAL = { "🏆 Platinum": "🏆 פלטינה", "🥇 Gold": "🥇 זהב", "🥈 Silver": "🥈 כסף", "🥉 Bronze": "🥉 ארד" };
+const RESULT = { "White wins by checkmate!": "מט! הלבן ניצח!", "Black wins by checkmate!": "מט! השחור ניצח!", "Stalemate: it's a draw.": "פת: תיקו.",
+    "Draw by the 50-move rule.": "תיקו לפי חוק 50 המהלכים.", "Draw: not enough pieces to checkmate.": "תיקו: אין מספיק כלים למט." };
+
+// Text with numbers in it (each line of a message is matched on its own)
+export const PATTERNS = [
+    [/^Score ([\d,]+) · length (\d+)$/, (m, a, b) => `ניקוד ${a} · אורך ${b}`],
+    [/^Score ([\d,]+) · (\d+) lines · level (\d+)$/, (m, a, b, c) => `ניקוד ${a} · ${b} שורות · שלב ${c}`],
+    [/^Score ([\d,]+) · round (\d+)$/, (m, a, b) => `ניקוד ${a} · סיבוב ${b}`],
+    [/^(\d+) pipes(?: · (.+))?$/, (m, a, md) => `${a} צינורות${md ? " · " + (MEDAL[md] || md) : ""}`],
+    [/^([\d,]+) points$/, (m, a) => `${a} נקודות`],
+    [/^([\d,]+) points · level (\d+)$/, (m, a, b) => `${a} נקודות · שלב ${b}`],
+    [/^([\d,]+) points · wave (\d+)$/, (m, a, b) => `${a} נקודות · גל ${b}`],
+    [/^([\d,]+) points · (\d+) checkpoints$/, (m, a, b) => `${a} נקודות · ${b} נקודות ביקורת`],
+    [/^([\d,]+) points · (\d+) solved$/, (m, a, b) => `${a} נקודות · ${b} תרגילים נפתרו`],
+    [/^([\d,]+) points · best ([\d,]+)$/, (m, a, b) => `${a} נקודות · שיא ${b}`],
+    [/^Best ([\d,]+)$/, (m, a) => `שיא ${a}`],
+    [/^Best ([\d,]+) · attempt (\d+)$/, (m, a, b) => `שיא ${a} · ניסיון ${b}`],
+    [/^(\d+) words per minute · (\d+)% accurate$/, (m, a, b) => `${a} מילים בדקה · ${b}% דיוק`],
+    [/^🏆 You win (\d+) - (\d+)$/, (m, a, b) => `🏆 ניצחתם ${a} - ${b}`],
+    [/^😢 Computer wins (\d+) - (\d+)$/, (m, a, b) => `😢 המחשב ניצח ${a} - ${b}`],
+    [/^(🏆 You win!|🤝 It's a draw|😢 You lost)$/, (m, r) => ({ "🏆 You win!": "🏆 ניצחתם!", "🤝 It's a draw": "🤝 תיקו", "😢 You lost": "😢 הפסדתם" })[r]],
+    [/^(\d+) - (\d+) · most goals (\d+)$/, (m, a, b, c) => `${a} - ${b} · הכי הרבה גולים ${c}`],
+    [/^Tower height: (\d+)$/, (m, a) => `גובה המגדל: ${a}`],
+    [/^You hit a mine after (\d+)s\.$/, (m, a) => `עליתם על מוקש אחרי ${a} שניות.`],
+    [/^(Easy|Medium|Hard) board in (\d+)s$/, (m, l, a) => `לוח ${{ Easy: "קל", Medium: "בינוני", Hard: "קשה" }[l]} ב־${a} שניות`],
+    [/^You remembered (\d+) in a row\.$/, (m, a) => `זכרתם ${a} ברצף.`],
+    [/^🏆 You win! Win streak: (\d+)$/, (m, a) => `🏆 ניצחתם! רצף ניצחונות: ${a}`],
+    [/^The computer wins\. Your streak was (\d+)\.$/, (m, a) => `המחשב ניצח. הרצף שלכם היה ${a}.`],
+    [/^🏆 You beat the computer! (.+)$/, (m, r) => `🏆 ניצחתם את המחשב! ${RESULT[r] || r}`],
+    [/^The computer wins this time\. (.+)$/, (m, r) => `הפעם המחשב ניצח. ${RESULT[r] || r}`],
+    [/^(White|Black) wins by checkmate!$/, (m, c) => `מט! ${c === "White" ? "הלבן" : "השחור"} ניצח!`],
+    [/^(.+) · Check!$/, (m, s) => `${TEXT[s] || s} · שח!`],
+    [/^Level (\d+)$/, (m, a) => `שלב ${a}`],
+    [/^\+(\d+) {2}\(x(\d+) streak!\)$/, (m, a, b) => `+${a}  (רצף פי ${b}!)`],
+    // canvas text
+    [/^Attempt (\d+)$/, (m, a) => `ניסיון ${a}`],
+    [/^LEVEL (\d+)$/, (m, a) => `שלב ${a}`],
+    [/^Level (\d+) clear!$/, (m, a) => `שלב ${a} הושלם!`],
+    [/^Perfect x(\d+)$/, (m, a) => `מושלם x${a}`],
+    [/^ROUND (\d+)$/, (m, a) => `סיבוב ${a}`],
+    [/^Rally (\d+)!$/, (m, a) => `${a} חילופים!`],
+    [/^WAVE (\d+)$/, (m, a) => `גל ${a}`],
+    [/^CHECKPOINT \+(\d+)s$/, (m, a) => `נקודת ביקורת +${a} שניות`]
+];
