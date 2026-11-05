@@ -330,12 +330,83 @@ export const TEXT = {
     "Run": "ריצה", "Hold ⬅ or ➡ while hitting": "מחזיקים ⬅ או ➡ בזמן המכה", "Aim your shot": "מכוונים את המכה", "Space / click": "רווח / לחיצה", "Serve": "הגשה",
     "Stay near the middle of the baseline so you can reach both sides.": "הישארו קרוב לאמצע הקו האחורי כדי להגיע לשני הצדדים.",
     "Aim away from the computer to make it run.": "כוונו רחוק מהמחשב כדי לגרום לו לרוץ.",
-    "Volleys before the bounce are faster, but harder to control.": "וולה לפני הקפיצה מהירה יותר, אבל קשה יותר לשליטה."
+    "Volleys before the bounce are faster, but harder to control.": "וולה לפני הקפיצה מהירה יותר, אבל קשה יותר לשליטה.",
+    // ---- shared (round 5) ----
+    "Goals": "גולים", "Shots": "יריות", "Hits": "פגיעות", "Mistakes": "טעויות", "Pieces left": "כלים שנשארו", "Rules": "חוקים", "⚙ Mode": "⚙ מצב",
+    "Medium": "בינוני", "Draw 1": "קלף 1", "Draw 3": "3 קלפים", "✨ Auto finish": "✨ סיום אוטומטי", "＋ New game": "＋ משחק חדש", "＋ New puzzle": "＋ חידה חדשה",
+    "✏️ Notes: OFF": "✏️ הערות: כבוי", "✏️ Notes: ON": "✏️ הערות: פועל", "⌫ Erase": "⌫ מחיקה", "💡 Hint": "💡 רמז", "↻ New puzzle": "↻ חידה חדשה", "↻ New game": "↻ משחק חדש",
+    "↻ New battle": "↻ קרב חדש", "🔀 Shuffle my ships": "🔀 לערבב את הספינות", "⚓ Start battle": "⚓ להתחיל קרב", "Battle Over": "הקרב נגמר", "You Win! 🎉": "ניצחתם! 🎉",
+    "Solved!": "פתרתם!", "Too many mistakes": "יותר מדי טעויות", "3 mistakes. Try a new puzzle!": "3 טעויות. נסו חידה חדשה!", "Full Time": "סיום המשחק",
+    "⚓ You:": "⚓ אתם:", "🎯 Enemy:": "🎯 האויב:", "⚪ White's turn": "⚪ תור הלבן", "🔴 Red's turn": "🔴 תור האדום", "⚪ White wins!": "⚪ הלבן ניצח!",
+    // canvas text
+    "Crossbar!": "משקוף!", "No touch": "לא נגעתם", "Missed it!": "פספסתם!", "Over the bar!": "מעל המשקוף!", "VOLLEY GOAL!": "גול מוולה!", "DIVING HEADER!": "נגיחה בצלילה!",
+    "Your fleet": "הצי שלכם", "Enemy waters": "מימי האויב", "Miss!": "החטאה!", "Hit! Fire again!": "פגיעה! ירו שוב!", "They hit you!": "פגעו בכם!",
+    "They missed. Your turn!": "הם החטיאו. תורכם!", "Shuffle your ships, then press Start battle!": "ערבבו את הספינות ולחצו על להתחיל קרב!",
+    "Fire! Click a square in enemy waters.": "אש! לחצו על משבצת במימי האויב.", "Tap ✨ Auto finish!": "לחצו ✨ סיום אוטומטי!",
+    // ---- Header Hero ----
+    "Your teammate crosses the ball in from the left.": "חבר לקבוצה מגביה את הכדור משמאל.",
+    "Run with ⬅ ➡, jump with Space, and head (or volley!) it into the goal.": "רוצו עם ⬅ ➡, קפצו עם רווח, ונגחו (או בעטו מהאוויר!) לשער.",
+    "Hold ⬆ or ⬇ as you hit it to aim high or low. 15 crosses!": "החזיקו ⬆ או ⬇ בזמן הפגיעה כדי לכוון גבוה או נמוך. 15 הגבהות!",
+    "The white circle shows where the ball will come down. Diving headers and volleys score extra!": "העיגול הלבן מראה איפה הכדור ינחת. נגיחות בצלילה ווולות שוות יותר!",
+    "Become the star striker in the box. Your teammate swings crosses in from the left wing, and you have to get under the ball and head it past the goalkeeper. Jump for a diving header worth bonus points, or meet a low cross with a volley. Hold up or down as you connect to aim high or low. The keeper gets quicker with every cross, and you get fifteen chances to score.":
+        "היו החלוץ הכוכב ברחבה. חבר לקבוצה מגביה מהאגף השמאלי, ואתם צריכים להגיע מתחת לכדור ולנגוח אותו מעבר לשוער. קפצו לנגיחה בצלילה ששווה בונוס, או פגשו הגבהה נמוכה בוולה. החזיקו למעלה או למטה בזמן הפגיעה כדי לכוון גבוה או נמוך. השוער נהיה מהיר יותר בכל הגבהה, ויש לכם חמש עשרה הזדמנויות.",
+    "Hold ⬆ / ⬇": "מחזיקים ⬆ / ⬇", "Aim high or low": "מכוונים גבוה או נמוך", "Jump": "קפיצה",
+    "Watch the white circle. It shows where the ball will come down.": "הסתכלו על העיגול הלבן. הוא מראה איפה הכדור ינחת.",
+    "Diving headers and volleys score more than a standing header.": "נגיחות בצלילה ווולות שוות יותר מנגיחה בעמידה.",
+    "Aim for the corner the keeper isn't covering.": "כוונו לפינה שהשוער לא שומר עליה.",
+    // ---- 5-a-Side ----
+    "You control the player with the white ring.": "אתם שולטים בשחקן עם הטבעת הלבנה.",
+    "Arrow keys / WASD to run, Shift to sprint.": "חצים / WASD לריצה, Shift לספרינט.",
+    "Space to pass, hold and release X to shoot. Without the ball, Space switches player.": "רווח למסירה, החזיקו ושחררו X לבעיטה. בלי כדור, רווח מחליף שחקן.",
+    "Pass the ball around to get past defenders. Shots from close to the goal are hardest to save.": "מסרו את הכדור כדי לעבור את המגינים. בעיטות מקרוב הכי קשה להציל.",
+    "A full five-a-side football match against the computer, with a goalkeeper and four outfield players on each team. You control the player with the white ring, and it switches to whoever is closest to the ball. Dribble past defenders, pass to teammates who are making runs, and charge up a shot to beat the keeper. Pick easy, normal or hard. Whoever has more goals after two minutes wins.":
+        "משחק כדורגל מלא של חמישה על חמישה נגד המחשב, עם שוער וארבעה שחקני שדה בכל קבוצה. אתם שולטים בשחקן עם הטבעת הלבנה, והשליטה עוברת למי שהכי קרוב לכדור. כדררו מעבר למגינים, מסרו לחברים שרצים קדימה, וטענו בעיטה כדי לעבור את השוער. בחרו קל, רגיל או קשה. מי שיש לו יותר גולים אחרי שתי דקות מנצח.",
+    "Space": "רווח", "Pass (or switch player)": "מסירה (או החלפת שחקן)", "Hold and release X": "מחזיקים ומשחררים X",
+    "Pass before a defender reaches you. Tackles are hard to escape.": "מסרו לפני שמגן מגיע אליכם. קשה להימלט מתיקולים.",
+    "Face the teammate you want to pass to.": "הסתובבו לכיוון החבר שאליו רוצים למסור.",
+    "Get close to the goal before shooting. Long shots are easy to save.": "התקרבו לשער לפני הבעיטה. בעיטות מרחוק קל להציל.",
+    // ---- Checkers ----
+    "Move forward diagonally. Jump over a piece to capture it. Jumping is a must! Reach the far side to become a ♛ king.": "זזים קדימה באלכסון. קופצים מעל כלי כדי לאכול אותו. חובה לאכול! מגיעים לצד השני והופכים ל־♛ מלך.",
+    "You play white from the bottom. Click a piece, then click where to move.": "אתם משחקים בלבן מלמטה. לחצו על כלי ואז לאן להזיז.",
+    "Capture by jumping over the computer's pieces. Take them all to win!": "אכלו על ידי קפיצה מעל הכלים של המחשב. אכלו את כולם כדי לנצח!",
+    "If you can jump, you must. Glowing pieces show which ones can capture. Every win adds to your streak.": "אם אפשר לאכול, חובה. כלים זוהרים מראים מי יכול לאכול. כל ניצחון מוסיף לרצף.",
+    "The classic board game of checkers, also called draughts. Move your white pieces diagonally forward and capture the computer's red pieces by jumping over them. If you can jump you must, and you can chain several jumps in one turn. Reach the far side of the board and your piece is crowned a king that can move backwards too. Play the computer on easy, normal or hard, or play a friend on the same screen.":
+        "משחק הלוח הקלאסי דמקה. הזיזו את הכלים הלבנים באלכסון קדימה, ואכלו את הכלים האדומים של המחשב בקפיצה מעליהם. אם אפשר לאכול זו חובה, ואפשר לשרשר כמה קפיצות בתור אחד. כלי שמגיע לצד השני של הלוח הופך למלך שיכול לזוז גם אחורה. שחקו נגד המחשב ברמה קלה, רגילה או קשה, או נגד חבר על אותו מסך.",
+    "Click a piece": "לחיצה על כלי", "See where it can go": "רואים לאן הוא יכול ללכת", "Click a dot": "לחיצה על נקודה", "Move there": "זזים לשם",
+    "Keep your back row filled for as long as you can, so the computer can't get a king.": "השאירו את השורה האחורית מלאה כמה שיותר זמן, כדי שהמחשב לא יקבל מלך.",
+    "Pieces in the middle of the board are stronger than pieces on the edge.": "כלים באמצע הלוח חזקים יותר מכלים בקצה.",
+    "Sometimes giving up one piece sets up a double jump.": "לפעמים ויתור על כלי אחד מכין קפיצה כפולה.",
+    // ---- Sudoku ----
+    "Fill every row, column and 3×3 box with the numbers 1 to 9. Use the keyboard numbers and arrow keys, N for notes.": "מלאו כל שורה, עמודה וריבוע 3×3 במספרים 1 עד 9. אפשר להשתמש במספרים ובחצים במקלדת, ו־N להערות.",
+    "The famous number puzzle. Fill the nine by nine grid so that every row, every column and every three by three box holds the numbers one to nine exactly once. Every puzzle is freshly made and has exactly one answer. Use notes to pencil in possible numbers, ask for a hint if you get stuck, and try to finish without three mistakes. Pick easy, medium or hard.":
+        "חידת המספרים המפורסמת. מלאו את הלוח של תשע על תשע כך שבכל שורה, בכל עמודה ובכל ריבוע של שלוש על שלוש יופיעו המספרים אחד עד תשע בדיוק פעם אחת. כל חידה נוצרת מחדש ויש לה תשובה אחת בלבד. השתמשו בהערות כדי לרשום אפשרויות, בקשו רמז אם נתקעתם, ונסו לסיים בלי שלוש טעויות. בחרו קל, בינוני או קשה.",
+    "Click a square, then a number": "לוחצים על משבצת ואז על מספר", "Fill it in": "ממלאים אותה", "1 to 9 / arrows": "1 עד 9 / חצים", "Use the keyboard": "משתמשים במקלדת", "N": "N", "Notes on or off": "הערות פועל או כבוי",
+    "Start with the rows, columns or boxes that are almost full.": "התחילו מהשורות, העמודות או הריבועים שכמעט מלאים.",
+    "If a number can only go in one square of a box, it must go there.": "אם מספר יכול להיכנס רק למשבצת אחת בריבוע, הוא חייב להיות שם.",
+    "Use notes on hard puzzles to keep track of the possibilities.": "בחידות קשות השתמשו בהערות כדי לעקוב אחרי האפשרויות.",
+    // ---- Solitaire ----
+    "Drag cards to move them. Double-click (or tap on a phone) a card to send it to the best place. Build each suit from A to K.": "גררו קלפים כדי להזיז אותם. לחיצה כפולה (או נגיעה בטלפון) שולחת קלף למקום הכי טוב. בנו כל צורה מ־A עד K.",
+    "Classic Klondike solitaire, the card game everyone knows. Build four piles, one for each suit, from Ace up to King. In the seven columns you can stack cards in descending order with alternating red and black colours, and only a King can go in an empty column. Turn cards from the stock when you're stuck. Choose to draw one card at a time or three for a harder game. Undo as much as you like.":
+        "סוליטר קלונדייק הקלאסי, משחק הקלפים שכולם מכירים. בנו ארבע ערימות, אחת לכל צורה, מאס ועד מלך. בשבע העמודות אפשר לערום קלפים בסדר יורד עם צבעים מתחלפים של אדום ושחור, ורק מלך יכול להיכנס לעמודה ריקה. כשנתקעים, הופכים קלפים מהחבילה. בחרו לשלוף קלף אחד בכל פעם, או שלושה למשחק קשה יותר. אפשר לבטל כמה שרוצים.",
+    "Drag": "גרירה", "Move cards": "מזיזים קלפים", "Double-click / tap": "לחיצה כפולה / נגיעה", "Send a card to the best place": "שולחים קלף למקום הכי טוב", "Draw from the stock": "שולפים מהחבילה", "Ctrl+Z": "Ctrl+Z", "Undo": "ביטול",
+    "Turning over face-down cards in the columns is usually the best move.": "הפיכת קלפים סגורים בעמודות היא בדרך כלל המהלך הכי טוב.",
+    "Don't rush to fill an empty column unless you have a King ready.": "אל תמהרו למלא עמודה ריקה אלא אם יש לכם מלך מוכן.",
+    "Move Aces and Twos to the foundations as soon as you can.": "העבירו אסים ושתיים לערימות הבסיס כמה שיותר מהר.",
+    // ---- Sea Battle ----
+    "Take turns firing at each other's grid. A hit lets you fire again! Sink all 5 enemy ships to win. Fewer shots means more points.": "יורים בתורות על הלוח של השני. פגיעה נותנת עוד ירייה! הטביעו את כל 5 ספינות האויב כדי לנצח. פחות יריות = יותר נקודות.",
+    "A naval strategy game against the computer. You and the computer each hide five ships on a ten by ten grid. Take turns firing at squares in enemy waters: a hit lets you shoot again, and when you hit every part of a ship it sinks. Once you find a ship, work along it to finish it off. Sink the whole enemy fleet before they sink yours. The fewer shots you need, the higher your score.":
+        "משחק אסטרטגיה ימי נגד המחשב. אתם והמחשב מסתירים כל אחד חמש ספינות על לוח של עשר על עשר. יורים בתורות על משבצות במימי האויב: פגיעה נותנת עוד ירייה, וכשפוגעים בכל חלקי הספינה היא טובעת. כשמוצאים ספינה, המשיכו לאורכה כדי לגמור אותה. הטביעו את כל צי האויב לפני שהוא מטביע את שלכם. ככל שצריך פחות יריות, הניקוד גבוה יותר.",
+    "Click a square": "לחיצה על משבצת", "Fire at it": "יורים עליה", "Shuffle my ships": "לערבב את הספינות", "Move your fleet before the battle": "מזיזים את הצי לפני הקרב",
+    "Ships never touch each other, so the squares around a sunk ship are always empty.": "ספינות אף פעם לא נוגעות זו בזו, אז המשבצות סביב ספינה שטבעה תמיד ריקות.",
+    "After a hit, try the squares above, below and to the sides.": "אחרי פגיעה, נסו את המשבצות מעל, מתחת ובצדדים.",
+    "Spread your first shots out in a checkerboard pattern to find ships faster.": "פזרו את היריות הראשונות בדוגמת שחמט כדי למצוא ספינות מהר יותר."
 };
 
 const MEDAL = { "🏆 Platinum": "🏆 פלטינה", "🥇 Gold": "🥇 זהב", "🥈 Silver": "🥈 כסף", "🥉 Bronze": "🥉 ארד" };
 const RESULT = { "White wins by checkmate!": "מט! הלבן ניצח!", "Black wins by checkmate!": "מט! השחור ניצח!", "Stalemate: it's a draw.": "פת: תיקו.",
     "Draw by the 50-move rule.": "תיקו לפי חוק 50 המהלכים.", "Draw: not enough pieces to checkmate.": "תיקו: אין מספיק כלים למט." };
+
+const SHIP = { Carrier: "נושאת המטוסים", Battleship: "ספינת הקרב", Cruiser: "הסיירת", "Patrol boat": "סירת הסיור" };
 
 // Text with numbers in it (each line of a message is matched on its own)
 export const PATTERNS = [
@@ -390,5 +461,17 @@ export const PATTERNS = [
     [/^Final score: (\d+)$/, (m, a) => `ניקוד סופי: ${a}`],
     [/^🏆 A PERFECT GAME!$/, () => "🏆 משחק מושלם!"],
     [/^(🏆 You win the shootout!|😢 The computer wins the shootout) (\d+) - (\d+)$/, (m, r, a, b) => `${r.startsWith("🏆") ? "🏆 ניצחתם בדו־קרב!" : "😢 המחשב ניצח בדו־קרב"} ${a} - ${b}`],
+    [/^(\d+) goals from (\d+) crosses · (\d+) points$/, (m, a, b, c) => `${a} גולים מתוך ${b} הגבהות · ${c} נקודות`],
+    [/^(🏆 You win!|🤝 It's a draw|😢 You lost) (\d+) - (\d+)$/, (m, r, a, b) => `${({ "🏆 You win!": "🏆 ניצחתם!", "🤝 It's a draw": "🤝 תיקו", "😢 You lost": "😢 הפסדתם" })[r]} ${a} - ${b}`],
+    [/^(\d+) \/ 5 ships$/, (m, a) => `${a} / 5 ספינות`],
+    [/^⚪ (\d+) {2}· {2}🔴 (\d+)$/, (m, a, b) => `⚪ ${a}  ·  🔴 ${b}`],
+    [/^(.+) · you must jump!$/, (m, a) => `${({ "Your turn": "תורכם", "⚪ White's turn": "⚪ תור הלבן", "🔴 Red's turn": "🔴 תור האדום" })[a] || a} · חובה לאכול!`],
+    [/^You sank their (.+)!$/, (m, a) => `הטבעתם את ה${SHIP[a] || a} שלהם!`],
+    [/^They sank your (.+)!$/, (m, a) => `הם הטביעו את ה${SHIP[a] || a} שלכם!`],
+    [/^(🏆 You sank the whole fleet!|😢 Your fleet was sunk)$/, (m, a) => (a.startsWith("🏆") ? "🏆 הטבעתם את כל הצי!" : "😢 הצי שלכם טבע")],
+    [/^(\d+) shots, (\d+) hits · (\d+) points · best (\d+)$/, (m, a, b, c, d) => `${a} יריות, ${b} פגיעות · ${c} נקודות · שיא ${d}`],
+    [/^(Easy|Medium|Hard) puzzle in (\d+:\d+)$/, (m, l, a) => `חידה ${{ Easy: "קלה", Medium: "בינונית", Hard: "קשה" }[l]} ב־${a}`],
+    [/^Solved in (\d+:\d+) and (\d+) moves$/, (m, a, b) => `נפתר ב־${a} וב־${b} מהלכים`],
+    [/^(\d+) \+ (\d+) time bonus = (\d+) points · best (\d+)$/, (m, a, b, c, d) => `${a} + ${b} בונוס זמן = ${c} נקודות · שיא ${d}`],
     [/^(🏆 You win the match|😢 The computer wins the match) (\d+) - (\d+)$/, (m, r, a, b) => `${r.startsWith("🏆") ? "🏆 ניצחתם במשחק" : "😢 המחשב ניצח במשחק"} ${a} - ${b}`]
 ];

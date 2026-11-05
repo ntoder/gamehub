@@ -29,16 +29,22 @@ export const GAMES = {
     spacerocks:   { name: "Space Rocks",   path: "/SpaceRocks/spacerocks",     img: "/thumbs/spacerocks.png",   tags: ["arcade"],           desc: "Fly, shoot and break the space rocks apart." },
     mathblitz:    { name: "Math Blitz",    path: "/MathBlitz/mathblitz",       img: "/thumbs/mathblitz.png",    tags: ["brain"],            desc: "Solve as many sums as you can in 60 seconds." },
     typingrain:   { name: "Typing Rain",   path: "/TypingRain/typingrain",     img: "/thumbs/typingrain.png",   tags: ["brain"],            desc: "Type the falling words before they land." },
-    penalty:      { name: "Penalty Shootout", path: "/Penalty/penalty",        img: "/thumbs/penalty.png",      tags: ["sports"],           desc: "Shoot penalties, then dive to save them.", isNew: true },
-    keepyuppy:    { name: "Keepy Uppy",    path: "/KeepyUppy/keepyuppy",       img: "/thumbs/keepyuppy.png",    tags: ["sports", "arcade"], desc: "Keep the football in the air as long as you can.", isNew: true },
-    minigolf:     { name: "Mini Golf",     path: "/MiniGolf/minigolf",         img: "/thumbs/minigolf.png",     tags: ["sports"],           desc: "Nine holes of putting, walls, water and sand.", isNew: true },
-    bowling:      { name: "Bowling",       path: "/Bowling/bowling",           img: "/thumbs/bowling.png",      tags: ["sports"],           desc: "Swipe to bowl, add spin and go for a strike.", isNew: true },
-    tennis:       { name: "Tennis",        path: "/Tennis/tennis",             img: "/thumbs/tennis.png",       tags: ["sports"],           desc: "Rally against the computer and win the match.", isNew: true },
-    airhockey:    { name: "Air Hockey",    path: "/AirHockey/airhockey",       img: "/thumbs/airhockey.png",    tags: ["sports", "arcade"], desc: "Smash the puck into the computer's goal.", isNew: true },
-    hoopshot:     { name: "Hoop Shot",     path: "/HoopShot/hoopshot",         img: "/thumbs/hoopshot.png",     tags: ["sports"],           desc: "Shoot as many baskets as you can in 60 seconds.", isNew: true },
-    gemswap:      { name: "Gem Swap",      path: "/GemSwap/gemswap",           img: "/thumbs/gemswap.png",      tags: ["puzzle"],           desc: "Swap gems to match three and set off chains.", isNew: true },
-    skyclimber:   { name: "Sky Climber",   path: "/SkyClimber/skyclimber",     img: "/thumbs/skyclimber.png",   tags: ["arcade", "platformer"], desc: "Bounce up from cloud to cloud into space.", isNew: true },
-    fruitslash:   { name: "Fruit Slash",   path: "/FruitSlash/fruitslash",     img: "/thumbs/fruitslash.png",   tags: ["arcade"],           desc: "Swipe to slice the fruit. Never the bombs!", isNew: true }
+    penalty:      { name: "Penalty Shootout", path: "/Penalty/penalty",        img: "/thumbs/penalty.png",      tags: ["sports"],           desc: "Shoot penalties, then dive to save them." },
+    keepyuppy:    { name: "Keepy Uppy",    path: "/KeepyUppy/keepyuppy",       img: "/thumbs/keepyuppy.png",    tags: ["sports", "arcade"], desc: "Keep the football in the air as long as you can." },
+    minigolf:     { name: "Mini Golf",     path: "/MiniGolf/minigolf",         img: "/thumbs/minigolf.png",     tags: ["sports"],           desc: "Nine holes of putting, walls, water and sand." },
+    bowling:      { name: "Bowling",       path: "/Bowling/bowling",           img: "/thumbs/bowling.png",      tags: ["sports"],           desc: "Swipe to bowl, add spin and go for a strike." },
+    tennis:       { name: "Tennis",        path: "/Tennis/tennis",             img: "/thumbs/tennis.png",       tags: ["sports"],           desc: "Rally against the computer and win the match." },
+    airhockey:    { name: "Air Hockey",    path: "/AirHockey/airhockey",       img: "/thumbs/airhockey.png",    tags: ["sports", "arcade"], desc: "Smash the puck into the computer's goal." },
+    hoopshot:     { name: "Hoop Shot",     path: "/HoopShot/hoopshot",         img: "/thumbs/hoopshot.png",     tags: ["sports"],           desc: "Shoot as many baskets as you can in 60 seconds." },
+    gemswap:      { name: "Gem Swap",      path: "/GemSwap/gemswap",           img: "/thumbs/gemswap.png",      tags: ["puzzle"],           desc: "Swap gems to match three and set off chains." },
+    skyclimber:   { name: "Sky Climber",   path: "/SkyClimber/skyclimber",     img: "/thumbs/skyclimber.png",   tags: ["arcade", "platformer"], desc: "Bounce up from cloud to cloud into space." },
+    fruitslash:   { name: "Fruit Slash",   path: "/FruitSlash/fruitslash",     img: "/thumbs/fruitslash.png",   tags: ["arcade"],           desc: "Swipe to slice the fruit. Never the bombs!" },
+    headerhero:   { name: "Header Hero",   path: "/HeaderHero/headerhero",     img: "/thumbs/headerhero.png",   tags: ["sports"],           desc: "Head the crosses into the goal past the keeper.", isNew: true },
+    fiveaside:    { name: "5-a-Side",      path: "/FiveASide/fiveaside",       img: "/thumbs/fiveaside.png",    tags: ["sports"],           desc: "A full football match: pass, dribble and shoot.", isNew: true },
+    checkers:     { name: "Checkers",      path: "/Checkers/checkers",         img: "/thumbs/checkers.png",     tags: ["puzzle", "brain"],  desc: "Jump and capture to beat the computer.", isNew: true },
+    sudoku:       { name: "Sudoku",        path: "/Sudoku/sudoku",             img: "/thumbs/sudoku.png",       tags: ["puzzle", "brain"],  desc: "Fill the grid so every row, column and box has 1 to 9.", isNew: true },
+    solitaire:    { name: "Solitaire",     path: "/Solitaire/solitaire",       img: "/thumbs/solitaire.png",    tags: ["puzzle"],           desc: "The classic card game. Build each suit from A to K.", isNew: true },
+    seabattle:    { name: "Sea Battle",    path: "/SeaBattle/seabattle",       img: "/thumbs/seabattle.png",    tags: ["puzzle", "brain"],  desc: "Find and sink the computer's hidden fleet.", isNew: true }
 };
 
 // Games that only count plays (no score)

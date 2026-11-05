@@ -25,7 +25,8 @@ const NAMES = {
     "Color Echo": "הד הצבעים", "Stack Tower": "מגדל הבלוקים", "Space Rocks": "סלעי החלל", "Math Blitz": "בליץ חשבון", "Typing Rain": "גשם של מילים",
     "Motor Racing": "מרוץ אופנועים", "Soccer": "כדורגל",
     "Penalty Shootout": "דו־קרב פנדלים", "Keepy Uppy": "ג'אגלינג", "Mini Golf": "מיני גולף", "Bowling": "באולינג", "Tennis": "טניס",
-    "Air Hockey": "הוקי אוויר", "Hoop Shot": "קליעה לסל", "Gem Swap": "החלפת יהלומים", "Sky Climber": "מטפס השמיים", "Fruit Slash": "חיתוך פירות"
+    "Air Hockey": "הוקי אוויר", "Hoop Shot": "קליעה לסל", "Gem Swap": "החלפת יהלומים", "Sky Climber": "מטפס השמיים", "Fruit Slash": "חיתוך פירות",
+    "Header Hero": "מלך הנגיחות", "5-a-Side": "כדורגל 5 על 5", "5-a-Side Football": "כדורגל 5 על 5", "Checkers": "דמקה", "Sudoku": "סודוקו", "Solitaire": "סוליטר", "Sea Battle": "קרב ימי"
 };
 const gn = (n) => NAMES[n] || n;
 const UNITS = { points: "נקודות", pipes: "צינורות", goals: "גולים" };
@@ -107,6 +108,9 @@ const TEXT = {
     "Rally against the computer and win the match.": "חילופי מכות נגד המחשב, ומנצחים במשחק.", "Smash the puck into the computer's goal.": "מטיחים את הדיסקית לשער של המחשב.",
     "Shoot as many baskets as you can in 60 seconds.": "קולעים כמה שיותר סלים ב־60 שניות.", "Swap gems to match three and set off chains.": "מחליפים יהלומים, מסדרים שלושה ויוצרים תגובות שרשרת.",
     "Bounce up from cloud to cloud into space.": "קופצים מענן לענן עד החלל.", "Swipe to slice the fruit. Never the bombs!": "מחליקים כדי לחתוך פירות. אף פעם לא פצצות!",
+    "Head the crosses into the goal past the keeper.": "נוגחים את ההגבהות לשער ועוברים את השוער.", "A full football match: pass, dribble and shoot.": "משחק כדורגל מלא: מסירות, כדרורים ובעיטות.",
+    "Jump and capture to beat the computer.": "קופצים ואוכלים כדי לנצח את המחשב.", "Fill the grid so every row, column and box has 1 to 9.": "ממלאים את הלוח כך שבכל שורה, עמודה וריבוע יהיו 1 עד 9.",
+    "The classic card game. Build each suit from A to K.": "משחק הקלפים הקלאסי. בונים כל צורה מ־A עד K.", "Find and sink the computer's hidden fleet.": "מוצאים ומטביעים את הצי המוסתר של המחשב.",
     "No games match your search 😕": "לא נמצאו משחקים 😕", "About Noam's Game Hub": "על המשחקים של נועם", "💾 Save your scores": "💾 שומרים שיאים",
     "👨‍👩‍👧 Made for kids": "👨‍👩‍👧 מתאים לילדים", "Every game is safe for all ages. There's no chat, no violence and no in-game shop. Ads are set to child-safe mode.": "כל המשחקים מתאימים לכל הגילים. אין צ'אט, אין אלימות ואין חנות בתוך המשחק. הפרסומות מוגדרות למצב בטוח לילדים.",
     "Questions": "שאלות", "Is it really free?": "זה באמת בחינם?", "Yes. Almost every game is free to play without an account. Premium is optional.": "כן. כמעט כל המשחקים חינמיים גם בלי חשבון. פרימיום הוא רשות.",

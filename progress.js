@@ -37,7 +37,13 @@ export const TARGETS = {
     hoopshot:     { easy: 15,   hard: 60,    unit: "points" },
     gemswap:      { easy: 800,  hard: 3000,  unit: "points" },
     skyclimber:   { easy: 300,  hard: 2000,  unit: "points" },
-    fruitslash:   { easy: 150,  hard: 600,   unit: "points" }
+    fruitslash:   { easy: 150,  hard: 600,   unit: "points" },
+    headerhero:   { easy: 300,  hard: 1200,  unit: "points" },
+    fiveaside:    { easy: 200,  hard: 800,   unit: "points" },
+    checkers:     { easy: 1,    hard: 4,     unit: "wins in a row" },
+    sudoku:       { easy: 800,  hard: 3000,  unit: "points" },
+    solitaire:    { easy: 300,  hard: 1500,  unit: "points" },
+    seabattle:    { easy: 500,  hard: 1500,  unit: "points" }
 };
 
 // ---------- Dates ----------
